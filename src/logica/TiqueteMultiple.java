@@ -13,13 +13,31 @@ public class TiqueteMultiple extends Tiquete{
 		super(localidad, id, dueno, precioBase, comision);
 		this.tiquetes = new ArrayList<Tiquete>();
 		this.precioReal = 0;
+		this.tipo = TiqueteMultiple.TIQUETEMULTIPLE;
 	}
 
 	public void marcarTodos() {
 		for (Tiquete tiquete: tiquetes) {
 			tiquete.marcarTiquete();
 		}
+		}
+		public void agregarTiquete(Tiquete tiquete) {
+			tiquetes.add(tiquete);
 		
 	
 	}
+
+		public boolean isTransferible() {
+			return transferible;
+		}
+
+		public List<Tiquete> getTiquetes() {
+			return tiquetes;
+		}
+
+		public int getPrecioReal() {
+			return precioReal;
+		}
+		
+	
 }
