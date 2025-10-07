@@ -2,6 +2,8 @@ package logica;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+import Exepciones.TiqueteUsadoException;
  
 
 public abstract class Tiquete {
@@ -37,7 +39,10 @@ public abstract class Tiquete {
 				+ ", id=" + id + ", dueno=" + dueno + ", precioBase=" + precioBase + ", comision=" + comision
 				+ ", usado=" + usado + "]";
 	}
-	public void  marcarTiquete() {
+	public void  marcarTiquete() throws TiqueteUsadoException{
+		if (this.usado) {
+			throw(new TiqueteUsadoException(this));
+		}
 		this.usado = false;
 	}
 	public Localidad getLocalidad() {
@@ -69,6 +74,9 @@ public abstract class Tiquete {
 	}
 	public void setDueno(Usuario dueno) {
 		this.dueno = dueno;
+	}
+	public String getTipo() {
+		return this.tipo;
 	}
 	
 	

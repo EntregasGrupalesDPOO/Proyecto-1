@@ -17,6 +17,7 @@ public class TiqueteEnumerado extends Tiquete {
 				+ fecha + ", hora=" + hora + ", id=" + id + ", dueno=" + dueno + ", precioBase=" + precioBase
 				+ ", comision=" + comision + ", usado=" + usado + ", evento=" + evento + ", tipo=" + tipo + "]";
 	}
+
 	
 
 }
