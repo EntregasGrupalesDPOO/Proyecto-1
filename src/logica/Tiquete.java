@@ -12,7 +12,7 @@ public abstract class Tiquete {
 	public static final double IMPRESION = 20;
 	protected LocalDate fecha;
 	protected LocalTime hora;
-	protected int id;
+	protected final int id;
 	protected Usuario dueno;
 	protected double precioBase;
 	protected double comision;
