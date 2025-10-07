@@ -8,6 +8,7 @@ public abstract class Usuario {
 	protected List <Tiquete> tiquetes;
 	protected double saldoVirtual;
 	
+	
 	public String getLogin() {
 		return login;
 	}

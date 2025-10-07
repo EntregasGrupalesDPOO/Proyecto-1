@@ -15,7 +15,17 @@ public class Evento {
 	
 	@Override
 	public String toString() {
-		
+		StringBuilder sb = new StringBuilder();
+	    sb.append("Evento{");
+	    sb.append("nombre='").append(nombre).append('\'');
+	    sb.append(", fecha=").append(fecha);
+	    sb.append(", hora=").append(hora);
+	    sb.append(", venue=").append(venue); 
+	    sb.append(", organizador=").append(organizador); 
+	    sb.append(", localidades=").append(localidades); 
+	    sb.append(", estado='").append(estado).append('\'');
+	    sb.append('}');
+	    return sb.toString();
 	}
 
 	public String getNombre() {

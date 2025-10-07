@@ -22,5 +22,9 @@ public class Localidad {
 		return evento;
 	}
 	
+	public String getNombre() {
+		return nombre;
+	}
+	
 
 }
