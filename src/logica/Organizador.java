@@ -10,7 +10,7 @@ public class Organizador extends Usuario {
 	}
 	
 	@Override
-	public void comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad) {
+	public void comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo) {
 		for (int i = 0;i < cantidad; i++) {
 			if (this.tiquetes.get(evento).equals(null)) {
 				this.tiquetes.put(evento, new ArrayList<Tiquete>());
@@ -21,7 +21,7 @@ public class Organizador extends Usuario {
 	}
 
 	@Override
-	public void comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLocalidad, int idSilla) {
+	public void comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLocalidad, int idSilla, boolean usarSaldo) {
 		for (int i = 0;i < cantidad; i++) {
 			if (this.tiquetes.get(evento).equals(null)) {
 				this.tiquetes.put(evento, new ArrayList<Tiquete>());
@@ -32,13 +32,13 @@ public class Organizador extends Usuario {
 	}
 	
 	@Override
-	public void comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad) {
+	public void comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo {
 		TiqueteMultiple nuevoTM = new TiqueteMultipleUnicoEvento(evento, idLocalidad, cantidad, this);
 		tiquetesMultiples.put(nuevoTM.getId(), nuevoTM);
 	}
 	
 	@Override
-	public void comprarTiquetesMultiplesVE(HashMap<Evento,Integer> eventos) {
+	public void comprarTiquetesMultiplesVE(HashMap<Evento,Integer> eventos, boolean usarSaldo) {
 		TiqueteMultiple nuevoTM = new TiqueteMultipleVariosEventos(eventos, this);
 		tiquetesMultiples.put(nuevoTM.getId(), nuevoTM);
 	}

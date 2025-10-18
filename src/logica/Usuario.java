@@ -10,11 +10,11 @@ public abstract class Usuario {
 	protected HashMap<Integer, TiqueteMultiple> tiquetesMultiples;
 	protected double saldoVirtual;
 
-	public abstract void comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad);
-	public abstract void comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLocalidad, int idSilla);
-	public abstract void comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad);
-	public abstract void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos);
-	public abstract void comprarTiquetesDeluxe(int cantidad, Evento evento, Integer idLocalidad);
+	public abstract void comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo);
+	public abstract void comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLocalidad, int idSilla, boolean usarSaldo);
+	public abstract void comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo);
+	public abstract void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos, boolean usarSaldo);
+	public abstract void comprarTiquetesDeluxe(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo);
 	
 	public String getLogin() {
 		return login;
