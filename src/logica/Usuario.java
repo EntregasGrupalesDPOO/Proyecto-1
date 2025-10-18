@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import logica.Organizador.Tupla;
+
 public abstract class Usuario {
 	protected String login;
 	protected String contrasena;
@@ -12,8 +14,19 @@ public abstract class Usuario {
 	protected HashMap<Integer, TiqueteMultiple> tiquetesMultiples;
 	protected static HashMap<String, Usuario> usuarios;
 	protected double saldoVirtual;
-
 	
+	
+	
+	public Usuario(String login, String contrasena) {
+		super();
+		this.login = login;
+		this.contrasena = contrasena;
+		this.saldoVirtual = 0;
+		this.tiquetes = new HashMap<Evento, ArrayList<Tiquete>>();
+		this.tiquetesMultiples = new HashMap<Integer, TiqueteMultiple>();
+	}
+
+
 	public void comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo) {
 		if (cantidad > Tiquete.tiquetesMax) {
 			//excepcion
@@ -215,6 +228,11 @@ public abstract class Usuario {
 			usuarios.get(login).getTiquetes().get(tiquete.getEvento()).addLast(tiquete);
 			tiqueteMultiple.setTransferible(false);
 		}
+	}
+	
+	public record Tupla<A, B>(A primero, B segundo) {}
+	public Tupla<Tiquete, String> solicitarReembolso(Tiquete tiquete, String razon) {
+		return new Tupla<>(tiquete, razon);
 	}
 	
 	public String getLogin() {

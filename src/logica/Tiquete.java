@@ -110,5 +110,9 @@ public abstract class Tiquete {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
+
+	public double getPrecioReal() {
+		return precioReal;
+	}
 	
 }
