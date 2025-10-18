@@ -2,37 +2,41 @@ package logica;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 
 import Exepciones.TiqueteUsadoException;
  
 
 public abstract class Tiquete {
 	protected Localidad localidad;
-	protected String idDueno;
-	public static final double IMPRESION = 20;
+	protected String idUsuario;
+	public static double impresion;
 	protected LocalDate fecha;
 	protected LocalTime hora;
-	protected final int id;
-	protected Usuario dueno;
+	protected final Integer id;
+	protected Usuario usuario;
 	protected double precioBase;
-	protected double comision;
 	protected boolean usado;
-	protected Evento evento;
-	protected String tipo;
+	protected Evento evento; 
+	protected String tipo; 
+	protected static HashMap<String, Double> tiposEventos;
+	protected double precioReal; 
 	
 	
-	public Tiquete(Localidad localidad, int id, Usuario dueno,
-			double precioBase, double comision) {
-		this.localidad = localidad;
-		this.idDueno = dueno.getLogin();
+	public Tiquete(Integer idLocalidad, Evento evento, Usuario usuario) {
+		this.id = 1 + evento.getLocalidades().get(idLocalidad).getTiquetesUsados().size();
+		this.localidad = evento.getLocalidades().get(idLocalidad);
+		this.idUsuario = usuario.getLogin();
 		this.fecha = evento.getFecha();
 		this.hora = evento.getHora();
-		this.id = id;
-		this.dueno = dueno;
-		this.precioBase = precioBase;
-		this.comision = comision;
+		this.usuario = usuario;
+		this.precioBase = evento.getLocalidades().get(idLocalidad).getPrecioTiquete();
+		this.evento = evento;
 		this.usado = false;
+		this.precioReal = this.precioBase * (1 + tiposEventos.get(evento.getTipoEvento())) + impresion;
+		evento.getLocalidades().get(idLocalidad).getTiquetesUsados().put(this.id, this);
 	}
+	
 	@Override
 	public String toString() {
 		return "Tiquete [localidad=" + localidad + ", idDueno=" + idDueno + ", fecha=" + fecha + ", hora=" + hora
@@ -57,7 +61,7 @@ public abstract class Tiquete {
 	public LocalTime getHora() {
 		return hora;
 	}
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 	public Usuario getDueno() {
@@ -78,7 +82,16 @@ public abstract class Tiquete {
 	public String getTipo() {
 		return this.tipo;
 	}
-	
+	public static double getImpresion() {
+		return impresion;
+	}
+	public static void setImpresion(double impresion) {
+		Tiquete.impresion = impresion;
+	}
+
+	public void setPrecioReal(double precioReal) {
+		this.precioReal = precioReal;
+	}
 	
 	
 }

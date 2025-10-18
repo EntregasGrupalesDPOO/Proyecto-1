@@ -3,11 +3,13 @@ package logica;
 public class TiqueteEnumerado extends Tiquete {
 	private int idSilla;
 	public static final String ENUMERADO = "ENUMERADO";
-	public TiqueteEnumerado(Localidad localidad, int id, Usuario dueno, double precioBase, double comision,  int idSilla) {
-		super(localidad, id, dueno, precioBase, comision);
+	
+	public TiqueteEnumerado(Integer idLocalidad, Evento evento, Usuario usuario, int idSilla) {
+		super(idLocalidad, evento, usuario);
+		this.tipo = ENUMERADO;
 		this.idSilla = idSilla;
-		this.tipo = TiqueteEnumerado.ENUMERADO;
 	}
+	
 	public int getIdSilla() {
 		return idSilla;
 	}

@@ -1,13 +1,20 @@
 package logica;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public abstract class Usuario {
 	protected String login;
 	protected String contrasena;
-	protected List <Tiquete> tiquetes;
+	protected HashMap<Evento, ArrayList<Tiquete>> tiquetes;
+	protected HashMap<Integer, TiqueteMultiple> tiquetesMultiples;
 	protected double saldoVirtual;
-	
+
+	public abstract void comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad);
+	public abstract void comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLocalidad, int idSilla);
+	public abstract void comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad);
+	public abstract void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos);
+	public abstract void comprarTiquetesDeluxe(int cantidad, Evento evento, Integer idLocalidad);
 	
 	public String getLogin() {
 		return login;
@@ -15,13 +22,9 @@ public abstract class Usuario {
 	public String getContrasena() {
 		return contrasena;
 	}
-	public List<Tiquete> getTiquetes() {
-		return tiquetes;
-	}
 	public double getSaldoVirtual() {
 		return saldoVirtual;
 	}
 	
 	
-
 }

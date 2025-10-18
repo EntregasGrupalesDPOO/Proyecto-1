@@ -1,29 +1,18 @@
 package logica;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class TiqueteDeluxe extends TiqueteMultiple{
+public class TiqueteDeluxe extends Tiquete{
 	
 	// lista con los beneficios del paquete
-	private List<String> paquete ;
-
+	private ArrayList<String> paquete ;
+	private ArrayList<Tiquete>  cortesias;
 	public static final String TIQUETEDELUXE  = "TIQUETEDELUXE";
-	public TiqueteDeluxe(Localidad localidad, int id, Usuario dueno, double precioBase, double comision, List<String> paquete) {
-		super(localidad, id, dueno, precioBase, comision);
-		this.tipo = TiqueteDeluxe.TIQUETEDELUXE;
-		this.transferible = false;
-		this.paquete = paquete;
-		
-		
-	}
-	public List<String> getPaquete() {
-		return paquete;
+	public TiqueteDeluxe(Integer idLocalidad, Evento evento, Usuario usuario) {
+		super(idLocalidad, evento, usuario);
+		this.tipo = TIQUETEDELUXE;
 	}
 	
 	
-	
-	
-
-
-
 }
