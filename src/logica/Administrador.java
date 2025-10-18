@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class Administrador {
-	public double obtenerGananciasGlobales(ArrayList<Evento> eventos) {
+	public double obtenerGananciasGenerales(ArrayList<Evento> eventos) {
 		double ganancias = 0;
 		for (Evento evento:eventos) {
 			Set<Localidad> localidades = (Set<Localidad>) evento.getLocalidades().values();
