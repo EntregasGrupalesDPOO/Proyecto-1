@@ -91,5 +91,24 @@ public abstract class Tiquete {
 		this.precioReal = precioReal;
 	}
 	
+	public Evento getEvento() {
+		return this.evento;
+	}
+
+	public String getIdUsuario() {
+		return idUsuario;
+	}
+
+	public void setIdUsuario(String idUsuario) {
+		this.idUsuario = idUsuario;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
 	
 }

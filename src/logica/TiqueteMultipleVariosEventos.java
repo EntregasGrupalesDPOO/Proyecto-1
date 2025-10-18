@@ -21,4 +21,25 @@ public class TiqueteMultipleVariosEventos extends TiqueteMultiple{
 			tiquetes.put(llave, nuevoTiquete);
 		}
 	}
+
+	public HashMap<Evento, Tiquete> getTiquetes() {
+		return tiquetes;
+	}
+
+	public void setTiquetes(HashMap<Evento, Tiquete> tiquetes) {
+		this.tiquetes = tiquetes;
+	}
+
+	public static HashMap<Integer, Double> getPrecios() {
+		return precios;
+	}
+
+	public static void setPrecios(HashMap<Integer, Double> precios) {
+		TiqueteMultipleVariosEventos.precios = precios;
+	}
+
+	public static String getMultiplevarioseventos() {
+		return MULTIPLEVARIOSEVENTOS;
+	}
+	
 }

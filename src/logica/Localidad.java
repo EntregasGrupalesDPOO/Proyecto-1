@@ -74,6 +74,14 @@ public class Localidad {
 	public void setTiquetesUsados(HashMap<Integer, Tiquete> tiquetesUsados) {
 		this.tiquetesUsados = tiquetesUsados;
 	}
+
+	public HashMap<Integer, TiqueteMultiple> getTiquetesMultiplesUsados() {
+		return tiquetesMultiplesUsados;
+	}
+
+	public void setTiquetesMultiplesUsados(HashMap<Integer, TiqueteMultiple> tiquetesMultiplesUsados) {
+		this.tiquetesMultiplesUsados = tiquetesMultiplesUsados;
+	}
 	
 	
 }
