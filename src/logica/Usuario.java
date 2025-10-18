@@ -15,7 +15,11 @@ public abstract class Usuario {
 	public abstract void comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad);
 	public abstract void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos);
 	public abstract void comprarTiquetesDeluxe(int cantidad, Evento evento, Integer idLocalidad);
-	
+	public boolean login(String usuario, String contrasena) {
+		return (usuario.equals(this.login)&& contrasena.equals(this.contrasena));
+		
+		
+	}
 	public String getLogin() {
 		return login;
 	}

@@ -11,7 +11,7 @@ public class BoletasMaster {
 		esAdministrador = false;
 		esOrganizador = false;
 		esCliente = false;
-		
+		hola 
 	
 
 	}
