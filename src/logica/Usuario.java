@@ -161,6 +161,7 @@ public abstract class Usuario {
 			if (tiqueteMultiple instanceof TiqueteMultipleVariosEventos) {
 				TiqueteMultipleVariosEventos tiqueteMultipleVE = (TiqueteMultipleVariosEventos) tiqueteMultiple;
 				
+				
 			} else if (tiqueteMultiple instanceof TiqueteMultipleUnicoEvento) {
 				TiqueteMultipleUnicoEvento tiqueteMultipleUE = (TiqueteMultipleUnicoEvento) tiqueteMultiple;
 				ArrayList<Tiquete> tiquetes = tiqueteMultipleUE.getTiquetes();

@@ -22,5 +22,15 @@ public abstract class TiqueteMultiple {
 	public Integer getId() {
 		return id;
 	}
+
+
+	public boolean isTransferible() {
+		return transferible;
+	}
+
+
+	public void setTransferible(boolean transferible) {
+		this.transferible = transferible;
+	}
 	
 }
