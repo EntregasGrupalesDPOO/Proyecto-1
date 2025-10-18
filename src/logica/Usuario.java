@@ -3,6 +3,7 @@ package logica;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Set;
 
 public abstract class Usuario {
 	protected String login;
@@ -148,6 +149,29 @@ public abstract class Usuario {
 	
 	public void transferirTiqueteMultiple(String login, String contrasena, TiqueteMultiple tiquete) {
 		if (contrasena.equals(this.contrasena) && tiquete.transferible) {
+			if (tiquete instanceof TiqueteMultipleVariosEventos) {
+				TiqueteMultipleVariosEventos tiqueteMultipleVE = (TiqueteMultipleVariosEventos) tiquete;
+				Set<Evento> llaves = tiqueteMultipleVE.getTiquetes().keySet();
+				Iterator<Evento> iterador = llaves.iterator();
+				while(iterador.hasNext()) {
+					Tiquete tiq = tiqueteMultipleVE.getTiquetes().get(iterador.next());
+					tiq.setIdUsuario(login);
+					tiq.setUsuario(usuarios.get(login));
+					usuarios.get(login).getTiquetes().get(tiq.getEvento()).addLast(tiq);
+					tiquete.setTransferible(false);
+					}
+			} else if(tiquete instanceof TiqueteMultipleUnicoEvento) {
+				TiqueteMultipleUnicoEvento tiqueteMultipleUE = (TiqueteMultipleUnicoEvento) tiquete;
+				ArrayList<Tiquete> tiquetes = tiqueteMultipleUE.getTiquetes();
+				Iterator<Tiquete> iterador = tiquetes.iterator();
+				while(iterador.hasNext()) {
+					Tiquete tiq = iterador.next();
+					tiq.setIdUsuario(login);
+					tiq.setUsuario(usuarios.get(login));
+					usuarios.get(login).getTiquetes().get(tiq.getEvento()).addLast(tiq);
+					tiquete.setTransferible(false);
+				}
+			}
 			this.tiquetesMultiples.remove(tiquete.id);
 			usuarios.get(login).tiquetesMultiples.put(tiquete.id, tiquete);
 		} else {
@@ -155,13 +179,23 @@ public abstract class Usuario {
 		}
 	}
 	
+		
+	
 	public void transferirTiqueteDeTM(String login, String contrasena, TiqueteMultiple tiqueteMultiple, int idTiquete ) {
 		Tiquete tiquete = null;
 		if (contrasena.equals(this.contrasena)) {
 			if (tiqueteMultiple instanceof TiqueteMultipleVariosEventos) {
 				TiqueteMultipleVariosEventos tiqueteMultipleVE = (TiqueteMultipleVariosEventos) tiqueteMultiple;
-				
-				
+				Set<Evento> llaves = tiqueteMultipleVE.getTiquetes().keySet();
+				Iterator<Evento> iterador = llaves.iterator();
+				while(iterador.hasNext()) {
+					Tiquete tiq = tiqueteMultipleVE.getTiquetes().get(iterador.next());
+					if (tiq.getId() == idTiquete){
+						tiquete = tiq;
+						iterador.remove();
+						break;
+					}
+				}
 			} else if (tiqueteMultiple instanceof TiqueteMultipleUnicoEvento) {
 				TiqueteMultipleUnicoEvento tiqueteMultipleUE = (TiqueteMultipleUnicoEvento) tiqueteMultiple;
 				ArrayList<Tiquete> tiquetes = tiqueteMultipleUE.getTiquetes();
@@ -174,11 +208,12 @@ public abstract class Usuario {
 						break;
 					}
 				}
-				tiquete.setIdUsuario(login);
-				tiquete.setUsuario(usuarios.get(login));
-				usuarios.get(login).getTiquetes().get(tiquete.getEvento()).addLast(tiquete);
-				tiqueteMultiple.setTransferible(false);
+				
 			}
+			tiquete.setIdUsuario(login);
+			tiquete.setUsuario(usuarios.get(login));
+			usuarios.get(login).getTiquetes().get(tiquete.getEvento()).addLast(tiquete);
+			tiqueteMultiple.setTransferible(false);
 		}
 	}
 	
