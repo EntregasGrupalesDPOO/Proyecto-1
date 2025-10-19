@@ -1,8 +1,10 @@
 package logica;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import Exepciones.UsuarioNoEncontradoException;
 
@@ -35,6 +37,8 @@ public class BoletasMaster {
 	    this.organizadores = new HashMap<String, Organizador>();
 	    this.clientes = new HashMap<String, Cliente>();
 	    this.usuarios = new HashMap<String, Usuario>();
+		this.eventos = new ArrayList<Evento>();
+		this.eventosPorFecha = new HashMap<LocalDate, ArrayList<Evento>>();
 		
 		 
 	
@@ -134,30 +138,37 @@ public class BoletasMaster {
 
 
 
-	public void  comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad) throws Exception {
-		if (usuarioActual != null && esCliente) {
-			usuarioActual.comprarTiquetes(cantidad, evento, idLocalidad, true);
-		} 
-	}
+public void comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad) throws Exception {
+    if (usuarioActual != null && esCliente) {
+        boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
+        usuarioActual.comprarTiquetes(cantidad, evento, idLocalidad, conSaldo);
+    }
+}
 
-	public void comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLocalidad, int idSilla) throws UsuarioNoEncontradoException, Exception {
-		if (usuarioActual != null && esCliente) {
-			usuarioActual.comprarTiquetesEnumerados(cantidad, evento, idLocalidad, idSilla, true);
-		} else if (esOrganizador)
-	}
-	//TODO REVISAR
-	public void comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad) throws UsuarioNoEncontradoException, Exception {
-		if (usuarioActual != null && esCliente) {
-			usuarioActual.comprarTiquetesMultiplesUE(cantidad, evento, idLocalidad, true);
-		} 
-	}
+public void comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLocalidad, int idSilla)
+        throws UsuarioNoEncontradoException, Exception {
+    if (usuarioActual != null && (esCliente || esOrganizador)) {
+        boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
+        usuarioActual.comprarTiquetesEnumerados(cantidad, evento, idLocalidad, idSilla, conSaldo);
+    }
+}
 
-	//TODO REVISAR
-	public void  comprarTiquetesMultiplesVE(HashMap<Evento,Integer> eventos) throws UsuarioNoEncontradoException, Exception {
-		if (usuarioActual != null && esCliente) {
-			usuarioActual.comprarTiquetesMultiplesVE(eventos, true);
-		} 
-	}
+public void comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad)
+        throws UsuarioNoEncontradoException, Exception {
+    if (usuarioActual != null && (esCliente || esOrganizador)) {
+        boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
+        usuarioActual.comprarTiquetesMultiplesUE(cantidad, evento, idLocalidad, conSaldo);
+    }
+}
+
+public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
+        throws UsuarioNoEncontradoException, Exception {
+    if (usuarioActual != null && (esCliente || esOrganizador)) {
+        boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
+        usuarioActual.comprarTiquetesMultiplesVE(eventos, conSaldo);
+    }
+}
+
 
 
 
@@ -185,8 +196,34 @@ public class BoletasMaster {
 	}
 
 	public void solicitarCancelacionEvento(Evento evento, String razon) {
-		administrador.agregarSolicitud(new SolicitudCancelacionEvento(this.usuarioActual, razon, evento));	
+		administrador.agregarSolicitud(new SolicitudCancelacionEvento(this.usuarioActual, razon, evento));
+
 	}
+	public void agendarEvento(String nombre, String descripcion, LocalDate fecha, LocalTime hora, Venue venue, String tipoEvento, List<Localidad> localidades) {
+
+		Evento nuevoEvento  =  (new Evento(nombre, fecha, hora, venue, (Organizador) this.usuarioActual, new HashMap<Integer, Localidad>(), tipoEvento));
+		agregarEvento(nuevoEvento);
+		for (int i = 0; i < localidades.size(); i++) {
+			nuevoEvento.getLocalidades().put(i + 1, localidades.get(i));
+		}
+
+	}
+	public void agendarEvento(String nombre, String descripcion, LocalDate fecha, LocalTime hora, Venue venue, String tipoEvento) {
+
+		Evento nuevoEvento  =  (new Evento(nombre, fecha, hora, venue, (Organizador) this.usuarioActual, new HashMap<Integer, Localidad>(), tipoEvento));
+		agregarEvento(nuevoEvento);
+		System.out.println("Evento agendado: " + nuevoEvento.getNombre()  +  "Sin localidades asignadas.");
+			
+
+	}
+	public Localidad crearLocalidadEvento(Evento evento, String nombre, double precioTiquete, int capacidad, boolean numerada) {
+		Localidad nuevaLocalidad = new Localidad(nombre, precioTiquete, capacidad, numerada, evento.getVenue(), evento);
+		int idLocalidad = evento.getLocalidades().size() + 1;
+		evento.getLocalidades().put(idLocalidad, nuevaLocalidad);
+		return nuevaLocalidad;
+	}
+
+	
 
 
 
