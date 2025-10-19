@@ -65,7 +65,7 @@ public abstract class Tiquete {
 	}
 	public Integer getId() {
 		return id;
-	}
+	} 
 
 	public double getPrecioBase() {
 		return precioBase;

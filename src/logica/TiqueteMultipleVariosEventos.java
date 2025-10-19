@@ -20,12 +20,12 @@ public class TiqueteMultipleVariosEventos extends TiqueteMultiple{
 		for (Evento llave : llaves) {
 			if (!(llave.getLocalidades().get(eventos.get(llave)).compararCapacidad(1))) {
 				throw new CapacidadLocalidadExcedidaException(1);
-			} else {
-				Tiquete nuevoTiquete = new TiqueteBasico(eventos.get(llave), llave, usuario);
-				nuevoTiquete.setPrecioBase(nuevoPrecio);
-				nuevoTiquete.setPrecioReal(nuevoPrecio * (1 + Tiquete.tiposEventos.get(llave.getTipoEvento())) + Tiquete.getImpresion());
-				tiquetes.put(llave, nuevoTiquete);
 			}
+		}for (Evento llave : llaves) {
+			Tiquete nuevoTiquete = new TiqueteBasico(eventos.get(llave), llave, usuario);
+			nuevoTiquete.setPrecioBase(nuevoPrecio);
+			nuevoTiquete.setPrecioReal(nuevoPrecio * (1 + Tiquete.tiposEventos.get(llave.getTipoEvento())) + Tiquete.getImpresion());
+			tiquetes.put(llave, nuevoTiquete);
 		}
 	}
 
