@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import Exepciones.CantidadTiquetesExcedidaException;
+import Exepciones.SaldoInsuficienteException;
+import Exepciones.PasswordIncorrectoException;
 
 import logica.Organizador.Tupla;
 
@@ -27,9 +30,9 @@ public abstract class Usuario {
 	}
 
 
-	public void comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo) {
+	public void comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo) throws CantidadTiquetesExcedidaException, SaldoInsuficienteException{
 		if (cantidad > Tiquete.tiquetesMax) {
-			//excepcion
+			throw new CantidadTiquetesExcedidaException(Tiquete.tiquetesMax);//excepcion
 		}
 		else if (usarSaldo == true && (this.saldoVirtual >= cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete())) {
 			this.saldoVirtual -= cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete();
@@ -41,7 +44,7 @@ public abstract class Usuario {
 				this.tiquetes.get(evento).addLast(nuevoTiquete);
 			}
 		} else if (usarSaldo == true && this.saldoVirtual < cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete()) {
-			//excepcion
+			throw new SaldoInsuficienteException(this);//excepcion
 		} else {
 			for (int i = 0;i < cantidad; i++) {
 				if (this.tiquetes.get(evento).equals(null)) {
@@ -55,9 +58,9 @@ public abstract class Usuario {
 	}
 
 	
-	public void comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLocalidad, int idSilla, boolean usarSaldo) {
+	public void comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLocalidad, int idSilla, boolean usarSaldo)throws CantidadTiquetesExcedidaException, SaldoInsuficienteException {
 		if (cantidad > Tiquete.tiquetesMax) {
-			//excepcion
+			throw new CantidadTiquetesExcedidaException(Tiquete.tiquetesMax);//excepcion
 		}
 		else if (usarSaldo == true && (this.saldoVirtual >= cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete())) {
 			this.saldoVirtual -= cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete();
@@ -69,7 +72,7 @@ public abstract class Usuario {
 				this.tiquetes.get(evento).addLast(nuevoTiquete);
 				}
 		}else if (usarSaldo == true && this.saldoVirtual < cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete()) {
-			//excepcion
+			throw new SaldoInsuficienteException(this);//excepcion
 		} else {
 			for (int i = 0;i < cantidad; i++) {
 				if (this.tiquetes.get(evento).equals(null)) {
@@ -82,16 +85,16 @@ public abstract class Usuario {
 	} 
 	
 	
-	public void comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo) {
+	public void comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo) throws CantidadTiquetesExcedidaException, SaldoInsuficienteException{
 		if (cantidad > TiqueteMultiple.tiquetesMax) {
-			//excepcion
+			throw new CantidadTiquetesExcedidaException(Tiquete.tiquetesMax);//excepcion
 		}
 		else if (usarSaldo == true && this.saldoVirtual >= TiqueteMultipleUnicoEvento.precios.get(idLocalidad).get(cantidad)) {
 			this.saldoVirtual -= TiqueteMultipleUnicoEvento.precios.get(idLocalidad).get(cantidad);
 			TiqueteMultiple nuevoTM = new TiqueteMultipleUnicoEvento(evento, idLocalidad, cantidad, this);
 			tiquetesMultiples.put(nuevoTM.getId(), nuevoTM);
 		} else if(usarSaldo == true && this.saldoVirtual >= TiqueteMultipleUnicoEvento.precios.get(idLocalidad).get(cantidad)) {
-			//excepcion
+			throw new SaldoInsuficienteException(this);//excepcion
 		} else {
 			TiqueteMultiple nuevoTM = new TiqueteMultipleUnicoEvento(evento, idLocalidad, cantidad, this);
 			tiquetesMultiples.put(nuevoTM.getId(), nuevoTM);
@@ -99,16 +102,16 @@ public abstract class Usuario {
 	}
 	
 	
-	public void comprarTiquetesMultiplesVE(HashMap<Evento,Integer> eventos, boolean usarSaldo) {
+	public void comprarTiquetesMultiplesVE(HashMap<Evento,Integer> eventos, boolean usarSaldo) throws CantidadTiquetesExcedidaException, SaldoInsuficienteException{
 		if (eventos.size() > TiqueteMultiple.tiquetesMax) {
-			//excepcion
+			throw new CantidadTiquetesExcedidaException(Tiquete.tiquetesMax);//excepcion
 		}
 		else if (usarSaldo == true && this.saldoVirtual >= TiqueteMultipleVariosEventos.precios.get(eventos.size())) {
 			this.saldoVirtual -= TiqueteMultipleVariosEventos.precios.get(eventos.size());
 			TiqueteMultiple nuevoTM = new TiqueteMultipleVariosEventos(eventos, this);
 			tiquetesMultiples.put(nuevoTM.getId(), nuevoTM);
 		} else if(usarSaldo == true && this.saldoVirtual < TiqueteMultipleVariosEventos.precios.get(eventos.size())) {
-			//excepcion
+			throw new SaldoInsuficienteException(this);//excepcion
 		} else {
 			TiqueteMultiple nuevoTM = new TiqueteMultipleVariosEventos(eventos, this);
 			tiquetesMultiples.put(nuevoTM.getId(), nuevoTM);
@@ -116,9 +119,9 @@ public abstract class Usuario {
 	}
 	
 	
-	public void comprarTiquetesDeluxe(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo) {
+	public void comprarTiquetesDeluxe(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo)throws CantidadTiquetesExcedidaException, SaldoInsuficienteException {
 		if (cantidad > TiqueteMultiple.tiquetesMax) {
-			//excepcion
+			throw new CantidadTiquetesExcedidaException(Tiquete.tiquetesMax);//excepcion
 		}
 		else if (usarSaldo == true && this.saldoVirtual >= TiqueteDeluxe.precio * cantidad) {
 			this.saldoVirtual -= TiqueteDeluxe.precio * cantidad;
@@ -130,7 +133,7 @@ public abstract class Usuario {
 				this.tiquetes.get(evento).addLast(nuevoTiquete);
 				}
 		} else if (usarSaldo == true && this.saldoVirtual < TiqueteDeluxe.precio * cantidad){
-			//excepcion
+			throw new SaldoInsuficienteException(this);//excepcion
 		} else {
 			for (int i = 0;i < cantidad; i++) {
 				if (this.tiquetes.get(evento).equals(null)) {
@@ -142,7 +145,7 @@ public abstract class Usuario {
 		}
 	}
 	
-	public void transferirTiquete(String login, String contrasena, Tiquete tiquete) {
+	public void transferirTiquete(String login, String contrasena, Tiquete tiquete) throws PasswordIncorrectoException {
 		if (contrasena.equals(this.contrasena) && !(tiquete instanceof TiqueteDeluxe)) {
 			ArrayList<Tiquete> lista = this.tiquetes.get(tiquete.getEvento());
 			Iterator<Tiquete> iterador = lista.iterator();
@@ -158,9 +161,11 @@ public abstract class Usuario {
 			tiquete.setUsuario(usuarios.get(login));
 			usuarios.get(login).getTiquetes().get(tiquete.getEvento()).addLast(tiquete);
 		}
+		else {
+			throw new PasswordIncorrectoException(this);//excepcion
 	}
 	
-	public void transferirTiqueteMultiple(String login, String contrasena, TiqueteMultiple tiquete) {
+	public void transferirTiqueteMultiple(String login, String contrasena, TiqueteMultiple tiquete) throws PasswordIncorrectoException {
 		if (contrasena.equals(this.contrasena) && tiquete.transferible) {
 			if (tiquete instanceof TiqueteMultipleVariosEventos) {
 				TiqueteMultipleVariosEventos tiqueteMultipleVE = (TiqueteMultipleVariosEventos) tiquete;
@@ -188,13 +193,13 @@ public abstract class Usuario {
 			this.tiquetesMultiples.remove(tiquete.id);
 			usuarios.get(login).tiquetesMultiples.put(tiquete.id, tiquete);
 		} else {
-			//excepcion
+			throw new PasswordIncorrectoException(this);//excepcion
 		}
 	}
 	
 		
 	
-	public void transferirTiqueteDeTM(String login, String contrasena, TiqueteMultiple tiqueteMultiple, int idTiquete ) {
+	public void transferirTiqueteDeTM(String login, String contrasena, TiqueteMultiple tiqueteMultiple, int idTiquete ) throws PasswordIncorrectoException {
 		Tiquete tiquete = null;
 		if (contrasena.equals(this.contrasena)) {
 			if (tiqueteMultiple instanceof TiqueteMultipleVariosEventos) {
@@ -228,6 +233,8 @@ public abstract class Usuario {
 			usuarios.get(login).getTiquetes().get(tiquete.getEvento()).addLast(tiquete);
 			tiqueteMultiple.setTransferible(false);
 		}
+		else {
+			throw new PasswordIncorrectoException(this);//excepcion
 	}
 	
 	public record Tupla<A, B>(A primero, B segundo) {}
