@@ -10,11 +10,20 @@ public class TiqueteDeluxe extends Tiquete{
 	private ArrayList<Tiquete>  cortesias;
 	public static double precio;
 	public static final String TIQUETEDELUXE  = "TIQUETEDELUXE";
+	private int idSilla;
+	
 	public TiqueteDeluxe(Integer idLocalidad, Evento evento, Usuario usuario) {
 		super(idLocalidad, evento, usuario);
 		this.tipo = TIQUETEDELUXE;
 		this.precioReal = precio;
+		this.idSilla = -1;
 	}
-	
+
+	public TiqueteDeluxe(Integer idLocalidad, Evento evento, Usuario usuario, int idSilla) {
+		super(idLocalidad, evento, usuario);
+		this.tipo = TIQUETEDELUXE;
+		this.precioReal = precio;
+		this.idSilla = idSilla;
+	}
 	
 }

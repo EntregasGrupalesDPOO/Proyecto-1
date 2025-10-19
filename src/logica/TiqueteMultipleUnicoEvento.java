@@ -16,12 +16,17 @@ public class TiqueteMultipleUnicoEvento extends TiqueteMultiple{
 		double nuevoPrecio = precios.get(idLocalidad).get(cantidadTiquetes)/cantidadTiquetes;
 		for (int i = 0;i < cantidadTiquetes; i++) {
 			Tiquete nuevoTiquete = new TiqueteBasico(idLocalidad, evento, usuario);
+			nuevoTiquete.setPrecioBase(nuevoPrecio);
 			nuevoTiquete.setPrecioReal(nuevoPrecio * (1 + Tiquete.tiposEventos.get(evento.getTipoEvento())) + Tiquete.getImpresion());
 			this.tiquetes.addLast(nuevoTiquete);
 			}
 		evento.getLocalidades().get(idLocalidad).getTiquetesMultiplesUsados().put(this.id, this);
 	}
-
+	
+	public static double calcularPrecioReal(Evento evento, Integer idLocalidad, int cantidadTiquetes) {
+		return (precios.get(idLocalidad).get(cantidadTiquetes)/cantidadTiquetes) * (1 + Tiquete.tiposEventos.get(evento.getTipoEvento())) + Tiquete.getImpresion();
+	}
+	
 	public ArrayList<Tiquete> getTiquetes() {
 		return tiquetes;
 	}

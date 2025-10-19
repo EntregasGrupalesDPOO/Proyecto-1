@@ -22,6 +22,7 @@ public class TiqueteMultipleVariosEventos extends TiqueteMultiple{
 				throw new CapacidadLocalidadExcedidaException(1);
 			} else {
 				Tiquete nuevoTiquete = new TiqueteBasico(eventos.get(llave), llave, usuario);
+				nuevoTiquete.setPrecioBase(nuevoPrecio);
 				nuevoTiquete.setPrecioReal(nuevoPrecio * (1 + Tiquete.tiposEventos.get(llave.getTipoEvento())) + Tiquete.getImpresion());
 				tiquetes.put(llave, nuevoTiquete);
 			}
@@ -31,7 +32,18 @@ public class TiqueteMultipleVariosEventos extends TiqueteMultiple{
 	public HashMap<Evento, Tiquete> getTiquetes() {
 		return tiquetes;
 	}
-
+	
+	public static double calcularPrecioReal(HashMap<Evento, Integer> eventos) {
+		double valor = 0;
+		int cantidadTiquetes = eventos.size();
+		double nuevoPrecio = precios.get(cantidadTiquetes)/cantidadTiquetes;
+		Set<Evento> llaves = eventos.keySet();
+		for (Evento llave : llaves) {
+			valor += nuevoPrecio * (1 + Tiquete.tiposEventos.get(llave.getTipoEvento())) + Tiquete.getImpresion();
+		}
+		return valor;
+	}
+	
 	public void setTiquetes(HashMap<Evento, Tiquete> tiquetes) {
 		this.tiquetes = tiquetes;
 	}

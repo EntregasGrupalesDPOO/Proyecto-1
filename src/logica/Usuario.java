@@ -47,11 +47,11 @@ public abstract class Usuario {
 		}
 		else if (!(evento.getLocalidades().get(idLocalidad).compararCapacidad(cantidad))) {
 			throw new CapacidadLocalidadExcedidaException(cantidad);
-		}else if (usarSaldo == true && this.saldoVirtual < cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete()) {
+		}else if (usarSaldo == true && this.saldoVirtual < cantidad * Tiquete.calcularPrecioReal(idLocalidad, evento)) {
 			throw new SaldoInsuficienteException(this);
 		}  else {
 			if (usarSaldo == true && (this.saldoVirtual >= cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete())) {
-				this.saldoVirtual -= cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete();
+				this.saldoVirtual -= cantidad * Tiquete.calcularPrecioReal(idLocalidad, evento);
 			}for (int i = 0;i < cantidad; i++) {
 				if (this.tiquetes.get(evento).equals(null)) {
 					this.tiquetes.put(evento, new ArrayList<Tiquete>());
@@ -72,11 +72,11 @@ public abstract class Usuario {
 		}
 		else if (!(evento.getLocalidades().get(idLocalidad).compararCapacidad(cantidad))) {
 			throw new CapacidadLocalidadExcedidaException(cantidad);
-		}else if (usarSaldo == true && this.saldoVirtual < cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete()) {
+		}else if (usarSaldo == true && this.saldoVirtual < cantidad * Tiquete.calcularPrecioReal(idLocalidad, evento)) {
 			throw new SaldoInsuficienteException(this);
 		} else {
 			if (usarSaldo == true && (this.saldoVirtual >= cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete())) {
-				this.saldoVirtual -= cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete();
+				this.saldoVirtual -= cantidad * Tiquete.calcularPrecioReal(idLocalidad, evento);
 			}for (int i = 0;i < cantidad; i++) {
 				if (this.tiquetes.get(evento).equals(null)) {
 					this.tiquetes.put(evento, new ArrayList<Tiquete>());
@@ -96,13 +96,13 @@ public abstract class Usuario {
 		}
 		else if (!(evento.getLocalidades().get(idLocalidad).compararCapacidad(cantidad))) {
 			throw new CapacidadLocalidadExcedidaException(cantidad);
-		} else if(usarSaldo == true && this.saldoVirtual < TiqueteMultipleUnicoEvento.precios.get(idLocalidad).get(cantidad)) {
-			throw new SaldoInsuficienteException(this);
-		}else if (!TiqueteMultipleUnicoEvento.precios.get(idLocalidad).containsKey(cantidad)) {
+		} else if (!TiqueteMultipleUnicoEvento.precios.get(idLocalidad).containsKey(cantidad)) {
 			throw new TiqueteMultipleUENoExisteExcpetion(cantidad, idLocalidad, evento);
+		}else if(usarSaldo == true && this.saldoVirtual < cantidad * TiqueteMultipleUnicoEvento.calcularPrecioReal(evento, idLocalidad, cantidad)) {
+			throw new SaldoInsuficienteException(this);
 		} else {
 			if (usarSaldo == true && this.saldoVirtual >= TiqueteMultipleUnicoEvento.precios.get(idLocalidad).get(cantidad)) {
-				this.saldoVirtual -= TiqueteMultipleUnicoEvento.precios.get(idLocalidad).get(cantidad);	
+				this.saldoVirtual -= cantidad * TiqueteMultipleUnicoEvento.calcularPrecioReal(evento, idLocalidad, cantidad);	
 			}TiqueteMultiple nuevoTM = new TiqueteMultipleUnicoEvento(evento, idLocalidad, cantidad, this);
 			tiquetesMultiples.put(nuevoTM.getId(), nuevoTM);
 			return nuevoTM;
@@ -114,7 +114,7 @@ public abstract class Usuario {
 
 		if (eventos.size() > TiqueteMultiple.tiquetesMax) {
 			throw new CantidadTiquetesExcedidaException(Tiquete.tiquetesMax);
-		}else if(usarSaldo == true && this.saldoVirtual < TiqueteMultipleVariosEventos.precios.get(eventos.size())) {
+		}else if(usarSaldo == true && this.saldoVirtual < TiqueteMultipleVariosEventos.calcularPrecioReal(eventos)) {
 			throw new SaldoInsuficienteException(this);
 		} else if (!TiqueteMultipleVariosEventos.precios.containsKey(eventos.size())) {
 			throw new TiqueteMultipleVENoExisteExcpetion(eventos.size());

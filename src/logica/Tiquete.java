@@ -43,6 +43,10 @@ public abstract class Tiquete {
 		evento.getLocalidades().get(idLocalidad).getTiquetesUsados().put(this.id, this);
 	}
 	
+	public static double calcularPrecioReal(Integer idLocalidad, Evento evento) {
+		return evento.getLocalidades().get(idLocalidad).getPrecioTiquete() * (1 + tiposEventos.get(evento.getTipoEvento())) + impresion;
+	} 
+	
 	public void  marcarTiquete() throws TiqueteUsadoException{
 		if (this.usado) {
 			throw(new TiqueteUsadoException(this));
