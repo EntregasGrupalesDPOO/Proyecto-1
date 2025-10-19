@@ -223,11 +223,6 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 		return nuevaLocalidad;
 	}
 
-	
-
-
-
-
 
 
 
@@ -238,6 +233,8 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 
 
 	// metodos para el administrador
+
+
 
 
 
