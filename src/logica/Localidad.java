@@ -1,7 +1,9 @@
 package logica;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class Localidad {
 	private String nombre;
@@ -23,7 +25,29 @@ public class Localidad {
 		this.venue = venue;
 		this.evento = evento;
 	}
-
+	
+	public boolean compararCapacidad(int cantidadAComprar) {
+		boolean puedeHacerCompra;
+		int ocupados = 0;
+		ocupados += tiquetesUsados.size();
+		Set<TiqueteMultiple> tiquetesMultiples = (Set<TiqueteMultiple>) tiquetesMultiplesUsados.values();
+		Iterator<TiqueteMultiple> iterador = tiquetesMultiples.iterator();
+		while(iterador.hasNext()) {
+			TiqueteMultiple tiquete = iterador.next();
+			if (tiquete instanceof TiqueteMultipleUnicoEvento) {
+				ocupados += ((TiqueteMultipleUnicoEvento) tiquete).getTiquetes().size();
+			}else if (tiquete instanceof TiqueteMultipleVariosEventos) {
+				ocupados += ((TiqueteMultipleVariosEventos) tiquete).getTiquetes().size();
+			}
+		}
+		if (this.capacidad >= ocupados + cantidadAComprar) {
+			puedeHacerCompra = true;
+		} else {
+			puedeHacerCompra = false;
+		}
+		return puedeHacerCompra;
+	}
+	
 	@Override
 	public String toString() {
 		return this.nombre;
