@@ -8,6 +8,13 @@ public class Venue {
 	public String ubicacion;
 	
 	
+	public Venue(int capacidad, String nombre, String ubicacion) {
+		this.capacidad = capacidad;
+		this.nombre = nombre;
+		this.ubicacion = ubicacion;
+	}
+
+
 	public List<Evento> getEventos() {
 		return eventos;
 	}

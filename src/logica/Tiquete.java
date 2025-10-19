@@ -20,7 +20,8 @@ public abstract class Tiquete {
 	protected Evento evento; 
 	protected String tipo; 
 	protected static HashMap<String, Double> tiposEventos;
-	protected double precioReal; 
+	protected double precioReal;
+	public static int tiquetesMax;
 	
 	
 	public Tiquete(Integer idLocalidad, Evento evento, Usuario usuario) {
@@ -33,7 +34,12 @@ public abstract class Tiquete {
 		this.precioBase = evento.getLocalidades().get(idLocalidad).getPrecioTiquete();
 		this.evento = evento;
 		this.usado = false;
-		this.precioReal = this.precioBase * (1 + tiposEventos.get(evento.getTipoEvento())) + impresion;
+		if (usuario.equals(evento.getOrganizador())) {
+			this.precioBase = 0;
+			this.precioReal = 0;
+		} else {
+			this.precioReal = this.precioBase * (1 + tiposEventos.get(evento.getTipoEvento())) + impresion;
+		}
 		evento.getLocalidades().get(idLocalidad).getTiquetesUsados().put(this.id, this);
 	}
 	
@@ -52,9 +58,7 @@ public abstract class Tiquete {
 	public Localidad getLocalidad() {
 		return localidad;
 	}
-	public String getIdDueno() {
-		return idDueno;
-	}
+
 	public LocalDate getFecha() {
 		return fecha;
 	}
@@ -64,21 +68,15 @@ public abstract class Tiquete {
 	public Integer getId() {
 		return id;
 	}
-	public Usuario getDueno() {
-		return dueno;
-	}
+
 	public double getPrecioBase() {
 		return precioBase;
 	}
-	public double getComision() {
-		return comision;
-	}
+
 	public boolean isUsado() {
 		return usado;
 	}
-	public void setDueno(Usuario dueno) {
-		this.dueno = dueno;
-	}
+
 	public String getTipo() {
 		return this.tipo;
 	}
@@ -93,5 +91,28 @@ public abstract class Tiquete {
 		this.precioReal = precioReal;
 	}
 	
+	public Evento getEvento() {
+		return this.evento;
+	}
+
+	public String getIdUsuario() {
+		return idUsuario;
+	}
+
+	public void setIdUsuario(String idUsuario) {
+		this.idUsuario = idUsuario;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public double getPrecioReal() {
+		return precioReal;
+	}
 	
 }

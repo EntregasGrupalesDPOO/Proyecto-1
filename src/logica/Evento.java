@@ -15,6 +15,20 @@ public class Evento {
 	private String estado;
 	private String tipoEvento;
 	
+	
+	
+	public Evento(String nombre, LocalDate fecha, LocalTime hora, Venue venue, Organizador organizador,
+			HashMap<Integer, Localidad> localidades, String tipoEvento) {
+		this.nombre = nombre;
+		this.fecha = fecha;
+		this.hora = hora;
+		this.venue = venue;
+		this.organizador = organizador;
+		this.localidades = localidades;
+		this.estado = "CREADO";
+		this.tipoEvento = tipoEvento;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

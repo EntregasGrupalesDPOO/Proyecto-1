@@ -6,13 +6,24 @@ import java.util.List;
 public class Localidad {
 	private String nombre;
 	private double precioTiquete ;
-	private int  capacidad ;
+	private int capacidad ;
 	private boolean numerada;
 	private Venue venue;
 	private HashMap<Integer, Tiquete>tiquetesUsados;
 	private HashMap<Integer, TiqueteMultiple>tiquetesMultiplesUsados;
 	private Evento evento;
 	
+	
+	
+	public Localidad(String nombre, double precioTiquete, int capacidad, boolean numerada, Venue venue, Evento evento) {
+		this.nombre = nombre;
+		this.precioTiquete = precioTiquete;
+		this.capacidad = capacidad;
+		this.numerada = numerada;
+		this.venue = venue;
+		this.evento = evento;
+	}
+
 	@Override
 	public String toString() {
 		return this.nombre;
@@ -73,6 +84,14 @@ public class Localidad {
 
 	public void setTiquetesUsados(HashMap<Integer, Tiquete> tiquetesUsados) {
 		this.tiquetesUsados = tiquetesUsados;
+	}
+
+	public HashMap<Integer, TiqueteMultiple> getTiquetesMultiplesUsados() {
+		return tiquetesMultiplesUsados;
+	}
+
+	public void setTiquetesMultiplesUsados(HashMap<Integer, TiqueteMultiple> tiquetesMultiplesUsados) {
+		this.tiquetesMultiplesUsados = tiquetesMultiplesUsados;
 	}
 	
 	
