@@ -10,20 +10,27 @@ import Exepciones.TiqueteUsadoException;
 public abstract class TiqueteMultiple {
 	protected Integer id;
 	protected boolean transferible = true;
-	protected double precioBase;
 	protected String tipo;
 	private static Integer currentID = 0;
+	public static int tiquetesMax;
 	
 	public TiqueteMultiple() {
 		this.id = currentID + 1;
 	}
 
-	public void setPrecioBase(double precioReal) {
-		this.precioBase = precioReal;
-	}
 
 	public Integer getId() {
 		return id;
+	}
+
+
+	public boolean isTransferible() {
+		return transferible;
+	}
+
+
+	public void setTransferible(boolean transferible) {
+		this.transferible = transferible;
 	}
 	
 }
