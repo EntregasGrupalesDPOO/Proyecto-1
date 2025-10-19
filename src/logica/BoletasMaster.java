@@ -4,16 +4,16 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class BoletasMaster throws Exception {
-	
-	
+import Exepciones.UsuarioNoEncontradoException;
+
+public class BoletasMaster {
 	private boolean esAdministrador;
 	private boolean esOrganizador;
 	private boolean esCliente;
 	private ArrayList<Evento> eventos;
 	private HashMap<LocalDate, ArrayList<Evento>> eventosPorFecha; 
 	private ArrayList<Venue> venues;
-	private HashMap<String, Tiquete> tiquetes;
+	private HashMap<Integer, Tiquete> tiquetes;
 	private HashMap<String, Organizador> organizadores;
 	private HashMap<String, Cliente> clientes;
 	private HashMap<String, Usuario> usuarios;
@@ -26,12 +26,12 @@ public class BoletasMaster throws Exception {
 	
 	
 	
-	public BoletasBoletasMasterMaster() {
+	public BoletasMaster() {
 		esAdministrador = false;
 		esOrganizador = false;
 		esCliente = false;
 	    this.venues = new ArrayList<Venue>();
-	    this.tiquetes = new HashMap<String, Tiquete>();
+	    this.tiquetes = new HashMap<Integer, Tiquete>();
 	    this.organizadores = new HashMap<String, Organizador>();
 	    this.clientes = new HashMap<String, Cliente>();
 	    this.usuarios = new HashMap<String, Usuario>();
@@ -50,7 +50,7 @@ public class BoletasMaster throws Exception {
 		this.venues.add(venue);
 	}
 	public void agregarTiquete(Tiquete tiquete) {
-		this.tiquetes.put(tiquete.getCodigo(), tiquete);
+		this.tiquetes.put(tiquete.getId(), tiquete);
 	}
 
 
@@ -74,7 +74,8 @@ public class BoletasMaster throws Exception {
 		usuarios.put(login, nuevoOrganizador);
 	}
 	
-	public void loginCliente(String login, String contrasena) {
+	public void loginCliente(String login, String contrasena) throws UsuarioNoEncontradoException {
+		if (!clientes.containsKey(login)) throw new UsuarioNoEncontradoException(login);
 		Cliente cliente = clientes.get(login);
 		if (cliente != null && cliente.login(login, contrasena)) {
 			esCliente = true;
@@ -121,42 +122,192 @@ public class BoletasMaster throws Exception {
 	public boolean esCliente() {
 		return this.esCliente;
 	}
-	//Metodos del usuario actual
 
 
 
-	public void  comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad) {
+
+
+	//Metodos de compra de boletas del usuario actual(discrimina el tipo de usuario)
+
+
+
+
+
+
+	public void  comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad) throws Exception {
 		if (usuarioActual != null && esCliente) {
-			usuarioActual.comprarTiquetes(cantidad, evento, idLocalidad);
-		} else {
-			// lanzar excepcion de usuario no logeado. 
-		}
+			usuarioActual.comprarTiquetes(cantidad, evento, idLocalidad, true);
+		} 
 	}
 
-	public void comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLocalidad, int idSilla) {
+	public void comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLocalidad, int idSilla) throws UsuarioNoEncontradoException, Exception {
 		if (usuarioActual != null && esCliente) {
-			usuarioActual.comprarTiquetesEnumerados(cantidad, evento, idLocalidad, idSilla);
-		} else {
-			// lanzar excepcion de usuario no logeado. 
-		}
+			usuarioActual.comprarTiquetesEnumerados(cantidad, evento, idLocalidad, idSilla, true);
+		} else if (esOrganizador)
 	}
 	//TODO REVISAR
-	public void comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad) {
+	public void comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad) throws UsuarioNoEncontradoException, Exception {
 		if (usuarioActual != null && esCliente) {
-			usuarioActual.comprarTiquetesMultiplesUE(cantidad, evento, idLocalidad);
-		} else {
-			// lanzar excepcion de usuario no logeado. 
-		}
+			usuarioActual.comprarTiquetesMultiplesUE(cantidad, evento, idLocalidad, true);
+		} 
 	}
 
 	//TODO REVISAR
-	public void  comprarTiquetesMultiplesVE(HashMap<Evento,Integer> eventos) {
+	public void  comprarTiquetesMultiplesVE(HashMap<Evento,Integer> eventos) throws UsuarioNoEncontradoException, Exception {
 		if (usuarioActual != null && esCliente) {
-			usuarioActual.comprarTiquetesMultiplesVE(eventos);
-		} else {
-			// lanzar excepcion de usuario no logeado. 
-		}
+			usuarioActual.comprarTiquetesMultiplesVE(eventos, true);
+		} 
 	}
+
+
+
+	//metodos para el cliente
+
+
+
+
+
+	public void solicitarReembolso(Integer idTiquete, String razon) throws Exception {
+		if (usuarioActual != null && esCliente) {;
+			administrador.agregarSolicitud(new SolicitudCalamidad(this.usuarioActual, razon));
+		} 
+	}
+
+
+
+
+	
+	// metodos para el organizador
+
+	public void proponerVenue (int capacidad, String nombre, String ubicacion) {
+		Venue nuevoVenue = new Venue(capacidad, nombre, ubicacion);
+		administrador.agregarSolicitud(new SolicitudVenue(this.usuarioActual, "Propuesta de Venue: " + nombre, nuevoVenue));	
+	}
+
+	public void solicitarCancelacionEvento(Evento evento, String razon) {
+		administrador.agregarSolicitud(new SolicitudCancelacionEvento(this.usuarioActual, razon, evento));	
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// metodos para el administrador
+
+
+
+
+
+
+	// getters y setters
+
+	public boolean isEsAdministrador() {
+		return esAdministrador;
+	}
+
+	public void setEsAdministrador(boolean esAdministrador) {
+		this.esAdministrador = esAdministrador;
+	}
+
+	public boolean isEsOrganizador() {
+		return esOrganizador;
+	}
+
+	public void setEsOrganizador(boolean esOrganizador) {
+		this.esOrganizador = esOrganizador;
+	}
+
+	public boolean isEsCliente() {
+		return esCliente;
+	}
+
+	public void setEsCliente(boolean esCliente) {
+		this.esCliente = esCliente;
+	}
+
+	public ArrayList<Evento> getEventos() {
+		return eventos;
+	}
+
+	public void setEventos(ArrayList<Evento> eventos) {
+		this.eventos = eventos;
+	}
+
+	public HashMap<LocalDate, ArrayList<Evento>> getEventosPorFecha() {
+		return eventosPorFecha;
+	}
+
+	public void setEventosPorFecha(HashMap<LocalDate, ArrayList<Evento>> eventosPorFecha) {
+		this.eventosPorFecha = eventosPorFecha;
+	}
+
+	public ArrayList<Venue> getVenues() {
+		return venues;
+	}
+
+	public void setVenues(ArrayList<Venue> venues) {
+		this.venues = venues;
+	}
+
+	public HashMap<Integer, Tiquete> getTiquetes() {
+		return tiquetes;
+	}
+
+	public void setTiquetes(HashMap<Integer, Tiquete> tiquetes) {
+		this.tiquetes = tiquetes;
+	}
+
+	public HashMap<String, Organizador> getOrganizadores() {
+		return organizadores;
+	}
+
+	public void setOrganizadores(HashMap<String, Organizador> organizadores) {
+		this.organizadores = organizadores;
+	}
+
+	public HashMap<String, Cliente> getClientes() {
+		return clientes;
+	}
+
+	public void setClientes(HashMap<String, Cliente> clientes) {
+		this.clientes = clientes;
+	}
+
+	public HashMap<String, Usuario> getUsuarios() {
+		return usuarios;
+	}
+
+	public void setUsuarios(HashMap<String, Usuario> usuarios) {
+		this.usuarios = usuarios;
+	}
+
+	public Administrador getAdministrador() {
+		return administrador;
+	}
+
+	public void setAdministrador(Administrador administrador) {
+		this.administrador = administrador;
+	}
+
+	public Usuario getUsuarioActual() {
+		return usuarioActual;
+	}
+
+	public void setUsuarioActual(Usuario usuarioActual) {
+		this.usuarioActual = usuarioActual;
+	}
+
+
+
+	
 
 
 	

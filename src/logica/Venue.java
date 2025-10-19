@@ -1,4 +1,5 @@
 package logica;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Venue {
@@ -12,6 +13,7 @@ public class Venue {
 		this.capacidad = capacidad;
 		this.nombre = nombre;
 		this.ubicacion = ubicacion;
+		this.eventos = new ArrayList<Evento>();
 	}
 
 

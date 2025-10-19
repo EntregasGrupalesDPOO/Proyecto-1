@@ -9,6 +9,7 @@ public class SolicitudCancelacionEvento extends Solicitud {
     public SolicitudCancelacionEvento(Usuario solicitante, String descripcion, Evento evento) {
         super(solicitante, descripcion);
         this.evento = evento;
+        this.tipo = "CancelacionEvento";
     }
 
 }

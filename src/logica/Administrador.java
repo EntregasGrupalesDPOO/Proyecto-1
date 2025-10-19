@@ -11,9 +11,18 @@ public class Administrador {
 	private String usuario;
 	private String contrasena;
 	private ArrayList<Solicitud> solicitudes;
+	public Administrador(String usuario, String contrasena) {
+		this.usuario = usuario;
+		this.contrasena = contrasena;
+		this.solicitudes = new ArrayList<Solicitud>();
+	}
 
 	public boolean login(String usuario, String contrasena) {
 		return usuario.equals(this.usuario) && contrasena.equals(this.contrasena);
+	}
+
+	public void agregarSolicitud(Solicitud solicitud) {
+		this.solicitudes.add(solicitud);
 	}
 
 	public double obtenerGananciasGenerales(ArrayList<Evento> eventos) {
