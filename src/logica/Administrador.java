@@ -11,6 +11,10 @@ public class Administrador {
 	private String usuario;
 	private String contrasena;
 	private ArrayList<Solicitud> solicitudes;
+
+	public  ArrayList<Solicitud>  getSolicitudes() {
+		return new ArrayList<Solicitud>(solicitudes);
+	}
 	public Administrador(String usuario, String contrasena) {
 		this.usuario = usuario;
 		this.contrasena = contrasena;
@@ -23,6 +27,25 @@ public class Administrador {
 
 	public void agregarSolicitud(Solicitud solicitud) {
 		this.solicitudes.add(solicitud);
+	}
+	public void mostrarSolicitudesPendientes() {
+		if (solicitudes.isEmpty()) {
+			System.out.println("No hay solicitudes pendientes.");
+		} else {
+			for (int i = 0; i < solicitudes.size(); i++) {
+				Solicitud solicitud = solicitudes.get(i);
+				System.out.println((i) + ". " + solicitud.getTipo() + " - Solicitante: " + solicitud.getSolicitante().getLogin() + " - Descripción: " + solicitud.getDescripcion());
+			}
+		}
+	}
+	public void atenderSolicitud (Solicitud solicitud, boolean aceptar) throws Exception {
+		if (aceptar) {
+			solicitud.aceptarSolicitud();
+		}  else {
+			solicitud.rechazarSolicitud();
+		}
+		this.solicitudes.remove(solicitud);
+
 	}
 
 	public double obtenerGananciasGenerales(ArrayList<Evento> eventos) {

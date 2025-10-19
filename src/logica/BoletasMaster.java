@@ -180,7 +180,11 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 
 	public void solicitarReembolso(Integer idTiquete, String razon) throws Exception {
 		if (usuarioActual != null && esCliente) {;
-			administrador.agregarSolicitud(new SolicitudCalamidad(this.usuarioActual, razon));
+			if (administrador != null) {
+				administrador.agregarSolicitud(
+					new SolicitudCalamidad(this.usuarioActual, razon, this.tiquetes.get(idTiquete))
+				);
+			}
 		} 
 	}
 
@@ -190,13 +194,13 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 	
 	// metodos para el organizador
 
-	public void proponerVenue (int capacidad, String nombre, String ubicacion) {
+	public void proponerVenue (int capacidad, String nombre, String ubicacion, this ) {
 		Venue nuevoVenue = new Venue(capacidad, nombre, ubicacion);
 		administrador.agregarSolicitud(new SolicitudVenue(this.usuarioActual, "Propuesta de Venue: " + nombre, nuevoVenue));	
 	}
 
 	public void solicitarCancelacionEvento(Evento evento, String razon) {
-		administrador.agregarSolicitud(new SolicitudCancelacionEvento(this.usuarioActual, razon, evento));
+		administrador.agregarSolicitud(new SolicitudCancelacionEvento(this.usuarioActual, razon, evento, this.administrador));
 
 	}
 	public void agendarEvento(String nombre, String descripcion, LocalDate fecha, LocalTime hora, Venue venue, String tipoEvento, List<Localidad> localidades) {
@@ -233,6 +237,42 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 
 
 	// metodos para el administrador
+	public void verSolicitudesPendientes() {
+		System.out.println("Solicitudes pendientes:");
+		administrador.mostrarSolicitudesPendientes();
+	}
+
+
+
+	//metodo para atender solicitudes del administrador
+	public void atenderSolicitud(int nSolicitud, boolean aceptar) throws Exception {
+		Solicitud solicitud = administrador.getSolicitudes().get(nSolicitud);
+		if (aceptar){
+			solicitud.aceptarSolicitud();
+		}
+		else {
+			solicitud.rechazarSolicitud();
+
+		
+
+
+		}
+		
+		administrador.atenderSolicitud(solicitud, aceptar);
+	} 
+
+
+
+
+
+
+
+
+
+	public double obtenerGananciasGenerales() {
+		return administrador.obtenerGananciasGenerales(this.eventos);
+	}
+
 
 
 
