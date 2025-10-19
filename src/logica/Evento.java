@@ -16,7 +16,7 @@ public class Evento {
 	public static final String MUSICAL = "MUSICAL";
 	public static final String DEPORTIVO = "DEPORTIVO";
 	public static final String RELIGIOSO  = "RELIGIOSO";
-	public static final String CULTURAR  = "CULTURAL";
+	public static final String CULTURAL  = "CULTURAL";
 
 
 
