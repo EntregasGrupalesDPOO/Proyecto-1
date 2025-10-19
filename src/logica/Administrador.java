@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 public class Administrador {
 	private String usuario;

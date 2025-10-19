@@ -16,6 +16,7 @@ public class BoletasMaster {
 	private HashMap<LocalDate, ArrayList<Evento>> eventosPorFecha; 
 	private ArrayList<Venue> venues;
 	private HashMap<Integer, Tiquete> tiquetes;
+	private HashMap<Integer, TiqueteMultiple> tiquetesMultiples;
 	private HashMap<String, Organizador> organizadores;
 	private HashMap<String, Cliente> clientes;
 	private HashMap<String, Usuario> usuarios;
@@ -141,7 +142,7 @@ public class BoletasMaster {
 public void comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad) throws Exception {
     if (usuarioActual != null && esCliente) {
         boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
-        usuarioActual.comprarTiquetes(cantidad, evento, idLocalidad, conSaldo);
+        tiquetes.add(usuarioActual.comprarTiquetes(cantidad, evento, idLocalidad, conSaldo));
     }
 }
 
@@ -149,7 +150,7 @@ public void comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLoc
         throws UsuarioNoEncontradoException, Exception {
     if (usuarioActual != null && (esCliente || esOrganizador)) {
         boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
-        usuarioActual.comprarTiquetesEnumerados(cantidad, evento, idLocalidad, idSilla, conSaldo);
+        tiquetes.add(usuarioActual.comprarTiquetesEnumerados(cantidad, evento, idLocalidad, idSilla, conSaldo));
     }
 }
 
@@ -194,9 +195,9 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 	
 	// metodos para el organizador
 
-	public void proponerVenue (int capacidad, String nombre, String ubicacion, this ) {
+	public void proponerVenue (int capacidad, String nombre, String ubicacion) {
 		Venue nuevoVenue = new Venue(capacidad, nombre, ubicacion);
-		administrador.agregarSolicitud(new SolicitudVenue(this.usuarioActual, "Propuesta de Venue: " + nombre, nuevoVenue));	
+		administrador.agregarSolicitud(new SolicitudVenue(this.usuarioActual, "Propuesta de Venue: " + nombre, nuevoVenue, this ));	
 	}
 
 	public void solicitarCancelacionEvento(Evento evento, String razon) {
@@ -252,26 +253,29 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 		}
 		else {
 			solicitud.rechazarSolicitud();
-
-		
-
-
 		}
 		
 		administrador.atenderSolicitud(solicitud, aceptar);
 	} 
 
-
-
-
-
-
-
-
-
-	public double obtenerGananciasGenerales() {
-		return administrador.obtenerGananciasGenerales(this.eventos);
+	public void obtenerGananciasGenerales(){
+		System.out.println("Las ganancias generales son: " + administrador.obtenerGananciasGenerales(this.eventos));
 	}
+	public void fijarComisionPorTipoEvento (HashMap<String, Double> comisiones) {
+		Tiquete.tiposEventos = comisiones;
+
+	}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
