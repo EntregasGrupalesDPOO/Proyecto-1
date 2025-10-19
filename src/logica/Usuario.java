@@ -27,9 +27,10 @@ public abstract class Usuario {
 	}
 
 
-	public void comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo) {
+	public ArrayList<Tiquete> comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo) throws Exception{
+		ArrayList<Tiquete> lista = new ArrayList<Tiquete>(); 
 		if (cantidad > Tiquete.tiquetesMax) {
-			//excepcion
+			throw new Exception();
 		}
 		else if (usarSaldo == true && (this.saldoVirtual >= cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete())) {
 			this.saldoVirtual -= cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete();
@@ -39,9 +40,11 @@ public abstract class Usuario {
 				}
 				Tiquete nuevoTiquete = new TiqueteBasico(idLocalidad, evento, this);
 				this.tiquetes.get(evento).addLast(nuevoTiquete);
+				lista.addLast(nuevoTiquete);		
 			}
+			return lista;
 		} else if (usarSaldo == true && this.saldoVirtual < cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete()) {
-			//excepcion
+			throw new Exception();
 		} else {
 			for (int i = 0;i < cantidad; i++) {
 				if (this.tiquetes.get(evento).equals(null)) {
@@ -49,15 +52,17 @@ public abstract class Usuario {
 				}
 				Tiquete nuevoTiquete = new TiqueteBasico(idLocalidad, evento, this);
 				this.tiquetes.get(evento).addLast(nuevoTiquete);
+				lista.addLast(nuevoTiquete);		
 			}
+			return lista;
 		}
-		
 	}
 
 	
-	public void comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLocalidad, int idSilla, boolean usarSaldo) {
+	public ArrayList<Tiquete> comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLocalidad, int idSilla, boolean usarSaldo) throws Exception {
+		ArrayList<Tiquete> lista = new ArrayList<Tiquete>(); 
 		if (cantidad > Tiquete.tiquetesMax) {
-			//excepcion
+			throw new Exception();
 		}
 		else if (usarSaldo == true && (this.saldoVirtual >= cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete())) {
 			this.saldoVirtual -= cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete();
@@ -67,9 +72,11 @@ public abstract class Usuario {
 				}
 				Tiquete nuevoTiquete = new TiqueteEnumerado(idLocalidad, evento, this, idSilla);
 				this.tiquetes.get(evento).addLast(nuevoTiquete);
+				lista.addLast(nuevoTiquete);	
 				}
+			return lista;
 		}else if (usarSaldo == true && this.saldoVirtual < cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete()) {
-			//excepcion
+			throw new Exception();
 		} else {
 			for (int i = 0;i < cantidad; i++) {
 				if (this.tiquetes.get(evento).equals(null)) {
@@ -77,48 +84,56 @@ public abstract class Usuario {
 				}
 				Tiquete nuevoTiquete = new TiqueteEnumerado(idLocalidad, evento, this, idSilla);
 				this.tiquetes.get(evento).addLast(nuevoTiquete);
+				lista.addLast(nuevoTiquete);	
 			}
+			return lista;
 		}	
 	} 
 	
 	
-	public void comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo) {
+	public TiqueteMultiple comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo) throws Exception {
+		
 		if (cantidad > TiqueteMultiple.tiquetesMax) {
-			//excepcion
+			throw new Exception();
 		}
 		else if (usarSaldo == true && this.saldoVirtual >= TiqueteMultipleUnicoEvento.precios.get(idLocalidad).get(cantidad)) {
 			this.saldoVirtual -= TiqueteMultipleUnicoEvento.precios.get(idLocalidad).get(cantidad);
 			TiqueteMultiple nuevoTM = new TiqueteMultipleUnicoEvento(evento, idLocalidad, cantidad, this);
 			tiquetesMultiples.put(nuevoTM.getId(), nuevoTM);
-		} else if(usarSaldo == true && this.saldoVirtual >= TiqueteMultipleUnicoEvento.precios.get(idLocalidad).get(cantidad)) {
-			//excepcion
+			return nuevoTM;
+		} else if(usarSaldo == true && this.saldoVirtual < TiqueteMultipleUnicoEvento.precios.get(idLocalidad).get(cantidad)) {
+			throw new Exception();
 		} else {
 			TiqueteMultiple nuevoTM = new TiqueteMultipleUnicoEvento(evento, idLocalidad, cantidad, this);
 			tiquetesMultiples.put(nuevoTM.getId(), nuevoTM);
+			return nuevoTM;
 		}
 	}
 	
 	
-	public void comprarTiquetesMultiplesVE(HashMap<Evento,Integer> eventos, boolean usarSaldo) {
+	public TiqueteMultiple comprarTiquetesMultiplesVE(HashMap<Evento,Integer> eventos, boolean usarSaldo) throws Exception {
 		if (eventos.size() > TiqueteMultiple.tiquetesMax) {
-			//excepcion
+			throw new Exception();
 		}
 		else if (usarSaldo == true && this.saldoVirtual >= TiqueteMultipleVariosEventos.precios.get(eventos.size())) {
 			this.saldoVirtual -= TiqueteMultipleVariosEventos.precios.get(eventos.size());
 			TiqueteMultiple nuevoTM = new TiqueteMultipleVariosEventos(eventos, this);
 			tiquetesMultiples.put(nuevoTM.getId(), nuevoTM);
+			return nuevoTM;
 		} else if(usarSaldo == true && this.saldoVirtual < TiqueteMultipleVariosEventos.precios.get(eventos.size())) {
-			//excepcion
+			throw new Exception();
 		} else {
 			TiqueteMultiple nuevoTM = new TiqueteMultipleVariosEventos(eventos, this);
 			tiquetesMultiples.put(nuevoTM.getId(), nuevoTM);
+			return nuevoTM;
 		}
 	}
 	
 	
-	public void comprarTiquetesDeluxe(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo) {
+	public ArrayList<Tiquete> comprarTiquetesDeluxe(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo) throws Exception {
+		ArrayList<Tiquete> lista = new ArrayList<Tiquete>(); 
 		if (cantidad > TiqueteMultiple.tiquetesMax) {
-			//excepcion
+			throw new Exception();
 		}
 		else if (usarSaldo == true && this.saldoVirtual >= TiqueteDeluxe.precio * cantidad) {
 			this.saldoVirtual -= TiqueteDeluxe.precio * cantidad;
@@ -128,9 +143,11 @@ public abstract class Usuario {
 				}
 				Tiquete nuevoTiquete = new TiqueteDeluxe(idLocalidad, evento, this);
 				this.tiquetes.get(evento).addLast(nuevoTiquete);
-				}
+				lista.addLast(nuevoTiquete);	
+			}
+			return lista;
 		} else if (usarSaldo == true && this.saldoVirtual < TiqueteDeluxe.precio * cantidad){
-			//excepcion
+			throw new Exception();
 		} else {
 			for (int i = 0;i < cantidad; i++) {
 				if (this.tiquetes.get(evento).equals(null)) {
@@ -138,7 +155,9 @@ public abstract class Usuario {
 				}
 				Tiquete nuevoTiquete = new TiqueteDeluxe(idLocalidad, evento, this);
 				this.tiquetes.get(evento).addLast(nuevoTiquete);
-				}
+				lista.addLast(nuevoTiquete);	
+			}
+			return lista;
 		}
 	}
 	
@@ -235,6 +254,22 @@ public abstract class Usuario {
 		return new Tupla<>(tiquete, razon);
 	}
 	
+	public void realizarReembolso(Tiquete tiquete) {
+		if (!(tiquete.usuario.equals(tiquete.getEvento().getOrganizador()))) {
+			this.saldoVirtual += tiquete.getPrecioReal();
+			Iterator<Tiquete> iterador = this.tiquetes.get(tiquete.getEvento()).iterator();
+			while (iterador.hasNext()) {
+				Tiquete tiq = iterador.next();
+				if (tiq.equals(tiquete)) {
+					tiq.setPrecioBase(0);
+					tiq.setPrecioReal(0);
+					iterador.remove();
+					break;
+				}
+			}
+		}
+	}
+	
 	public String getLogin() {
 		return login;
 	}
@@ -244,6 +279,11 @@ public abstract class Usuario {
 	public double getSaldoVirtual() {
 		return saldoVirtual;
 	}
+	
+	public void setSaldoVirtual(double saldoVirtual) {
+		this.saldoVirtual = saldoVirtual;
+	}
+
 
 	public HashMap<Evento, ArrayList<Tiquete>> getTiquetes() {
 		return tiquetes;
