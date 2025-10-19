@@ -142,21 +142,20 @@ public class BoletasMaster {
 public void comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad) throws Exception {
     if (usuarioActual != null && esCliente) {
         boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
-        for (Tiquete t : usuarioActual.comprarTiquetes(cantidad, evento, idLocalidad, conSaldo)) {
-            tiquetes.put(t.getId(), t);
-        }
-        //tiquetes.add(usuarioActual.comprarTiquetes(cantidad, evento, idLocalidad, conSaldo));
-    }
+        ArrayList<Tiquete> tiquetesCompra  = (usuarioActual.comprarTiquetes(cantidad, evento, idLocalidad, conSaldo));
+		for (Tiquete tiquete : tiquetesCompra) {
+			tiquetes.put(tiquete.getId(), tiquete);
+		}
+	}
 }
 
 public void comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLocalidad, int idSilla)
         throws UsuarioNoEncontradoException, Exception {
     if (usuarioActual != null && (esCliente || esOrganizador)) {
         boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
-        for (Tiquete t : usuarioActual.comprarTiquetesEnumerados(cantidad, evento, idLocalidad, idSilla, conSaldo)) {
-            tiquetes.put(t.getId(), t);
-        }
-        //tiquetes.add(usuarioActual.comprarTiquetesEnumerados(cantidad, evento, idLocalidad, idSilla, conSaldo));
+        ArrayList<Tiquete> tiquetesCompra  = (usuarioActual.comprarTiquetesEnumerados(cantidad, evento, idLocalidad, idSilla, conSaldo));
+		for (Tiquete tiquete : tiquetesCompra) {
+			tiquetes.put(tiquete.getId(), tiquete);
     }
 }
 
@@ -164,7 +163,7 @@ public void comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLo
         throws UsuarioNoEncontradoException, Exception {
     if (usuarioActual != null && (esCliente || esOrganizador)) {
         boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
-        usuarioActual.comprarTiquetesMultiplesUE(cantidad, evento, idLocalidad, conSaldo);
+        tiquetesMultiples.add(usuarioActual.comprarTiquetesMultiplesUE(cantidad, evento, idLocalidad, conSaldo));
     }
 }
 
@@ -172,7 +171,7 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
         throws UsuarioNoEncontradoException, Exception {
     if (usuarioActual != null && (esCliente || esOrganizador)) {
         boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
-        usuarioActual.comprarTiquetesMultiplesVE(eventos, conSaldo);
+        tiquetesMultiples.add(usuarioActual.comprarTiquetesMultiplesVE(eventos, conSaldo));
     }
 }
 
@@ -267,8 +266,13 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 	public void obtenerGananciasGenerales(){
 		System.out.println("Las ganancias generales son: " + administrador.obtenerGananciasGenerales(this.eventos));
 	}
-	public void fijarComisionPorTipoEvento (HashMap<String, Double> comisiones) {
-		Tiquete.tiposEventos = comisiones;
+	public void fijarComisionPorTipoEvento (double cultural, double deportivo, double musical, double religioso) {
+		HashMap<String, Double> comisiones = new HashMap<String, Double>();
+		comisiones.put(Evento.CULTURAL, cultural);
+		comisiones.put(Evento.DEPORTIVO, deportivo);
+		comisiones.put(Evento.MUSICAL, musical);
+		comisiones.put(Evento.RELIGIOSO, religioso);
+		Evento.comisionEventos = comisiones;
 
 	}
 
