@@ -1,11 +1,18 @@
 package logica;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import Exepciones.CantidadTiquetesExcedidaException;
+import Exepciones.CapacidadLocalidadExcedidaException;
 import Exepciones.SaldoInsuficienteException;
+import Exepciones.TiqueteNoEncontradoException;
+import Exepciones.TiqueteNoTransferibleException;
+import Exepciones.TiqueteVencidoFecha;
+import Exepciones.TransferirTiqueteDeluxeException;
+import Exepciones.UsuarioNoEncontradoException;
 import Exepciones.PasswordIncorrectoException;
 
 import logica.Organizador.Tupla;
@@ -31,10 +38,13 @@ public abstract class Usuario {
 
 
 
-	public ArrayList<Tiquete> comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo) throws CantidadTiquetesExcedidaException, SaldoInsuficienteException{
+	public ArrayList<Tiquete> comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo) throws Exception{
 		ArrayList<Tiquete> lista = new ArrayList<Tiquete>(); 
 		if (cantidad > Tiquete.tiquetesMax) {
 			throw new CantidadTiquetesExcedidaException(Tiquete.tiquetesMax);
+		}
+		else if (!(evento.getLocalidades().get(idLocalidad).compararCapacidad(cantidad))) {
+			throw new CapacidadLocalidadExcedidaException(cantidad);
 		}
 		else if (usarSaldo == true && (this.saldoVirtual >= cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete())) {
 			this.saldoVirtual -= cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete();
@@ -63,10 +73,13 @@ public abstract class Usuario {
 	}
 
 	
-	public ArrayList<Tiquete> comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLocalidad, int idSilla, boolean usarSaldo)throws CantidadTiquetesExcedidaException, SaldoInsuficienteException {
+	public ArrayList<Tiquete> comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLocalidad, int idSilla, boolean usarSaldo)throws Exception {
 		ArrayList<Tiquete> lista = new ArrayList<Tiquete>(); 
 		if (cantidad > Tiquete.tiquetesMax) {
 			throw new CantidadTiquetesExcedidaException(Tiquete.tiquetesMax);
+		}
+		else if (!(evento.getLocalidades().get(idLocalidad).compararCapacidad(cantidad))) {
+			throw new CapacidadLocalidadExcedidaException(cantidad);
 		}
 		else if (usarSaldo == true && (this.saldoVirtual >= cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete())) {
 			this.saldoVirtual -= cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete();
@@ -95,9 +108,12 @@ public abstract class Usuario {
 	} 
 	
 	
-	public TiqueteMultiple comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo) throws CantidadTiquetesExcedidaException, SaldoInsuficienteException{
+	public TiqueteMultiple comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo) throws Exception{
 		if (cantidad > TiqueteMultiple.tiquetesMax) {
 			throw new CantidadTiquetesExcedidaException(Tiquete.tiquetesMax);
+		}
+		else if (!(evento.getLocalidades().get(idLocalidad).compararCapacidad(cantidad))) {
+			throw new CapacidadLocalidadExcedidaException(cantidad);
 		}
 		else if (usarSaldo == true && this.saldoVirtual >= TiqueteMultipleUnicoEvento.precios.get(idLocalidad).get(cantidad)) {
 			this.saldoVirtual -= TiqueteMultipleUnicoEvento.precios.get(idLocalidad).get(cantidad);
@@ -114,11 +130,12 @@ public abstract class Usuario {
 	}
 	
 	
-	public TiqueteMultiple comprarTiquetesMultiplesVE(HashMap<Evento,Integer> eventos, boolean usarSaldo) throws CantidadTiquetesExcedidaException, SaldoInsuficienteException{
+	public TiqueteMultiple comprarTiquetesMultiplesVE(HashMap<Evento,Integer> eventos, boolean usarSaldo) throws Exception{
 
 		if (eventos.size() > TiqueteMultiple.tiquetesMax) {
 			throw new CantidadTiquetesExcedidaException(Tiquete.tiquetesMax);
 		}
+		
 		else if (usarSaldo == true && this.saldoVirtual >= TiqueteMultipleVariosEventos.precios.get(eventos.size())) {
 			this.saldoVirtual -= TiqueteMultipleVariosEventos.precios.get(eventos.size());
 			TiqueteMultiple nuevoTM = new TiqueteMultipleVariosEventos(eventos, this);
@@ -135,10 +152,13 @@ public abstract class Usuario {
 	
 	
 
-	public ArrayList<Tiquete> comprarTiquetesDeluxe(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo)throws CantidadTiquetesExcedidaException, SaldoInsuficienteException {
+	public ArrayList<Tiquete> comprarTiquetesDeluxe(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo)throws Exception {
 		ArrayList<Tiquete> lista = new ArrayList<Tiquete>(); 	
 		if (cantidad > TiqueteMultiple.tiquetesMax) {
 			throw new CantidadTiquetesExcedidaException(Tiquete.tiquetesMax);
+		}
+		else if (!(evento.getLocalidades().get(idLocalidad).compararCapacidad(cantidad))) {
+			throw new CapacidadLocalidadExcedidaException(cantidad);
 		}
 		else if (usarSaldo == true && this.saldoVirtual >= TiqueteDeluxe.precio * cantidad) {
 			this.saldoVirtual -= TiqueteDeluxe.precio * cantidad;
@@ -166,8 +186,17 @@ public abstract class Usuario {
 		}
 	}
 	
-	public void transferirTiquete(String login, String contrasena, Tiquete tiquete) throws PasswordIncorrectoException {
-		if (contrasena.equals(this.contrasena) && !(tiquete instanceof TiqueteDeluxe)) {
+	public void transferirTiquete(String login, String contrasena, Tiquete tiquete) throws Exception {
+		if (tiquete.getTipo().equals("TIQUETEDELUXE")) {
+			throw new TransferirTiqueteDeluxeException(tiquete);
+		}
+		if (!usuarios.containsKey(login)) {
+			throw new UsuarioNoEncontradoException(login);
+		}
+		if (tiquete.getFecha().isBefore(LocalDate.now())) {
+			throw new TiqueteVencidoFecha(tiquete);
+		}
+		if (contrasena.equals(this.contrasena)) {
 			ArrayList<Tiquete> lista = this.tiquetes.get(tiquete.getEvento());
 			Iterator<Tiquete> iterador = lista.iterator();
 			
@@ -183,11 +212,17 @@ public abstract class Usuario {
 			usuarios.get(login).getTiquetes().get(tiquete.getEvento()).addLast(tiquete);
 		}
 		else {
-			throw new PasswordIncorrectoException(this);//excepcion
+			throw new PasswordIncorrectoException(this);
 		}
 	}
 	
-	public void transferirTiqueteMultiple(String login, String contrasena, TiqueteMultiple tiquete) throws PasswordIncorrectoException {
+	public void transferirTiqueteMultiple(String login, String contrasena, TiqueteMultiple tiquete) throws Exception {
+		if (!usuarios.containsKey(login)) {
+			throw new UsuarioNoEncontradoException(login);
+		}
+		if (!tiquete.transferible) {
+			throw new TiqueteNoTransferibleException(tiquete);
+		}
 		if (contrasena.equals(this.contrasena) && tiquete.transferible) {
 			if (tiquete instanceof TiqueteMultipleVariosEventos) {
 				TiqueteMultipleVariosEventos tiqueteMultipleVE = (TiqueteMultipleVariosEventos) tiquete;
@@ -195,10 +230,7 @@ public abstract class Usuario {
 				Iterator<Evento> iterador = llaves.iterator();
 				while(iterador.hasNext()) {
 					Tiquete tiq = tiqueteMultipleVE.getTiquetes().get(iterador.next());
-					tiq.setIdUsuario(login);
-					tiq.setUsuario(usuarios.get(login));
-					usuarios.get(login).getTiquetes().get(tiq.getEvento()).addLast(tiq);
-					tiquete.setTransferible(false);
+					transferirTiquete(login, contrasena, tiq);
 					}
 			} else if(tiquete instanceof TiqueteMultipleUnicoEvento) {
 				TiqueteMultipleUnicoEvento tiqueteMultipleUE = (TiqueteMultipleUnicoEvento) tiquete;
@@ -206,23 +238,25 @@ public abstract class Usuario {
 				Iterator<Tiquete> iterador = tiquetes.iterator();
 				while(iterador.hasNext()) {
 					Tiquete tiq = iterador.next();
-					tiq.setIdUsuario(login);
-					tiq.setUsuario(usuarios.get(login));
-					usuarios.get(login).getTiquetes().get(tiq.getEvento()).addLast(tiq);
-					tiquete.setTransferible(false);
+					transferirTiquete(login, contrasena, tiq);
+					
 				}
 			}
+			tiquete.setTransferible(false);
 			this.tiquetesMultiples.remove(tiquete.id);
 			usuarios.get(login).tiquetesMultiples.put(tiquete.id, tiquete);
 		} else {
-			throw new PasswordIncorrectoException(this);//excepcion
+			throw new PasswordIncorrectoException(this);
 		}
 	}
 	
 		
 	
-	public void transferirTiqueteDeTM(String login, String contrasena, TiqueteMultiple tiqueteMultiple, int idTiquete ) throws PasswordIncorrectoException {
+	public void transferirTiqueteDeTM(String login, String contrasena, TiqueteMultiple tiqueteMultiple, int idTiquete ) throws Exception {
 		Tiquete tiquete = null;
+		if (!usuarios.containsKey(login)) {
+			throw new UsuarioNoEncontradoException(login);
+		}
 		if (contrasena.equals(this.contrasena)) {
 			if (tiqueteMultiple instanceof TiqueteMultipleVariosEventos) {
 				TiqueteMultipleVariosEventos tiqueteMultipleVE = (TiqueteMultipleVariosEventos) tiqueteMultiple;
@@ -234,7 +268,10 @@ public abstract class Usuario {
 						tiquete = tiq;
 						iterador.remove();
 						break;
-					}
+					}	
+				}
+				if (tiquete.equals(null)){
+					throw new TiqueteNoEncontradoException(idTiquete);
 				}
 			} else if (tiqueteMultiple instanceof TiqueteMultipleUnicoEvento) {
 				TiqueteMultipleUnicoEvento tiqueteMultipleUE = (TiqueteMultipleUnicoEvento) tiqueteMultiple;
@@ -248,11 +285,11 @@ public abstract class Usuario {
 						break;
 					}
 				}
-				
+				if (tiquete.equals(null)){
+					throw new TiqueteNoEncontradoException(idTiquete);
+				}
 			}
-			tiquete.setIdUsuario(login);
-			tiquete.setUsuario(usuarios.get(login));
-			usuarios.get(login).getTiquetes().get(tiquete.getEvento()).addLast(tiquete);
+			transferirTiquete(login, contrasena, tiquete);
 			tiqueteMultiple.setTransferible(false);
 		}
 		else {
@@ -266,17 +303,15 @@ public abstract class Usuario {
 	}
 	
 	public void realizarReembolso(Tiquete tiquete) {
-		if (!(tiquete.usuario.equals(tiquete.getEvento().getOrganizador()))) {
-			this.saldoVirtual += tiquete.getPrecioReal();
-			Iterator<Tiquete> iterador = this.tiquetes.get(tiquete.getEvento()).iterator();
-			while (iterador.hasNext()) {
-				Tiquete tiq = iterador.next();
-				if (tiq.equals(tiquete)) {
-					tiq.setPrecioBase(0);
-					tiq.setPrecioReal(0);
-					iterador.remove();
-					break;
-				}
+		this.saldoVirtual += tiquete.getPrecioReal();
+		Iterator<Tiquete> iterador = this.tiquetes.get(tiquete.getEvento()).iterator();
+		while (iterador.hasNext()) {
+			Tiquete tiq = iterador.next();
+			if (tiq.equals(tiquete)) {
+				tiq.setPrecioBase(0);
+				tiq.setPrecioReal(0);
+				iterador.remove();
+				break;
 			}
 		}
 	}

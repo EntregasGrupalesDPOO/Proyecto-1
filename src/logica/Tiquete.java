@@ -43,12 +43,6 @@ public abstract class Tiquete {
 		evento.getLocalidades().get(idLocalidad).getTiquetesUsados().put(this.id, this);
 	}
 	
-	@Override
-	public String toString() {
-		return "Tiquete [localidad=" + localidad + ", idDueno=" + idDueno + ", fecha=" + fecha + ", hora=" + hora
-				+ ", id=" + id + ", dueno=" + dueno + ", precioBase=" + precioBase + ", comision=" + comision
-				+ ", usado=" + usado + "]";
-	}
 	public void  marcarTiquete() throws TiqueteUsadoException{
 		if (this.usado) {
 			throw(new TiqueteUsadoException(this));
