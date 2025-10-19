@@ -8,7 +8,8 @@ import java.util.Set;
 public class Organizador extends Usuario {
 	
 	protected HashMap<String,Evento> eventosCreados;
-
+	protected HashMap<Evento,HashMap<Localidad, Integer>> ganancias;
+	
 	public Organizador(String login, String contrasena) {
 		super(login, contrasena);
 	}

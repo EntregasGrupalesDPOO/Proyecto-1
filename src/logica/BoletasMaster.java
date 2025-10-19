@@ -142,7 +142,10 @@ public class BoletasMaster {
 public void comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad) throws Exception {
     if (usuarioActual != null && esCliente) {
         boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
-        tiquetes.add(usuarioActual.comprarTiquetes(cantidad, evento, idLocalidad, conSaldo));
+        for (Tiquete t : usuarioActual.comprarTiquetes(cantidad, evento, idLocalidad, conSaldo)) {
+            tiquetes.put(t.getId(), t);
+        }
+        //tiquetes.add(usuarioActual.comprarTiquetes(cantidad, evento, idLocalidad, conSaldo));
     }
 }
 
@@ -150,7 +153,10 @@ public void comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLoc
         throws UsuarioNoEncontradoException, Exception {
     if (usuarioActual != null && (esCliente || esOrganizador)) {
         boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
-        tiquetes.add(usuarioActual.comprarTiquetesEnumerados(cantidad, evento, idLocalidad, idSilla, conSaldo));
+        for (Tiquete t : usuarioActual.comprarTiquetesEnumerados(cantidad, evento, idLocalidad, idSilla, conSaldo)) {
+            tiquetes.put(t.getId(), t);
+        }
+        //tiquetes.add(usuarioActual.comprarTiquetesEnumerados(cantidad, evento, idLocalidad, idSilla, conSaldo));
     }
 }
 

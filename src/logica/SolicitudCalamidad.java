@@ -6,7 +6,7 @@ public class SolicitudCalamidad extends Solicitud  {
 
     
     private Tiquete tiqueteAsociado;
-    private TIqueteMultiple tiqueteAsociadoM;
+    private TiqueteMultiple tiqueteAsociadoM;
     
     public SolicitudCalamidad(Usuario solicitante, String descripcion, Tiquete tiqueteAsociado) {
         super(solicitante, descripcion);
