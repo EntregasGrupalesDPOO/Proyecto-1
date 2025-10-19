@@ -18,12 +18,5 @@ public class TiqueteDeluxe extends Tiquete{
 		this.precioReal = precio;
 		this.idSilla = -1;
 	}
-
-	public TiqueteDeluxe(Integer idLocalidad, Evento evento, Usuario usuario, int idSilla) {
-		super(idLocalidad, evento, usuario);
-		this.tipo = TIQUETEDELUXE;
-		this.precioReal = precio;
-		this.idSilla = idSilla;
-	}
 	
 }

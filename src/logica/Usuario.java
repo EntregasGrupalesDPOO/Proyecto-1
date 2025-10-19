@@ -91,10 +91,7 @@ public abstract class Usuario {
 	
 	
 	public TiqueteMultiple comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo) throws Exception{
-		if (cantidad > TiqueteMultiple.tiquetesMax) {
-			throw new CantidadTiquetesExcedidaException(Tiquete.tiquetesMax);
-		}
-		else if (!(evento.getLocalidades().get(idLocalidad).compararCapacidad(cantidad))) {
+		if (!(evento.getLocalidades().get(idLocalidad).compararCapacidad(cantidad))) {
 			throw new CapacidadLocalidadExcedidaException(cantidad);
 		} else if (!TiqueteMultipleUnicoEvento.precios.get(idLocalidad).containsKey(cantidad)) {
 			throw new TiqueteMultipleUENoExisteExcpetion(cantidad, idLocalidad, evento);
@@ -111,10 +108,7 @@ public abstract class Usuario {
 	
 	
 	public TiqueteMultiple comprarTiquetesMultiplesVE(HashMap<Evento,Integer> eventos, boolean usarSaldo) throws Exception{
-
-		if (eventos.size() > TiqueteMultiple.tiquetesMax) {
-			throw new CantidadTiquetesExcedidaException(Tiquete.tiquetesMax);
-		}else if(usarSaldo == true && this.saldoVirtual < TiqueteMultipleVariosEventos.calcularPrecioReal(eventos)) {
+		if(usarSaldo == true && this.saldoVirtual < TiqueteMultipleVariosEventos.calcularPrecioReal(eventos)) {
 			throw new SaldoInsuficienteException(this);
 		} else if (!TiqueteMultipleVariosEventos.precios.containsKey(eventos.size())) {
 			throw new TiqueteMultipleVENoExisteExcpetion(eventos.size());
@@ -279,6 +273,21 @@ public abstract class Usuario {
 				tiq.setPrecioReal(0);
 				iterador.remove();
 				break;
+			}
+		}
+	}
+	
+	public void realizarReembolso(TiqueteMultiple tiquete) {
+		if (tiquete instanceof TiqueteMultipleUnicoEvento) {
+			ArrayList<Tiquete> tiquetes = ((TiqueteMultipleUnicoEvento) tiquete).getTiquetes();
+			for (Tiquete tiq : tiquetes) {
+				realizarReembolso(tiq);
+			}
+		} else if (tiquete instanceof TiqueteMultipleVariosEventos) {
+			HashMap<Evento, Tiquete> mapaTiquetes = ((TiqueteMultipleVariosEventos) tiquete).getTiquetes();
+			Set<Tiquete> tiquetes = (Set<Tiquete>) mapaTiquetes.values();
+			for (Tiquete tiq : tiquetes) {
+				realizarReembolso(tiq);
 			}
 		}
 	}

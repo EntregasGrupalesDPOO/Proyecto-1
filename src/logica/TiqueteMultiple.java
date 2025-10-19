@@ -12,7 +12,6 @@ public abstract class TiqueteMultiple {
 	protected boolean transferible = true;
 	protected String tipo;
 	private static Integer currentID = 0;
-	public static int tiquetesMax;
 	
 	public TiqueteMultiple() {
 		this.id = currentID + 1;
