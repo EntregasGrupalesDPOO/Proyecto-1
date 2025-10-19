@@ -114,5 +114,9 @@ public abstract class Tiquete {
 	public double getPrecioReal() {
 		return precioReal;
 	}
+
+	public void setPrecioBase(double precioBase) {
+		this.precioBase = precioBase;
+	}
 	
 }

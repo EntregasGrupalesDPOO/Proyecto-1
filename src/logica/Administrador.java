@@ -44,26 +44,57 @@ public class Administrador {
 
 	public double obtenerGananciasEvento(Evento evento) {
 		double ganancias = 0;
-		Collection<Localidad> localidades = evento.getLocalidades().values();
-		for (Localidad localidad : localidades) {
-			for (Tiquete tiq : localidad.getTiquetesUsados().values()) {
-				ganancias += tiq.getPrecioBase();
+		Set<Localidad> localidades = (Set<Localidad>) evento.getLocalidades().values();
+		for (Localidad localidad:localidades) {
+			for(Tiquete tiq: localidad.getTiquetesUsados().values()) {
+				ganancias += tiq.getPrecioReal() - tiq.getPrecioBase();
 			}
 			for (TiqueteMultiple tiqM : localidad.getTiquetesMultiplesUsados().values()) {
 				if (tiqM instanceof TiqueteMultipleUnicoEvento) {
 					TiqueteMultipleUnicoEvento tiqueteMultipleUE = (TiqueteMultipleUnicoEvento) tiqM;
-					for (Tiquete tiq : tiqueteMultipleUE.getTiquetes()) {
-						ganancias += tiq.getPrecioBase();
+					for (Tiquete tiq: tiqueteMultipleUE.getTiquetes()) {
+						ganancias += tiq.getPrecioReal() - tiq.getPrecioBase();
 					}
 				} else if (tiqM instanceof TiqueteMultipleVariosEventos) {
 					TiqueteMultipleVariosEventos tiqueteMultipleVE = (TiqueteMultipleVariosEventos) tiqM;
-					for (Tiquete tiq : tiqueteMultipleVE.getTiquetes().values()) {
-						ganancias += tiq.getPrecioBase();
+					for (Tiquete tiq: tiqueteMultipleVE.getTiquetes().values()) {
+						ganancias += tiq.getPrecioReal() - tiq.getPrecioBase();
 					}
 				}
 			}
 		}
 		return ganancias;
+	}
+	
+	public void realizarReembolsoEvento(Evento evento) {
+		Set<Localidad> localidades = (Set<Localidad>) evento.getLocalidades().values();
+		for (Localidad localidad:localidades) {
+			for(Tiquete tiq: localidad.getTiquetesUsados().values()) {
+				Usuario usuario = tiq.getUsuario();
+				usuario.setSaldoVirtual(usuario.getSaldoVirtual() + tiq.getPrecioBase());
+				tiq.setPrecioBase(0);
+				tiq.setPrecioReal(tiq.getPrecioReal()- tiq.getPrecioBase());
+			}
+			for (TiqueteMultiple tiqM: localidad.getTiquetesMultiplesUsados().values()) {
+				if (tiqM instanceof TiqueteMultipleUnicoEvento) {
+					TiqueteMultipleUnicoEvento tiqueteMultipleUE = (TiqueteMultipleUnicoEvento) tiqM;
+					for (Tiquete tiq: tiqueteMultipleUE.getTiquetes()) {
+						Usuario usuario = tiq.getUsuario();
+						usuario.setSaldoVirtual(usuario.getSaldoVirtual() + tiq.getPrecioBase());
+						tiq.setPrecioBase(0);
+						tiq.setPrecioReal(tiq.getPrecioReal()- tiq.getPrecioBase());
+					}
+				} else if (tiqM instanceof TiqueteMultipleVariosEventos) {
+					TiqueteMultipleVariosEventos tiqueteMultipleVE = (TiqueteMultipleVariosEventos) tiqM;
+					for (Tiquete tiq: tiqueteMultipleVE.getTiquetes().values()) {
+						Usuario usuario = tiq.getUsuario();
+						usuario.setSaldoVirtual(usuario.getSaldoVirtual() + tiq.getPrecioBase());
+						tiq.setPrecioBase(0);
+						tiq.setPrecioReal(tiq.getPrecioReal()- tiq.getPrecioBase());
+					}
+				}
+			}
+		}
 	}
 }
 
