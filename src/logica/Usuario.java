@@ -39,6 +39,11 @@ public abstract class Usuario {
 	}
 
 
+	public boolean login(String usuario, String contrasena) {
+		return (usuario.equals(this.login)&& contrasena.equals(this.contrasena));
+		
+		
+	}
 
 	public ArrayList<Tiquete> comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo) throws Exception{
 		ArrayList<Tiquete> lista = new ArrayList<Tiquete>(); 

@@ -2,6 +2,7 @@ package logica;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,8 +13,16 @@ public class Evento {
 	private Venue venue;
 	private Organizador organizador;
 	private HashMap<Integer, Localidad> localidades;
+	public static final String MUSICAL = "MUSICAL";
+	public static final String DEPORTIVO = "DEPORTIVO";
+	public static final String RELIGIOSO  = "RELIGIOSO";
+	public static final String CULTURAR  = "CULTURAL";
+
+
+
 	private String estado;
 	private String tipoEvento;
+	public static HashMap<String, Double> comisionEventos;
 	
 	
 	
@@ -79,6 +88,7 @@ public class Evento {
 	public void setTipoEvento(String tipoEvento) {
 		this.tipoEvento = tipoEvento;
 	}
+
 	
 	
 
