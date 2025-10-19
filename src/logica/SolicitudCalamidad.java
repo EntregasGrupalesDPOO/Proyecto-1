@@ -6,6 +6,7 @@ public class SolicitudCalamidad extends Solicitud  {
 
     
     private Tiquete tiqueteAsociado;
+    private TIqueteMultiple tiqueteAsociadoM;
     
     public SolicitudCalamidad(Usuario solicitante, String descripcion, Tiquete tiqueteAsociado) {
         super(solicitante, descripcion);
@@ -17,7 +18,7 @@ public class SolicitudCalamidad extends Solicitud  {
         public SolicitudCalamidad(Usuario solicitante, String descripcion, TiqueteMultiple tiqueteAsociado) {
         super(solicitante, descripcion);
         this.tipo = "Calamidad";
-        this.tiqueteAsociado = tiqueteAsociado;
+        this.tiqueteAsociadoM = tiqueteAsociado;
 
 
     }
