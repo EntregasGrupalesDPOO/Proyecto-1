@@ -116,5 +116,9 @@ public abstract class Tiquete {
 	public void setPrecioBase(double precioBase) {
 		this.precioBase = precioBase;
 	}
+
+	public void setUsado(boolean usado) {
+		this.usado = usado;
+	}
 	
 }

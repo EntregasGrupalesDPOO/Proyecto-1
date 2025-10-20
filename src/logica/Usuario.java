@@ -297,6 +297,25 @@ public abstract class Usuario {
 		}
 	}
 	
+	public void usarTiquete(Tiquete tiquete) {
+		tiquete.setUsado(true);
+	}
+	
+	public void usarTiquete(TiqueteMultiple tiqueteM) {
+		if (tiqueteM instanceof TiqueteMultipleUnicoEvento) {
+			ArrayList<Tiquete> tiquetes = ((TiqueteMultipleUnicoEvento) tiqueteM).getTiquetes();
+			for (Tiquete tiq : tiquetes) {
+				tiq.setUsado(true);;
+			}
+		}else if (tiqueteM instanceof TiqueteMultipleVariosEventos) {
+			HashMap<Evento, Tiquete> mapaTiquetes = ((TiqueteMultipleVariosEventos) tiqueteM).getTiquetes();
+			Set<Tiquete> tiquetes = (Set<Tiquete>) mapaTiquetes.values();
+			for (Tiquete tiq : tiquetes) {
+				tiq.setUsado(true);;
+			}
+		}tiqueteM.setTransferible(false);
+	}
+	
 	public String getLogin() {
 		return login;
 	}
