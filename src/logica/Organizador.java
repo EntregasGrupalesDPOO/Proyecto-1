@@ -11,6 +11,7 @@ import java.io.Serializable;
 public class Organizador extends Usuario implements Serializable {
 	
 	protected HashMap<String,Evento> eventosCreados;
+	protected HashMap<Evento,HashMap<Localidad, Integer>> ganancias;
 	
 	public Organizador(String login, String contrasena) {
 		super(login, contrasena);
