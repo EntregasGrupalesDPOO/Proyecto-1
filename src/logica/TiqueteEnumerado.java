@@ -13,12 +13,16 @@ public class TiqueteEnumerado extends Tiquete {
 	public int getIdSilla() {
 		return idSilla;
 	}
+
+	/* 
 	@Override
 	public String toString() {
 		return "TiqueteEnumerado [idSilla=" + idSilla + ", localidad=" + localidad + ", idDueno=" + idDueno + ", fecha="
 				+ fecha + ", hora=" + hora + ", id=" + id + ", dueno=" + dueno + ", precioBase=" + precioBase
 				+ ", comision=" + comision + ", usado=" + usado + ", evento=" + evento + ", tipo=" + tipo + "]";
 	}
+
+	*/
 
 	
 
