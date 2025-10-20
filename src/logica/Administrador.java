@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
+import java.io.Serializable;
 
-public class Administrador {
+
+public class Administrador implements Serializable {
 	private String usuario;
 	private String contrasena;
 	private ArrayList<Solicitud> solicitudes;

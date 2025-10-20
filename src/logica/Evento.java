@@ -5,8 +5,11 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.io.Serializable;
 
-public class Evento {
+
+public class Evento implements Serializable
+ {
 	private String nombre;
 	private LocalDate fecha;
 	private LocalTime hora;

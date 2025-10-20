@@ -2,8 +2,10 @@ package logica;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.io.Serializable;
 
-public class TiqueteMultipleUnicoEvento extends TiqueteMultiple{
+
+public class TiqueteMultipleUnicoEvento extends TiqueteMultiple implements Serializable{
 	private ArrayList<Tiquete> tiquetes;
 	public static HashMap<Integer,HashMap<Integer,Double>> precios;
 	private Evento evento;

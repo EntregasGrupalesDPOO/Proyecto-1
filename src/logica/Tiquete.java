@@ -3,11 +3,11 @@ package logica;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
-
+import java.io.Serializable;
 import Exepciones.TiqueteUsadoException;
  
 
-public abstract class Tiquete {
+public abstract class Tiquete implements Serializable {
 	protected Localidad localidad;
 	protected String idUsuario;
 	public static double impresion;
@@ -21,7 +21,7 @@ public abstract class Tiquete {
 	protected String tipo; 
 	protected static HashMap<String, Double> tiposEventos;
 	protected double precioReal;
-	public static int tiquetesMax;
+	public static int tiquetesMax = 10;
 	
 	
 	public Tiquete(Integer idLocalidad, Evento evento, Usuario usuario) {

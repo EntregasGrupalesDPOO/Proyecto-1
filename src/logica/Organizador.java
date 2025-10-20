@@ -2,16 +2,23 @@ package logica;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
+import java.io.Serializable;
 
-public class Organizador extends Usuario {
+
+public class Organizador extends Usuario implements Serializable {
 	
 	protected HashMap<String,Evento> eventosCreados;
 	protected HashMap<Evento,HashMap<Localidad, Integer>> ganancias;
 	
 	public Organizador(String login, String contrasena) {
 		super(login, contrasena);
+		this.eventosCreados= this.eventosCreados = new HashMap<String, Evento>();
+		this.ganancias = new HashMap<Evento,HashMap<Localidad, Integer>>();
+
+
 	}
 	
 	public Evento crearEvento(String nombreEvento, LocalDate fecha, LocalTime hora, Venue venue, HashMap<Integer, Localidad> localidades, String tipoEvento) {
@@ -29,10 +36,11 @@ public class Organizador extends Usuario {
 	}
 	
 	public double obtenerGananciasGlobales() {
-		Set<Evento> eventos = (Set<Evento>) eventosCreados.values();
+		Collection<Evento> eventos = eventosCreados.values();
 		double ganancias = 0;
 		for (Evento evento:eventos) {
-			Set<Localidad> localidades = (Set<Localidad>) evento.getLocalidades().values();
+			Collection<Localidad> localidades = evento.getLocalidades().values();
+
 			for (Localidad localidad:localidades) {
 				for(Tiquete tiq: localidad.getTiquetesUsados().values()) {
 					ganancias += tiq.precioBase;

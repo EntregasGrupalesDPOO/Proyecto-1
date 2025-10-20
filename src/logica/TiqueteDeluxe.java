@@ -1,9 +1,10 @@
 package logica;
+import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TiqueteDeluxe extends Tiquete{
+public class TiqueteDeluxe extends Tiquete implements Serializable{
 	
 	// lista con los beneficios del paquete
 	private ArrayList<String> paquete ;

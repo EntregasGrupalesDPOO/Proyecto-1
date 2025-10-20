@@ -1,5 +1,7 @@
 package logica;
 
+import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,7 +9,7 @@ import java.util.List;
 
 import Exepciones.TiqueteUsadoException;
 
-public abstract class TiqueteMultiple {
+public abstract class TiqueteMultiple implements Serializable{
 	protected Integer id;
 	protected boolean transferible = true;
 	protected String tipo;
