@@ -25,7 +25,7 @@ public class Venue implements Serializable{
 	}
 
 
-	public void setEventos(List<Evento> eventos) {
+	public void setEventos(HashMap<LocalDate,Evento> eventos) {
 		this.eventos = eventos;
 	}
 

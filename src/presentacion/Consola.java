@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import Exepciones.VenueNoDisponibleException;
 import logica.*;
 
 public class Consola {
@@ -68,28 +69,36 @@ public class Consola {
         // Crear venue
         Venue venue = new Venue(500, "Coliseo Nacional", "Bogotá");
         sistema.agregarVenue(venue);
-
+        
+        
         // Crear localidades
         HashMap<Integer, Localidad> localidades = new HashMap<>();
-        localidades.put(1, new Localidad("VIP", 200000, 50, true, venue, null));
-        localidades.put(2, new Localidad("General", 80000, 450, false, venue, null));
+        localidades.put(1, new Localidad("VIP", 200000, 50, true, venue));
+        localidades.put(2, new Localidad("General", 80000, 450, false, venue));
 
         // Crear evento de ejemplo
         Organizador juan = sistema.getOrganizadores().get("juan");
-        Evento concierto = juan.crearEvento(
-                "Rock en Vivo",
-                LocalDate.of(2025, 12, 10),
-                LocalTime.of(19, 30),
-                venue,
-                localidades,
-                "MUSICAL");
+        Evento concierto;
+		try {
+			concierto = juan.crearEvento(
+			        "Rock en Vivo",
+			        LocalDate.of(2025, 12, 10),
+			        LocalTime.of(19, 30),
+			        venue,
+			        localidades,
+			        "MUSICAL");
+			sistema.agregarEvento(concierto);
+	        sistema.fijarComisionPorTipoEvento (0.15,0.2,0.16,0.18);
 
-        sistema.agregarEvento(concierto);
-        sistema.fijarComisionPorTipoEvento (0.15,0.2,0.16,0.18);
+	        System.out.println("Evento creado: " + concierto.getNombre());
+	        System.out.println("Localidades: " + concierto.getLocalidades().keySet());
+	        System.out.println("==============================\n");
+		} catch (VenueNoDisponibleException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-        System.out.println("Evento creado: " + concierto.getNombre());
-        System.out.println("Localidades: " + concierto.getLocalidades().keySet());
-        System.out.println("==============================\n");
+        
     }
 
     private void simularEscenario() {

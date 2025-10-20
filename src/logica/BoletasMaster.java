@@ -237,7 +237,7 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 
 	}
 	public Localidad crearLocalidadEvento(Evento evento, String nombre, double precioTiquete, int capacidad, boolean numerada) {
-		Localidad nuevaLocalidad = new Localidad(nombre, precioTiquete, capacidad, numerada, evento.getVenue(), evento);
+		Localidad nuevaLocalidad = new Localidad(nombre, precioTiquete, capacidad, numerada, evento.getVenue());
 		int idLocalidad = evento.getLocalidades().size() + 1;
 		evento.getLocalidades().put(idLocalidad, nuevaLocalidad);
 		return nuevaLocalidad;

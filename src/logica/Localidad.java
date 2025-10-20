@@ -15,17 +15,15 @@ public class Localidad implements Serializable{
 	private Venue venue;
 	private HashMap<Integer, Tiquete> tiquetesUsados;
 	private HashMap<Integer, TiqueteMultiple>tiquetesMultiplesUsados;
-	private Evento evento;
 	
 	
 	
-	public Localidad(String nombre, double precioTiquete, int capacidad, boolean numerada, Venue venue, Evento evento) {
+	public Localidad(String nombre, double precioTiquete, int capacidad, boolean numerada, Venue venue) {
 		this.nombre = nombre;
 		this.precioTiquete = precioTiquete;
 		this.capacidad = capacidad;
 		this.numerada = numerada;
 		this.venue = venue;
-		this.evento = evento;
 		this.tiquetesUsados = new HashMap<Integer, Tiquete>();
 		this.tiquetesMultiplesUsados = new HashMap<Integer, TiqueteMultiple>();
 	}
@@ -51,10 +49,6 @@ public class Localidad implements Serializable{
 	public String toString() {
 		return this.nombre;
 		
-	}
-
-	public Evento getEvento() {
-		return evento;
 	}
 	
 	public String getNombre() {
@@ -97,9 +91,6 @@ public class Localidad implements Serializable{
 		this.nombre = nombre;
 	}
 
-	public void setEvento(Evento evento) {
-		this.evento = evento;
-	}
 
 	public HashMap<Integer, Tiquete> getTiquetesUsados() {
 		return tiquetesUsados;

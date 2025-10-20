@@ -17,7 +17,7 @@ public class Organizador extends Usuario implements Serializable {
 	
 	public Organizador(String login, String contrasena) {
 		super(login, contrasena);
-		this.eventosCreados= this.eventosCreados = new HashMap<String, Evento>();
+		this.eventosCreados = new HashMap<String, Evento>();
 		this.ganancias = new HashMap<Evento,HashMap<Localidad, Integer>>();
 
 
@@ -35,8 +35,8 @@ public class Organizador extends Usuario implements Serializable {
 		
 	}
 	
-	public Localidad crearLocalidad (String nombre, double precioTiquete, int capacidad, boolean numerada, Venue venue, Evento evento) {
-		return new Localidad(nombre, precioTiquete, capacidad, numerada, venue, evento);
+	public Localidad crearLocalidad (String nombre, double precioTiquete, int capacidad, boolean numerada, Venue venue) {
+		return new Localidad(nombre, precioTiquete, capacidad, numerada, venue);
 	}
 	
 	public double obtenerGananciasGlobales() {
