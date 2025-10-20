@@ -130,7 +130,7 @@ public abstract class Usuario {
 
 	public ArrayList<Tiquete> comprarTiquetesDeluxe(int cantidad, Evento evento, Integer idLocalidad, boolean usarSaldo)throws Exception {
 		ArrayList<Tiquete> lista = new ArrayList<Tiquete>(); 	
-		if (cantidad > TiqueteMultiple.tiquetesMax) {
+		if (cantidad > Tiquete.tiquetesMax) {
 			throw new CantidadTiquetesExcedidaException(Tiquete.tiquetesMax);
 		}
 		else if (!(evento.getLocalidades().get(idLocalidad).compararCapacidad(cantidad))) {

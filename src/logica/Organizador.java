@@ -8,7 +8,6 @@ import java.util.Set;
 public class Organizador extends Usuario {
 	
 	protected HashMap<String,Evento> eventosCreados;
-	protected HashMap<Evento,HashMap<Localidad, Integer>> ganancias;
 	
 	public Organizador(String login, String contrasena) {
 		super(login, contrasena);
@@ -105,36 +104,5 @@ public class Organizador extends Usuario {
 		return new Tupla<>(evento, razon);
 	}
 	
-	@Override
-	public String toString() {
-	    StringBuilder sb = new StringBuilder();
-	    
-	    sb.append("Organizador: ");
-	    if (this.getLogin() != null) {
-	        sb.append(this.getLogin());
-	    } else {
-	        sb.append("Desconocido");
-	    }
-	    sb.append("\nGanancias:\n");
-	    
-	    if (ganancias != null && !ganancias.isEmpty()) {
-	        for (Evento evento : ganancias.keySet()) {
-	            sb.append("Evento: ").append(evento.getNombre()).append("\n");
-	            HashMap<Localidad, Integer> locGanancias = ganancias.get(evento);
-	            for (Localidad loc : locGanancias.keySet()) {
-	                sb.append("  Localidad: ").append(loc.getNombre())
-	                  .append(", Ganancia: ").append(locGanancias.get(loc)).append("\n");
-	            }
-	        }
-	    } else {
-	        sb.append("  No hay ganancias registradas.\n");
-	    }
-	    
-	    return sb.toString();
-	}
-	
-	public void crearEvento() {
-		
-	}
 	
 }
