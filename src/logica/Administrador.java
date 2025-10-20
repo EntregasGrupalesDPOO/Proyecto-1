@@ -131,6 +131,9 @@ public class Administrador implements Serializable {
 			}
 		}
 	}
+	public double obtenerGananciasOrganizador(Organizador organizador) {
+		return organizador.obtenerGananciasGlobales();
+	}
 }
 
 
