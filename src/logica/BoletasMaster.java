@@ -230,6 +230,18 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 		Localidad nuevaLocalidad = new Localidad(nombre, precioTiquete, capacidad, numerada, evento.getVenue(), evento);
 		int idLocalidad = evento.getLocalidades().size() + 1;
 		evento.getLocalidades().put(idLocalidad, nuevaLocalidad);
+		for (int i = 0; i < 50; i++){
+			HashMap<Integer, Double> mapa  =  new HashMap<Integer, Double>();
+			double n  = 1  ;
+			mapa.put(i, n -= 0.01);
+
+
+		}
+
+		TiqueteMultipleVariosEventos.setPrecios(mapa);
+
+		
+		TiqueteMultipleUnicoEvento.precios.put(idLocalidad,mapa);
 		return nuevaLocalidad;
 	}
 
@@ -274,6 +286,17 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 		comisiones.put(Evento.RELIGIOSO, religioso);
 		Evento.comisionEventos = comisiones;
 
+	}
+
+	public void mostrarComisionesPorTipoEvento() {
+		System.out.println("Comisiones por tipo de evento:");
+		for (String tipoEvento : Evento.comisionEventos.keySet()) {
+			System.out.println(tipoEvento + ": " + Evento.comisionEventos.get(tipoEvento) + "%");
+		}
+	}
+
+	public void fijardescuentoTiqueteMultipleUE(double descuento) {
+		Hashmap <integer, >TiqueteMultipleUnicoEvento.precio  ;
 	}
 
 
@@ -408,4 +431,4 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 
 
 }
-
+}
