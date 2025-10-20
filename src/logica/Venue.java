@@ -1,8 +1,9 @@
 package logica;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-public class Venue {
+public class Venue implements Serializable{
 	public List<Evento> eventos;
 	public int capacidad;
 	public String nombre;

@@ -3,10 +3,12 @@ package logica;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+import java.io.Serializable;
+
 
 import Exepciones.CapacidadLocalidadExcedidaException;
 
-public class TiqueteMultipleVariosEventos extends TiqueteMultiple{
+public class TiqueteMultipleVariosEventos extends TiqueteMultiple implements Serializable{
 	protected HashMap<Evento, Tiquete> tiquetes;
 	public static final String MULTIPLEVARIOSEVENTOS = "MULTIPLEVARIOSEVENTOS";
 	public static HashMap<Integer, Double> precios;

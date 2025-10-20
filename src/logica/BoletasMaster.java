@@ -5,10 +5,13 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import Persistencia.ArchivoSerializable;
+import java.io.Serializable;
+
 
 import Exepciones.UsuarioNoEncontradoException;
 
-public class BoletasMaster {
+public class BoletasMaster implements Serializable{
 	private boolean esAdministrador;
 	private boolean esOrganizador;
 	private boolean esCliente;
@@ -22,6 +25,7 @@ public class BoletasMaster {
 	private HashMap<String, Usuario> usuarios;
 	private Administrador administrador; 
 	private Usuario usuarioActual;
+	private transient ArchivoSerializable archivoSerializable = new ArchivoSerializable();
 	
 	
 	
@@ -228,7 +232,7 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 
 		Evento nuevoEvento  =  (new Evento(nombre, fecha, hora, venue, (Organizador) this.usuarioActual, new HashMap<Integer, Localidad>(), tipoEvento));
 		agregarEvento(nuevoEvento);
-		System.out.println("Evento agendado: " + nuevoEvento.getNombre()  +  "Sin localidades asignadas.");
+		System.out.println("Evento agendado: " + nuevoEvento.getNombre()  +  " Sin localidades asignadas.");
 			
 
 	}
@@ -279,6 +283,7 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 		comisiones.put(Evento.MUSICAL, musical);
 		comisiones.put(Evento.RELIGIOSO, religioso);
 		Evento.comisionEventos = comisiones;
+		Tiquete.tiposEventos=comisiones;
 
 	}
 
@@ -407,16 +412,74 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 	public void setUsuarioActual(Usuario usuarioActual) {
 		this.usuarioActual = usuarioActual;
 	}
-
-
-
 	
-
-
+	// Persistencia
 	
+	public void escribirUsuarios() {
+	    archivoSerializable.escribir(this.usuarios, "./datos/usuarios.ser");
+	}
+
+	public void leerUsuarios() {
+	    Object obj = archivoSerializable.leer("./datos/usuarios.ser");
+	    if (obj != null) {
+	        this.usuarios = (HashMap<String, Usuario>) obj;
+	    } else {
+	        this.usuarios = new HashMap<>();
+	    }
+	}
+
+	public void escribirEventos() {
+	    archivoSerializable.escribir(this.eventos, "./datos/eventos.ser");
+	}
+
+	public void leerEventos() {
+	    Object obj = archivoSerializable.leer("./datos/eventos.ser");
+	    if (obj != null) {
+	        this.eventos = (ArrayList<Evento>) obj;
+	    } else {
+	        this.eventos = new ArrayList<>();
+	    }
+	}
+
+	public void escribirTiquetes() {
+	    archivoSerializable.escribir(this.tiquetes, "./datos/tiquetes.ser");
+	}
+
+
+	public void leerTiquetes() {
+	    Object obj = archivoSerializable.leer("./datos/tiquetes.ser");
+	    if (obj != null) {
+	        this.tiquetes = (HashMap<Integer, Tiquete>) obj;
+	    } else {
+	        this.tiquetes = new HashMap<>();
+	    }
+	}
+
+	public void escribirAdministrador() {
+	    archivoSerializable.escribir(this.administrador, "./datos/administrador.ser");
+	}
+
+	public void leerAdministrador() {
+	    Object obj = archivoSerializable.leer("./datos/administrador.ser");
+	    if (obj != null) {
+	        this.administrador = (Administrador) obj;
+	    }
+	}
 	
+	public void escribirVenues() {
+	    ArchivoSerializable archivo = new ArchivoSerializable();
+	    archivo.escribir(this.venues, "datos/venues.ser");
+	}
 
-
+	public void leerVenues() {
+	    ArchivoSerializable archivo = new ArchivoSerializable();
+	    Object obj = archivo.leer("datos/venues.ser");
+	    if (obj instanceof ArrayList<?>) {
+	        this.venues = (ArrayList<Venue>) obj;
+	    } else {
+	        this.venues = new ArrayList<>();
+	    }
+	}
 
 
 

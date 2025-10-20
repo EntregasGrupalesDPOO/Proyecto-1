@@ -1,6 +1,8 @@
 package logica;
+import java.io.Serializable;
 
-public class TiqueteEnumerado extends Tiquete {
+
+public class TiqueteEnumerado extends Tiquete implements Serializable{
 	private int idSilla;
 	public static final String ENUMERADO = "ENUMERADO";
 	
@@ -17,9 +19,9 @@ public class TiqueteEnumerado extends Tiquete {
 	/* 
 	@Override
 	public String toString() {
-		return "TiqueteEnumerado [idSilla=" + idSilla + ", localidad=" + localidad + ", idDueno=" + idDueno + ", fecha="
-				+ fecha + ", hora=" + hora + ", id=" + id + ", dueno=" + dueno + ", precioBase=" + precioBase
-				+ ", comision=" + comision + ", usado=" + usado + ", evento=" + evento + ", tipo=" + tipo + "]";
+		return "TiqueteEnumerado [idSilla=" + idSilla + ", localidad=" + localidad + ", fecha="
+				+ fecha + ", hora=" + hora + ", id=" + id + ", precioBase=" + precioBase
+				+ ", usado=" + usado + ", evento=" + evento + ", tipo=" + tipo + "]";
 	}
 
 	*/

@@ -16,10 +16,12 @@ import Exepciones.TiqueteVencidoFecha;
 import Exepciones.TransferirTiqueteDeluxeException;
 import Exepciones.UsuarioNoEncontradoException;
 import Exepciones.PasswordIncorrectoException;
+import java.io.Serializable;
+
 
 import logica.Organizador.Tupla;
 
-public abstract class Usuario {
+public abstract class Usuario implements Serializable {
 	protected String login;
 	protected String contrasena;
 	protected HashMap<Evento, ArrayList<Tiquete>> tiquetes;
@@ -58,7 +60,7 @@ public abstract class Usuario {
 			if (usarSaldo == true && (this.saldoVirtual >= cantidad * evento.getLocalidades().get(idLocalidad).getPrecioTiquete())) {
 				this.saldoVirtual -= cantidad * Tiquete.calcularPrecioReal(idLocalidad, evento);
 			}for (int i = 0;i < cantidad; i++) {
-				if (this.tiquetes.get(evento).equals(null)) {
+				if (this.tiquetes.get(evento)==null) {
 					this.tiquetes.put(evento, new ArrayList<Tiquete>());
 				}
 				Tiquete nuevoTiquete = new TiqueteBasico(idLocalidad, evento, this);

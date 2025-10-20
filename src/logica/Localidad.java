@@ -4,14 +4,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.io.Serializable;
 
-public class Localidad {
+
+public class Localidad implements Serializable{
 	private String nombre;
 	private double precioTiquete ;
 	private int capacidad ;
 	private boolean numerada;
 	private Venue venue;
-	private HashMap<Integer, Tiquete>tiquetesUsados;
+	private HashMap<Integer, Tiquete> tiquetesUsados;
 	private HashMap<Integer, TiqueteMultiple>tiquetesMultiplesUsados;
 	private Evento evento;
 	
@@ -24,29 +26,26 @@ public class Localidad {
 		this.numerada = numerada;
 		this.venue = venue;
 		this.evento = evento;
+		this.tiquetesUsados = new HashMap<Integer, Tiquete>();
+		this.tiquetesMultiplesUsados = new HashMap<Integer, TiqueteMultiple>();
 	}
 	
 	public boolean compararCapacidad(int cantidadAComprar) {
-		boolean puedeHacerCompra;
-		int ocupados = 0;
-		ocupados += tiquetesUsados.size();
-		Set<TiqueteMultiple> tiquetesMultiples = (Set<TiqueteMultiple>) tiquetesMultiplesUsados.values();
-		Iterator<TiqueteMultiple> iterador = tiquetesMultiples.iterator();
-		while(iterador.hasNext()) {
-			TiqueteMultiple tiquete = iterador.next();
-			if (tiquete instanceof TiqueteMultipleUnicoEvento) {
-				ocupados += ((TiqueteMultipleUnicoEvento) tiquete).getTiquetes().size();
-			}else if (tiquete instanceof TiqueteMultipleVariosEventos) {
-				ocupados += ((TiqueteMultipleVariosEventos) tiquete).getTiquetes().size();
-			}
-		}
-		if (this.capacidad >= ocupados + cantidadAComprar) {
-			puedeHacerCompra = true;
-		} else {
-			puedeHacerCompra = false;
-		}
-		return puedeHacerCompra;
+	    int ocupados = 0;
+
+	    ocupados += tiquetesUsados.size();
+
+	    for (TiqueteMultiple tiquete : tiquetesMultiplesUsados.values()) {
+	        if (tiquete instanceof TiqueteMultipleUnicoEvento) {
+	            ocupados += ((TiqueteMultipleUnicoEvento) tiquete).getTiquetes().size();
+	        } else if (tiquete instanceof TiqueteMultipleVariosEventos) {
+	            ocupados += ((TiqueteMultipleVariosEventos) tiquete).getTiquetes().size();
+	        }
+	    }
+
+	    return this.capacidad >= ocupados + cantidadAComprar;
 	}
+
 	
 	@Override
 	public String toString() {
