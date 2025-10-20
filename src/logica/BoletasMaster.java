@@ -282,6 +282,15 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 
 	}
 
+	public void mostrarComisionesPorTipoEvento() {
+		System.out.println("Comisiones por tipo de evento:");
+		for (String tipoEvento : Evento.comisionEventos.keySet()) {
+			System.out.println(tipoEvento + ": " + Evento.comisionEventos.get(tipoEvento) + "%");
+		}
+	}
+
+	
+
 
 
 
