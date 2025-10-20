@@ -151,30 +151,35 @@ public void comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad) th
 }
 
 public void comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLocalidad, int idSilla)
-        throws UsuarioNoEncontradoException, Exception {
-    if (usuarioActual != null && (esCliente || esOrganizador)) {
-        boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
-        ArrayList<Tiquete> tiquetesCompra  = (usuarioActual.comprarTiquetesEnumerados(cantidad, evento, idLocalidad, idSilla, conSaldo));
+		throws UsuarioNoEncontradoException, Exception {
+	if (usuarioActual != null && (esCliente || esOrganizador)) {
+		boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
+		ArrayList<Tiquete> tiquetesCompra  = (usuarioActual.comprarTiquetesEnumerados(cantidad, evento, idLocalidad, idSilla, conSaldo));
 		for (Tiquete tiquete : tiquetesCompra) {
 			tiquetes.put(tiquete.getId(), tiquete);
-    }
+		}
+	}
 }
 
-public void comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad)
-        throws UsuarioNoEncontradoException, Exception {
+
+public void comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad) throws UsuarioNoEncontradoException, Exception {
     if (usuarioActual != null && (esCliente || esOrganizador)) {
         boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
-        tiquetesMultiples.add(usuarioActual.comprarTiquetesMultiplesUE(cantidad, evento, idLocalidad, conSaldo));
-    }
-}
+		TiqueteMultiple tm  = usuarioActual.comprarTiquetesMultiplesUE(cantidad, evento, idLocalidad, conSaldo);
+		tiquetesMultiples.put(tm.getId(), tm);
+		}
+	}
 
 public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
         throws UsuarioNoEncontradoException, Exception {
     if (usuarioActual != null && (esCliente || esOrganizador)) {
         boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
-        tiquetesMultiples.add(usuarioActual.comprarTiquetesMultiplesVE(eventos, conSaldo));
+
+		TiqueteMultiple tm  = usuarioActual.comprarTiquetesMultiplesVE(eventos, conSaldo);
+        tiquetesMultiples.put(tm.getId(), tm);
     }
 }
+
 
 
 
@@ -409,5 +414,5 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 
 
 }
-}
+
 
