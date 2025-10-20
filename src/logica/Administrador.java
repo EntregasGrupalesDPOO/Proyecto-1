@@ -129,6 +129,9 @@ public class Administrador {
 			}
 		}
 	}
+	public double obtenerGananciasOrganizador(Organizador organizador) {
+		return organizador.obtenerGananciasGlobales();
+	}
 }
 
 

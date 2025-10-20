@@ -1,9 +1,11 @@
 package logica;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Venue {
-	public List<Evento> eventos;
+	public HashMap<LocalDate,Evento> eventos;
 	public int capacidad;
 	public String nombre;
 	public String ubicacion;
@@ -13,11 +15,11 @@ public class Venue {
 		this.capacidad = capacidad;
 		this.nombre = nombre;
 		this.ubicacion = ubicacion;
-		this.eventos = new ArrayList<Evento>();
+		this.eventos = new HashMap<LocalDate, Evento>();
 	}
 
 
-	public List<Evento> getEventos() {
+	public HashMap<LocalDate, Evento> getEventos() {
 		return eventos;
 	}
 

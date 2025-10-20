@@ -263,11 +263,6 @@ public abstract class Usuario {
 		}
 	}
 	
-	public record Tupla<A, B>(A primero, B segundo) {}
-	public Tupla<Tiquete, String> solicitarReembolso(Tiquete tiquete, String razon) {
-		return new Tupla<>(tiquete, razon);
-	}
-	
 	public void realizarReembolso(Tiquete tiquete) {
 		this.saldoVirtual += tiquete.getPrecioReal();
 		Iterator<Tiquete> iterador = this.tiquetes.get(tiquete.getEvento()).iterator();

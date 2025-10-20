@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
+import Exepciones.VenueNoDisponibleException;
+
 public class Organizador extends Usuario {
 	
 	protected HashMap<String,Evento> eventosCreados;
@@ -13,14 +15,16 @@ public class Organizador extends Usuario {
 		super(login, contrasena);
 	}
 	
-	public Evento crearEvento(String nombreEvento, LocalDate fecha, LocalTime hora, Venue venue, HashMap<Integer, Localidad> localidades, String tipoEvento) {
-		Evento evento = new Evento(nombreEvento, fecha, hora, venue, this, localidades, tipoEvento);
-		eventosCreados.put(evento.getNombre(), evento);
-		return evento;
-	}
-	
-	public Venue crearVenue(int capacidad, String nombre, String ubicacion) {
-		return new Venue(capacidad, nombre, ubicacion);
+	public Evento crearEvento(String nombreEvento, LocalDate fecha, LocalTime hora, Venue venue, HashMap<Integer, Localidad> localidades, String tipoEvento) throws VenueNoDisponibleException {
+		if (!venue.getEventos().get(fecha).equals(null)) {
+			throw new VenueNoDisponibleException(venue);
+		}else {
+			Evento evento = new Evento(nombreEvento, fecha, hora, venue, this, localidades, tipoEvento);
+			eventosCreados.put(evento.getNombre(), evento);
+			venue.eventos.put(fecha, evento);
+			return evento;
+		}
+		
 	}
 	
 	public Localidad crearLocalidad (String nombre, double precioTiquete, int capacidad, boolean numerada, Venue venue, Evento evento) {
