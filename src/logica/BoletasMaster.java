@@ -40,6 +40,7 @@ public class BoletasMaster {
 	    this.usuarios = new HashMap<String, Usuario>();
 		this.eventos = new ArrayList<Evento>();
 		this.eventosPorFecha = new HashMap<LocalDate, ArrayList<Evento>>();
+		this.tiquetesMultiples =  new HashMap<Integer, TiqueteMultiple>();
 		
 		 
 	
