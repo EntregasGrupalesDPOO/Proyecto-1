@@ -1,42 +1,59 @@
 package Marketplace;
 
+import Exepciones.SaldoInsuficienteException;
 import logica.Cliente;
+import logica.Tiquete;
 
 public class ContraOferta {
     private Cliente comprador;       
     private Oferta ofertaOriginal;     
     private double nuevoPrecio;
     private boolean aceptada;
+    private boolean usarSaldo;
 
-    public ContraOferta(Cliente comprador, Oferta ofertaOriginal, double nuevoPrecio) {
+    public ContraOferta(Cliente comprador, Oferta ofertaOriginal, double nuevoPrecio,boolean usarSaldo) {
         this.comprador = comprador;
         this.ofertaOriginal = ofertaOriginal;
         this.nuevoPrecio = nuevoPrecio;
         this.aceptada = false;
+        this.usarSaldo=usarSaldo;
     }
 
-    public void aceptar(String login, String contrasena) throws Exception {
-        // Solo el usuario que creio la oferta puede aceptar
-        if (!login.equals(ofertaOriginal.getVendedor()) || !contrasena.equals(ofertaOriginal.getVendedor())) {
-            throw new Exception("Solo el vendedor original puede aceptar esta contraoferta.");
-        }
-
+    public void aceptar() throws Exception {
+        // Solo el usuario que creio la oferta puede ver las contraofertas, hace que es el solo que puede acceptar
+    	if (this.usarSaldo == true && this.comprador.getSaldoVirtual() < this.nuevoPrecio){
+			throw new SaldoInsuficienteException(this.comprador);
+    	}
+    	this.comprador.setSaldoVirtual(this.comprador.getSaldoVirtual()-this.nuevoPrecio);
         this.aceptada = true;
         ofertaOriginal.setVendida(true);
-
+        //transferirTiquete
+        Cliente vendedorOferta=getVendedor();
+        vendedorOferta.setSaldoVirtual(vendedorOferta.getSaldoVirtual()+this.nuevoPrecio);
+        boolean multiple=this.ofertaOriginal.esMultiple();
+        
+        if (multiple){
+        	
+        	vendedorOferta.transferirTiqueteMultiple(this.comprador.getLogin(), this.comprador.getContrasena(),this.ofertaOriginal.getTiqueteMultiple() );
+        }
+        else {
+        	vendedorOferta.transferirTiquete(this.comprador.getLogin(), this.comprador.getContrasena(),this.ofertaOriginal.getTiquete() );
+        }
+        
+        
         // Notifiar el comprador ?
     }
 
-    public void rechazar(String login, String contrasena) throws Exception {
+    
+    public void rechazar() throws Exception {
         // Solo el usuario que creio la oferta puede rechazar
-        if (!login.equals(ofertaOriginal.getVendedor()) || !contrasena.equals(ofertaOriginal.getVendedor())) {
-            throw new Exception("Solo el vendedor original puede rechazar esta contraoferta.");
-        }
 
         this.aceptada = false;
+        this.ofertaOriginal.removeContraOferta(this);
         //notifiar el comprador ?
     }
 
+    
     // Getters
     public String getComprador() { 
     	return comprador.getLogin(); 
@@ -58,6 +75,11 @@ public class ContraOferta {
     	return comprador.getLogin()+ " quiere comprar el tiquete para "+ ofertaOriginal.getTiquete().getEvento()+ " de " +ofertaOriginal.getVendedor()+
     			" al precio de "+ nuevoPrecio;
     }
+    
+    public Cliente getVendedor() {
+    	return this.ofertaOriginal.getVendedor();
+    }
+    
     @Override
     public String toString() {
         return "Contraoferta{" +

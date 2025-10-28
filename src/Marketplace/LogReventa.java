@@ -18,4 +18,10 @@ public class LogReventa {
     public List<String> getEventos() {
         return eventos;
     }
+    
+    public void mostrarLog() {
+        for (String evento : eventos) {
+            System.out.println(evento);
+        }
+    }
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import logica.Cliente;
-import logica.Usuario;
 
 public class MarketPlace {
     private List<Oferta> ofertas;
@@ -36,8 +35,22 @@ public class MarketPlace {
     }
 
     public void aceptarContraOferta(ContraOferta contra) {
+    	try {
+			contra.aceptar();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
         log.registrarEvento("Contraoferta aceptada: " + contra.getDescripcion());
-        //transferir tiquete y modificar saldo
+        
+    }
+    
+    public void rechazarContraOferta(ContraOferta contra) {
+    	try {
+			contra.rechazar();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	log.registrarEvento("Contraoferta rechazada: " + contra.getDescripcion());
     }
 
     public List<Oferta> getOfertas() {
