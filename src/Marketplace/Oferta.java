@@ -80,8 +80,6 @@ public class Oferta {
     public boolean isVendida() {
         return vendida;
     }
-    
-
 
     public void setPrecio(double precio) {
         this.precio = precio;

@@ -28,11 +28,9 @@ public class MarketPlace {
     
     public void publicarContraOferta(ContraOferta contra) {
         contra.getOfertaOriginal().agregarContraOferta(contra);
+        log.registrarEvento("Nueva contra oferta publicada: " + contra.getDescripcion());
     }
 
-    public void registrarContraOferta(ContraOferta contra) {
-        log.registrarEvento("Contraoferta registrada: " + contra.getDescripcion());
-    }
 
     public void aceptarContraOferta(ContraOferta contra) {
     	try {
