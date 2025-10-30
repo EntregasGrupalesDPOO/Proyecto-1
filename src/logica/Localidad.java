@@ -1,111 +1,106 @@
 package logica;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.io.Serializable;
+import java.util.ArrayList;
 
-
-public class Localidad implements Serializable{
+public class Localidad {
 	private String nombre;
 	private double precioTiquete ;
-	private int capacidad ;
-	private boolean numerada;
-	private Venue venue;
-	private HashMap<Integer, Tiquete> tiquetesUsados;
-	private HashMap<Integer, TiqueteMultiple>tiquetesMultiplesUsados;
+	private String tipoTiquete;
+	private ArrayList<Tiquete> tiquetes;
+	private double descuento;
 	
-	
-	
-	public Localidad(String nombre, double precioTiquete, int capacidad, boolean numerada, Venue venue) {
+	public Localidad(String nombre, int capacidad, double precioTiquete, String tipoTiquete, Evento evento) {
+		this.tiquetes = new ArrayList<Tiquete>();
 		this.nombre = nombre;
 		this.precioTiquete = precioTiquete;
-		this.capacidad = capacidad;
-		this.numerada = numerada;
-		this.venue = venue;
-		this.tiquetesUsados = new HashMap<Integer, Tiquete>();
-		this.tiquetesMultiplesUsados = new HashMap<Integer, TiqueteMultiple>();
+		this.tipoTiquete = tipoTiquete;
+		this.descuento = 0;
+		if (tipoTiquete.equals("BASICO")) {tiquetesBasicos(capacidad, evento);}
+		if (tipoTiquete.equals("ENUMERADO")) {tiquetesEnumerados(capacidad, evento);}
+		evento.añadirLocalidad(this);
 	}
 	
-	public boolean compararCapacidad(int cantidadAComprar) {
-	    int ocupados = 0;
-
-	    ocupados += tiquetesUsados.size();
-
-	    for (TiqueteMultiple tiquete : tiquetesMultiplesUsados.values()) {
-	        if (tiquete instanceof TiqueteMultipleUnicoEvento) {
-	            ocupados += ((TiqueteMultipleUnicoEvento) tiquete).getTiquetes().size();
-	        } else if (tiquete instanceof TiqueteMultipleVariosEventos) {
-	            ocupados += ((TiqueteMultipleVariosEventos) tiquete).getTiquetes().size();
-	        }
-	    }
-
-	    return this.capacidad >= ocupados + cantidadAComprar;
-	}
-
-	
-	@Override
-	public String toString() {
-		return this.nombre;
-		
+	public Localidad(String nombre, int capacidad, double precioTiquete, String tipoTiquete, Evento evento, double descuento) {
+		this.tiquetes = new ArrayList<Tiquete>();
+		this.nombre = nombre;
+		this.precioTiquete = precioTiquete;
+		this.tipoTiquete = tipoTiquete;
+		this.descuento = descuento;
+		if (tipoTiquete.equals("BASICO")) {tiquetesBasicos(capacidad, evento);}
+		if (tipoTiquete.equals("ENUMERADO")) {tiquetesEnumerados(capacidad, evento);}
+		evento.añadirLocalidad(this);
 	}
 	
+	public Localidad(String nombre, int capacidad, double precioTiquete, String tipoTiquete, Evento evento, int capacidadTiquetesMultiples) {
+		this.tiquetes = new ArrayList<Tiquete>();
+		this.nombre = nombre;
+		this.precioTiquete = precioTiquete;
+		this.tipoTiquete = tipoTiquete;
+		this.descuento = 0;
+		if (tipoTiquete.equals("MULTIPLE")) {tiquetesMultiples(capacidad, evento, capacidadTiquetesMultiples);}
+		evento.añadirLocalidad(this);
+	}
+	
+	public Localidad(String nombre, int capacidad, double precioTiquete, String tipoTiquete, Evento evento, double descuento, int capacidadTiquetesMultiples) {
+		this.tiquetes = new ArrayList<Tiquete>();
+		this.nombre = nombre;
+		this.precioTiquete = precioTiquete;
+		this.tipoTiquete = tipoTiquete;
+		this.descuento = descuento;
+		if (tipoTiquete.equals("MULTIPLE")) {tiquetesMultiples(capacidad, evento, capacidadTiquetesMultiples);}
+		evento.añadirLocalidad(this);
+	}
+	
+	private void tiquetesBasicos(int capacidad, Evento evento) {
+		for (int i = 0; i < capacidad; i++) {
+			this.tiquetes.add(new TiqueteBasico(precioTiquete*(1-this.descuento), evento.getValorTipoDeEvento(), evento.getFecha(), evento.getHora()));
+		}
+	}
+	
+	private void tiquetesEnumerados(int capacidad, Evento evento) {
+		for (int i = 0; i < capacidad; i++) {
+			this.tiquetes.add(new TiqueteEnumerado(precioTiquete*(1-this.descuento), evento.getValorTipoDeEvento(), evento.getFecha(), evento.getHora(), i));
+		}
+	}
+	
+	private void tiquetesMultiples(int capacidad, Evento evento, int capacidadTiquetesMultiples) {
+		for (int i = 0; i < capacidad; i++) {
+			this.tiquetes.add(new TiqueteMultiEntrada(precioTiquete*(1-this.descuento), evento.getValorTipoDeEvento(), evento.getFecha(), evento.getHora(), capacidadTiquetesMultiples));
+		}
+	}
+
 	public String getNombre() {
 		return nombre;
 	}
 
-	public double getPrecioTiquete() {
-		return precioTiquete;
+	public ArrayList<Tiquete> getTiquetes() {
+		return tiquetes;
+	}
+	
+	public Tiquete obtenerTiqueteDisponible() {
+	    for (Tiquete t : this.tiquetes) {
+	        if (!t.isComprado()) {
+	            return t;
+	        }
+	    }
+	    return null; 
+	}
+	
+	public Tiquete obtenerTiqueteDisponible(int idSilla) {
+	    for (Tiquete t : this.tiquetes) {
+	        if (!t.isComprado() && ((TiqueteEnumerado) t).getIdSilla() == idSilla) {
+	            return t;
+	        }
+	    }
+	    return null;
+	}
+	
+	public int getCantidadCapacidad() {
+		return this.tiquetes.size();
 	}
 
-	public void setPrecioTiquete(double precioTiquete) {
-		this.precioTiquete = precioTiquete;
-	}
-
-	public int getCapacidad() {
-		return capacidad;
-	}
-
-	public void setCapacidad(int capacidad) {
-		this.capacidad = capacidad;
-	}
-
-	public boolean isNumerada() {
-		return numerada;
-	}
-
-	public void setNumerada(boolean numerada) {
-		this.numerada = numerada;
-	}
-
-	public Venue getVenue() {
-		return venue;
-	}
-
-	public void setVenue(Venue venue) {
-		this.venue = venue;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
-
-	public HashMap<Integer, Tiquete> getTiquetesUsados() {
-		return tiquetesUsados;
-	}
-
-	public void setTiquetesUsados(HashMap<Integer, Tiquete> tiquetesUsados) {
-		this.tiquetesUsados = tiquetesUsados;
-	}
-
-	public HashMap<Integer, TiqueteMultiple> getTiquetesMultiplesUsados() {
-		return tiquetesMultiplesUsados;
-	}
-
-	public void setTiquetesMultiplesUsados(HashMap<Integer, TiqueteMultiple> tiquetesMultiplesUsados) {
-		this.tiquetesMultiplesUsados = tiquetesMultiplesUsados;
+	public String getTipoTiquete() {
+		return tipoTiquete;
 	}
 	
 	

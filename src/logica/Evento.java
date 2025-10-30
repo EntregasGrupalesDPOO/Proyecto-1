@@ -1,63 +1,36 @@
-	package logica;
+package logica;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.io.Serializable;
 
-
-public class Evento implements Serializable
- {
-	private String nombre;
-	private LocalDate fecha;
-	private LocalTime hora;
+public class Evento {
 	private Venue venue;
 	private Organizador organizador;
-	private HashMap<Integer, Localidad> localidades;
-	public static final String MUSICAL = "MUSICAL";
-	public static final String DEPORTIVO = "DEPORTIVO";
-	public static final String RELIGIOSO  = "RELIGIOSO";
-	public static final String CULTURAL  = "CULTURAL";
-
-
-
+	private ArrayList<Localidad> localidades;
+	private static HashMap<String, Double> tiposDeEventos = new HashMap<String,Double>();
+	private String tipoDeEvento;
+	private LocalDate fecha;
+	private LocalTime hora;
 	private String estado;
-	private String tipoEvento;
-	public static HashMap<String, Double> comisionEventos;
 	
-	
-	
-	public Evento(String nombre, LocalDate fecha, LocalTime hora, Venue venue, Organizador organizador,
-			HashMap<Integer, Localidad> localidades, String tipoEvento) {
-		this.nombre = nombre;
-		this.fecha = fecha;
-		this.hora = hora;
+	public Evento(Venue venue, Organizador organizador, String tipoDeEvento, LocalDate fecha, LocalTime hora) {
 		this.venue = venue;
 		this.organizador = organizador;
-		this.localidades = localidades;
-		this.estado = "CREADO";
-		this.tipoEvento = tipoEvento;
+		this.tipoDeEvento = tipoDeEvento;
+		this.fecha = fecha;
+		this.hora = hora;
+		this.localidades = new ArrayList<Localidad>();
+		this.estado = "AGENDADO";
 	}
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-	    sb.append("Evento{");
-	    sb.append("nombre='").append(nombre).append('\'');
-	    sb.append(", fecha=").append(fecha);
-	    sb.append(", hora=").append(hora);
-	    sb.append(", venue=").append(venue); 
-	    sb.append(", organizador=").append(organizador); 
-	    sb.append(", localidades=").append(localidades); 
-	    sb.append(", estado='").append(estado).append('\'');
-	    sb.append('}');
-	    return sb.toString();
+	public void añadirLocalidad(Localidad localidad) {
+		this.localidades.add(localidad);
 	}
-
-	public String getNombre() {
-		return nombre;
+	
+	public double getValorTipoDeEvento() {
+		return tiposDeEventos.get(tipoDeEvento);
 	}
 
 	public LocalDate getFecha() {
@@ -68,6 +41,23 @@ public class Evento implements Serializable
 		return hora;
 	}
 
+	public ArrayList<Localidad> getLocalidades() {
+		return localidades;
+	}
+	
+	public Localidad getLocalidadPorNombre(String nombre) {
+	    for (Localidad l : this.localidades) {
+	        if (l.getNombre().equalsIgnoreCase(nombre)) {
+	            return l;
+	        }
+	    }
+	    return null;
+	}
+	
+	public static void addTipoEvento(String nombre, double valor) {
+		tiposDeEventos.put(nombre, valor);
+	}
+
 	public Venue getVenue() {
 		return venue;
 	}
@@ -76,23 +66,15 @@ public class Evento implements Serializable
 		return organizador;
 	}
 
-	public HashMap<Integer, Localidad> getLocalidades() {
-		return localidades;
+	public void setEstado(String estado) {
+		this.estado = estado;
 	}
-
-	public String getEstado() {
-		return estado;
-	}
-
-	public String getTipoEvento() {
-		return tipoEvento;
-	}
-
-	public void setTipoEvento(String tipoEvento) {
-		this.tipoEvento = tipoEvento;
-	}
-
 	
-	
-
+	public int capacidadActual() {
+		int capacidad = 0;
+		for (Localidad l:this.localidades) {
+			capacidad += l.getCantidadCapacidad();
+		}
+		return capacidad;
+	}
 }

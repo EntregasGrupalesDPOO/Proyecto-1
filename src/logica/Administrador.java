@@ -1,139 +1,131 @@
 package logica;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Set;
-import java.io.Serializable;
-
-
-public class Administrador implements Serializable {
-	private String usuario;
-	private String contrasena;
-	private ArrayList<Solicitud> solicitudes;
-
-	public  ArrayList<Solicitud>  getSolicitudes() {
-		return new ArrayList<Solicitud>(solicitudes);
+public class Administrador {
+	private HashMap<LocalDate, ArrayList<Evento>> eventosPorFecha;
+	private HashMap<Organizador, ArrayList<Evento>> eventosPorOrganizador;
+	
+	public void fijarTarifaImpresion(int valor) {
+		Tiquete.setImpresion(valor);
 	}
-	public Administrador(String usuario, String contrasena) {
-		this.usuario = usuario;
-		this.contrasena = contrasena;
-		this.solicitudes = new ArrayList<Solicitud>();
+	
+	public void anadirTarifaTipoEvento(String tipoEvento, double valor) {
+		Evento.addTipoEvento(tipoEvento, valor);
 	}
-
-	public boolean login(String usuario, String contrasena) {
-		return usuario.equals(this.usuario) && contrasena.equals(this.contrasena);
-	}
-
-	public void agregarSolicitud(Solicitud solicitud) {
-		this.solicitudes.add(solicitud);
-	}
-	public void mostrarSolicitudesPendientes() {
-		if (solicitudes.isEmpty()) {
-			System.out.println("No hay solicitudes pendientes.");
-		} else {
-			for (int i = 0; i < solicitudes.size(); i++) {
-				Solicitud solicitud = solicitudes.get(i);
-				System.out.println((i) + ". " + solicitud.getTipo() + " - Solicitante: " + solicitud.getSolicitante().getLogin() + " - Descripción: " + solicitud.getDescripcion());
-			}
-		}
-	}
-	public void atenderSolicitud (Solicitud solicitud, boolean aceptar) throws Exception {
-		if (aceptar) {
-			solicitud.aceptarSolicitud();
-		}  else {
-			solicitud.rechazarSolicitud();
-		}
-		this.solicitudes.remove(solicitud);
-
-	}
-
-	public double obtenerGananciasGenerales(ArrayList<Evento> eventos) {
+	
+	public double gananciasPorEvento(Evento evento) {
 		double ganancias = 0;
-		for (Evento evento : eventos) {
-			Collection<Localidad> localidades = evento.getLocalidades().values();
-			for (Localidad localidad : localidades) {
-				for (Tiquete tiq : localidad.getTiquetesUsados().values()) {
-					ganancias += tiq.getPrecioReal() - tiq.getPrecioBase();
-				}
-				for (TiqueteMultiple tiqM : localidad.getTiquetesMultiplesUsados().values()) {
-					if (tiqM instanceof TiqueteMultipleUnicoEvento) {
-						TiqueteMultipleUnicoEvento tiqueteMultipleUE = (TiqueteMultipleUnicoEvento) tiqM;
-						for (Tiquete tiq : tiqueteMultipleUE.getTiquetes()) {
-							ganancias += tiq.getPrecioReal() - tiq.getPrecioBase();
-						}
-					} else if (tiqM instanceof TiqueteMultipleVariosEventos) {
-						TiqueteMultipleVariosEventos tiqueteMultipleVE = (TiqueteMultipleVariosEventos) tiqM;
-						for (Tiquete tiq : tiqueteMultipleVE.getTiquetes().values()) {
-							ganancias += tiq.getPrecioReal() - tiq.getPrecioBase();
-						}
-					}
-				}
-			}
+		for (Localidad l: evento.getLocalidades()) {
+			ganancias += consultarGananciasLocalidad(evento, l);
 		}
 		return ganancias;
 	}
-
-	public double obtenerGananciasEvento(Evento evento) {
+	
+	private double consultarGananciasLocalidad(Evento evento, Localidad localidad) {
 		double ganancias = 0;
-		Set<Localidad> localidades = (Set<Localidad>) evento.getLocalidades().values();
-		for (Localidad localidad:localidades) {
-			for(Tiquete tiq: localidad.getTiquetesUsados().values()) {
-				ganancias += tiq.getPrecioReal() - tiq.getPrecioBase();
-			}
-			for (TiqueteMultiple tiqM : localidad.getTiquetesMultiplesUsados().values()) {
-				if (tiqM instanceof TiqueteMultipleUnicoEvento) {
-					TiqueteMultipleUnicoEvento tiqueteMultipleUE = (TiqueteMultipleUnicoEvento) tiqM;
-					for (Tiquete tiq: tiqueteMultipleUE.getTiquetes()) {
-						ganancias += tiq.getPrecioReal() - tiq.getPrecioBase();
-					}
-				} else if (tiqM instanceof TiqueteMultipleVariosEventos) {
-					TiqueteMultipleVariosEventos tiqueteMultipleVE = (TiqueteMultipleVariosEventos) tiqM;
-					for (Tiquete tiq: tiqueteMultipleVE.getTiquetes().values()) {
-						ganancias += tiq.getPrecioReal() - tiq.getPrecioBase();
-					}
-				}
+		for (Tiquete t: localidad.getTiquetes()) {
+			if (t.isComprado() && !t.getCliente().equals(evento.getOrganizador())) {
+				ganancias += t.getPrecioReal() - t.getPrecioBase();
 			}
 		}
 		return ganancias;
 	}
 	
-	public void realizarReembolsoEvento(Evento evento) {
-		Set<Localidad> localidades = (Set<Localidad>) evento.getLocalidades().values();
-		for (Localidad localidad:localidades) {
-			for(Tiquete tiq: localidad.getTiquetesUsados().values()) {
-				Usuario usuario = tiq.getUsuario();
-				usuario.setSaldoVirtual(usuario.getSaldoVirtual() + tiq.getPrecioBase());
-				tiq.setPrecioBase(0);
-				tiq.setPrecioReal(tiq.getPrecioReal()- tiq.getPrecioBase());
+	public double gananciasPorFecha(LocalDate fecha) {
+		double ganancias = 0;
+		for(Evento e: this.eventosPorFecha.get(fecha)) {
+			ganancias += gananciasPorEvento(e);
+		}
+		return ganancias;
+	}
+	
+	public double gananciasPorOrganizador(Organizador organizador) {
+		double ganancias = 0;
+		for(Evento e: this.eventosPorOrganizador.get(organizador)) {
+			ganancias += gananciasPorEvento(e);
+		}
+		return ganancias;
+	}
+	
+	public double gananciasGlobales() {
+		double ganancias = 0;
+		for(ArrayList<Evento> eventos: this.eventosPorFecha.values()) {
+			for (Evento e:eventos) {
+				ganancias += gananciasPorEvento(e);
 			}
-			for (TiqueteMultiple tiqM: localidad.getTiquetesMultiplesUsados().values()) {
-				if (tiqM instanceof TiqueteMultipleUnicoEvento) {
-					TiqueteMultipleUnicoEvento tiqueteMultipleUE = (TiqueteMultipleUnicoEvento) tiqM;
-					for (Tiquete tiq: tiqueteMultipleUE.getTiquetes()) {
-						Usuario usuario = tiq.getUsuario();
-						usuario.setSaldoVirtual(usuario.getSaldoVirtual() + tiq.getPrecioBase());
-						tiq.setPrecioBase(0);
-						tiq.setPrecioReal(tiq.getPrecioReal()- tiq.getPrecioBase());
-					}
-				} else if (tiqM instanceof TiqueteMultipleVariosEventos) {
-					TiqueteMultipleVariosEventos tiqueteMultipleVE = (TiqueteMultipleVariosEventos) tiqM;
-					for (Tiquete tiq: tiqueteMultipleVE.getTiquetes().values()) {
-						Usuario usuario = tiq.getUsuario();
-						usuario.setSaldoVirtual(usuario.getSaldoVirtual() + tiq.getPrecioBase());
-						tiq.setPrecioBase(0);
-						tiq.setPrecioReal(tiq.getPrecioReal()- tiq.getPrecioBase());
-					}
-				}
+		}
+		return ganancias;
+	}
+	
+	public void reembolsarTiqueteCancelacionEvento(Cliente cliente,Tiquete tiquete) {
+		cliente.eliminarTiquete(tiquete);
+		cliente.actualizarSaldoVirtual(tiquete.getPrecioReal()-Tiquete.impresion);
+		tiquete.setPrecioBase(0);
+		tiquete.setPrecioReal(Tiquete.impresion);
+		tiquete.setTransferible(false);
+	}
+	
+	public void reembolsarTiqueteCancelacionEventoInsolvencia(Cliente cliente,Tiquete tiquete) {
+		cliente.eliminarTiquete(tiquete);
+		cliente.actualizarSaldoVirtual(tiquete.getPrecioBase());
+		tiquete.setPrecioReal(tiquete.getPrecioReal()-tiquete.getPrecioBase());
+		tiquete.setPrecioBase(0);
+		tiquete.setTransferible(false);
+	}
+	
+	public void reembolsarTiqueteCalamidad(Cliente cliente,Tiquete tiquete) {
+		cliente.eliminarTiquete(tiquete);
+		cliente.actualizarSaldoVirtual(tiquete.getPrecioReal());
+		tiquete.setPrecioReal(0);
+		tiquete.setPrecioBase(0);
+		tiquete.setTransferible(false);
+	}
+	
+	public void cancelarEvento(Evento evento) {
+		evento.setEstado("CANCELADO");
+		for (Localidad l: evento.getLocalidades()) {
+			for (Tiquete t: l.getTiquetes()) {
+				reembolsarTiqueteCancelacionEvento(t.getCliente(), t);
 			}
 		}
 	}
-	public double obtenerGananciasOrganizador(Organizador organizador) {
-		return organizador.obtenerGananciasGlobales();
+	
+	public void cancelarEventoInsolvencia(Evento evento) {
+		evento.setEstado("CANCELADO");
+		for (Localidad l: evento.getLocalidades()) {
+			for (Tiquete t: l.getTiquetes()) {
+				reembolsarTiqueteCancelacionEventoInsolvencia(t.getCliente(), t);
+			}
+		}
+	}
+	
+	public void añadirEvento(Evento evento) {
+		if(this.eventosPorFecha.containsKey(evento.getFecha())) {
+			ArrayList<Evento> lista = this.eventosPorFecha.get(evento.getFecha());
+			if (lista.equals(null)) {
+				lista = new ArrayList<Evento>();
+			}
+			lista.add(evento);
+		}else {
+			ArrayList<Evento> lista = new ArrayList<Evento>();
+			lista.add(evento);
+			this.eventosPorFecha.put(evento.getFecha(), lista);
+		}
+		
+		if(this.eventosPorOrganizador.containsKey(evento.getOrganizador())) {
+			ArrayList<Evento> lista = this.eventosPorOrganizador.get(evento.getOrganizador());
+			if (lista.equals(null)) {
+				lista = new ArrayList<Evento>();
+			}
+			lista.add(evento);
+		}else {
+			ArrayList<Evento> lista = new ArrayList<Evento>();
+			lista.add(evento);
+			this.eventosPorOrganizador.put(evento.getOrganizador(), lista);
+		}
+		
 	}
 }
-
-

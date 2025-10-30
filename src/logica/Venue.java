@@ -1,12 +1,12 @@
 package logica;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.io.Serializable;
 
-public class Venue implements Serializable{
+public class Venue {
 	public HashMap<LocalDate,Evento> eventos;
+	public ArrayList<String> restricciones;
 	public int capacidad;
 	public String nombre;
 	public String ubicacion;
@@ -17,6 +17,7 @@ public class Venue implements Serializable{
 		this.nombre = nombre;
 		this.ubicacion = ubicacion;
 		this.eventos = new HashMap<LocalDate, Evento>();
+		this.restricciones = new ArrayList<String>();
 	}
 
 
@@ -69,5 +70,12 @@ public class Venue implements Serializable{
 	    sb.append('}');
 	    return sb.toString();
 	}
-
+	
+	public void asociarFecha(LocalDate fecha, Evento evento) {
+		this.eventos.put(fecha, evento);
+	}
+	
+	public void anadirRestricciones(String restriccion) {
+		this.restricciones.add(restriccion);
+	}
 }

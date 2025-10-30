@@ -1,31 +1,21 @@
 package logica;
-import java.io.Serializable;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 
-public class TiqueteEnumerado extends Tiquete implements Serializable{
+public class TiqueteEnumerado extends Tiquete{
 	private int idSilla;
 	public static final String ENUMERADO = "ENUMERADO";
-	
-	public TiqueteEnumerado(Integer idLocalidad, Evento evento, Usuario usuario, int idSilla) {
-		super(idLocalidad, evento, usuario);
-		this.tipo = ENUMERADO;
+
+	public TiqueteEnumerado(double precioBase, double cargoPorServicio, LocalDate fecha, LocalTime hora, int idSilla) {
+		super(precioBase, cargoPorServicio, fecha, hora);
+		this.tipoTiquete = ENUMERADO;
 		this.idSilla = idSilla;
 	}
-	
+
 	public int getIdSilla() {
 		return idSilla;
 	}
-
-	/* 
-	@Override
-	public String toString() {
-		return "TiqueteEnumerado [idSilla=" + idSilla + ", localidad=" + localidad + ", fecha="
-				+ fecha + ", hora=" + hora + ", id=" + id + ", precioBase=" + precioBase
-				+ ", usado=" + usado + ", evento=" + evento + ", tipo=" + tipo + "]";
-	}
-
-	*/
-
 	
-
+	
 }

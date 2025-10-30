@@ -1,121 +1,151 @@
 package logica;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Set;
-import java.io.Serializable;
-import Exepciones.VenueNoDisponibleException;
 
-public class Organizador extends Usuario implements Serializable {
-
-
+public class Organizador extends Cliente{
+	private ArrayList<Evento> eventos;
+	private Administrador administrador;
+	private final static String ORGANIZADOR = "ORGANIZADOR";
 	
-	protected HashMap<String,Evento> eventosCreados;
-	protected HashMap<Evento,HashMap<Localidad, Integer>> ganancias;
-	
-	public Organizador(String login, String contrasena) {
+	public Organizador(String login, String contrasena, Administrador administrador) {
 		super(login, contrasena);
-		this.eventosCreados = new HashMap<String, Evento>();
-		this.ganancias = new HashMap<Evento,HashMap<Localidad, Integer>>();
-
-
+		this.tipoCliente = ORGANIZADOR;
+		this.eventos = new ArrayList<Evento>();
+		this.administrador = administrador;
 	}
 	
-	public Evento crearEvento(String nombreEvento, LocalDate fecha, LocalTime hora, Venue venue, HashMap<Integer, Localidad> localidades, String tipoEvento) throws VenueNoDisponibleException {
+	public Evento crearEvento(Venue venue, String tipoDeEvento, LocalDate fecha, LocalTime hora) throws Exception {
 		if (!venue.getEventos().get(fecha).equals(null)) {
-			throw new VenueNoDisponibleException(venue);
-		}else {
-			Evento evento = new Evento(nombreEvento, fecha, hora, venue, this, localidades, tipoEvento);
-			eventosCreados.put(evento.getNombre(), evento);
-			venue.eventos.put(fecha, evento);
-			return evento;
+			throw new Exception();
 		}
-		
+		Evento evento = new Evento(venue, this, tipoDeEvento, fecha, hora);
+		this.eventos.add(evento);
+		venue.asociarFecha(fecha, evento);
+		administrador.añadirEvento(evento);
+		return evento;
 	}
 	
-	public Localidad crearLocalidad (String nombre, double precioTiquete, int capacidad, boolean numerada, Venue venue) {
-		return new Localidad(nombre, precioTiquete, capacidad, numerada, venue);
+	public Localidad anadirLocalidadAEvento(String nombre, int capacidad, double precioTiquete, String tipoTiquete, Evento evento) throws Exception {
+		if(evento.capacidadActual() + capacidad > evento.getVenue().getCapacidad()) {
+			throw new Exception();
+		}
+		Localidad localidad = new Localidad(nombre, capacidad, precioTiquete, tipoTiquete, evento);
+		return localidad;
 	}
-	
-	public double obtenerGananciasGlobales() {
-		Collection<Evento> eventos = eventosCreados.values();
-		double ganancias = 0;
-		for (Evento evento:eventos) {
-			Collection<Localidad> localidades = evento.getLocalidades().values();
 
-			for (Localidad localidad:localidades) {
-				for(Tiquete tiq: localidad.getTiquetesUsados().values()) {
-					ganancias += tiq.precioBase;
-				}
-				for (TiqueteMultiple tiqM: localidad.getTiquetesMultiplesUsados().values()) {
-					if (tiqM instanceof TiqueteMultipleUnicoEvento) {
-						TiqueteMultipleUnicoEvento tiqueteMultipleUE = (TiqueteMultipleUnicoEvento) tiqM;
-						for (Tiquete tiq: tiqueteMultipleUE.getTiquetes()) {
-							ganancias += tiq.precioBase;
-						}
-					} else if (tiqM instanceof TiqueteMultipleVariosEventos) {
-						TiqueteMultipleVariosEventos tiqueteMultipleVE = (TiqueteMultipleVariosEventos) tiqM;
-						for (Tiquete tiq: tiqueteMultipleVE.getTiquetes().values()) {
-							ganancias += tiq.precioBase;
-						}
-					}
-				}
+	public Localidad anadirLocalidadAEvento(String nombre, int capacidad, double precioTiquete, String tipoTiquete, Evento evento, double descuento) throws Exception {
+		if(evento.capacidadActual() + capacidad > evento.getVenue().getCapacidad()) {
+			throw new Exception();
+		}
+		Localidad localidad = new Localidad(nombre, capacidad, precioTiquete, tipoTiquete, evento, descuento);
+		return localidad;
+	}
+	
+	public Localidad anadirLocalidadAEvento(String nombre, int capacidad, double precioTiquete, String tipoTiquete, Evento evento, int capacidadTiquetesMultiples) throws Exception {
+		if(evento.capacidadActual() + capacidad > evento.getVenue().getCapacidad()) {
+			throw new Exception();
+		}
+		Localidad localidad = new Localidad(nombre, capacidad, precioTiquete, tipoTiquete, evento, capacidadTiquetesMultiples);
+		return localidad;
+	}
+	
+	public Localidad anadirLocalidadAEvento(String nombre, int capacidad, double precioTiquete, String tipoTiquete, Evento evento, double descuento, int capacidadTiquetesMultiples) throws Exception {
+		if(evento.capacidadActual() + capacidad > evento.getVenue().getCapacidad()) {
+			throw new Exception();
+		}
+		Localidad localidad = new Localidad(nombre, capacidad, precioTiquete, tipoTiquete, evento, descuento, capacidadTiquetesMultiples);
+		return localidad;
+	}
+	
+	public double consultarGananciasGlobales() {
+		double ganancias = 0;
+		for(Evento e: this.eventos) {
+			ganancias += consultarGananciasEvento(e);
+		}
+		return ganancias;
+	}
+	
+	public double consultarGananciasEvento(Evento evento) {
+		double ganancias = 0;
+		for (Localidad l: evento.getLocalidades()) {
+			ganancias += consultarGananciasLocalidad(l);
+		}
+		return ganancias;
+	}
+	
+	public double consultarGananciasLocalidad(Localidad localidad) {
+		double ganancias = 0;
+		for (Tiquete t: localidad.getTiquetes()) {
+			if (t.isComprado() && !t.getCliente().equals(this)) {
+				ganancias += t.getPrecioBase();
 			}
 		}
 		return ganancias;
 	}
 	
-	public double obtenerGananciasEvento(Evento evento) {
-		double ganancias = 0;
-		Set<Localidad> localidades = (Set<Localidad>) evento.getLocalidades().values();
-		for (Localidad localidad:localidades) {
-			for(Tiquete tiq: localidad.getTiquetesUsados().values()) {
-				ganancias += tiq.precioBase;
-			}
-			for (TiqueteMultiple tiqM: localidad.getTiquetesMultiplesUsados().values()) {
-				if (tiqM instanceof TiqueteMultipleUnicoEvento) {
-					TiqueteMultipleUnicoEvento tiqueteMultipleUE = (TiqueteMultipleUnicoEvento) tiqM;
-					for (Tiquete tiq: tiqueteMultipleUE.getTiquetes()) {
-						ganancias += tiq.precioBase;
-					}
-				} else if (tiqM instanceof TiqueteMultipleVariosEventos) {
-					TiqueteMultipleVariosEventos tiqueteMultipleVE = (TiqueteMultipleVariosEventos) tiqM;
-					for (Tiquete tiq: tiqueteMultipleVE.getTiquetes().values()) {
-						ganancias += tiq.precioBase;
-					}
-				}
+	public double consultarPorcentajeGlobales() {
+		double ganancias = cantidadTiqueteGlobalVendido();
+		double total = cantidadTiqueteGlobal();
+		return ganancias/total;
+	}
+	
+	public double consultarPorcentajeEvento(Evento evento) {
+		double ganancias = cantidadTiqueteEvento(evento);
+		double total = cantidadTiqueteEvento(evento);
+		return ganancias/total;
+	}
+	
+	public double consultarPorcentajeLocalidad(Localidad localidad) {
+		double ganancias = cantidadTiqueteLocalidadVendido(localidad);
+		double total = cantidadTiqueteLocalidad(localidad);
+		return ganancias/total;
+	}
+	
+	public int cantidadTiqueteGlobal() {
+		int total = 0;
+		for (Evento e: this.eventos) {
+			total += cantidadTiqueteEvento(e);
+		}
+		return total;
+	}
+	
+	public int cantidadTiqueteEvento(Evento evento) {
+		int total = 0;
+		for (Localidad l:evento.getLocalidades()) {
+			total += cantidadTiqueteLocalidad(l);
+		}
+		return total;
+	}
+	
+	public int cantidadTiqueteLocalidad(Localidad localidad) {
+		return localidad.getTiquetes().size();
+	}
+	
+	public int cantidadTiqueteGlobalVendido() {
+		int total = 0;
+		for (Evento e: this.eventos) {
+			total += cantidadTiqueteEventoVendido(e);
+		}
+		return total;
+	}
+	
+	public int cantidadTiqueteEventoVendido(Evento evento) {
+		int total = 0;
+		for (Localidad l:evento.getLocalidades()) {
+			total += cantidadTiqueteLocalidadVendido(l);
+		}
+		return total;
+	}
+	
+	public int cantidadTiqueteLocalidadVendido(Localidad localidad) {
+		int cantidad = 0;
+		for(Tiquete t: localidad.getTiquetes()) {
+			if(t.isComprado()) {
+				cantidad++;
 			}
 		}
-		return ganancias;
+		return cantidad;
 	}
-	
-	public double obtenerGananciasLocalidad(Evento evento, Localidad localidad) {
-		double ganancias = 0;
-			for(Tiquete tiq: localidad.getTiquetesUsados().values()) {
-				ganancias += tiq.precioBase;
-			}
-			for (TiqueteMultiple tiqM: localidad.getTiquetesMultiplesUsados().values()) {
-				if (tiqM instanceof TiqueteMultipleUnicoEvento) {
-					TiqueteMultipleUnicoEvento tiqueteMultipleUE = (TiqueteMultipleUnicoEvento) tiqM;
-					for (Tiquete tiq: tiqueteMultipleUE.getTiquetes()) {
-						ganancias += tiq.precioBase;
-					}
-				} else if (tiqM instanceof TiqueteMultipleVariosEventos) {
-					TiqueteMultipleVariosEventos tiqueteMultipleVE = (TiqueteMultipleVariosEventos) tiqM;
-					for (Tiquete tiq: tiqueteMultipleVE.getTiquetes().values()) {
-						ganancias += tiq.precioBase;
-					}
-				}
-			}
-		return ganancias;
-	}
-	
-	public record Tupla<A, B>(A primero, B segundo) {}
-	public Tupla<Evento, String> solicitarCancelarEvento(Evento evento, String razon) {
-		return new Tupla<>(evento, razon);
-	}
-	
-	
 }
