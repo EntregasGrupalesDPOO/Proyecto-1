@@ -2,6 +2,8 @@ package Marketplace;
 
 import java.util.ArrayList;
 
+import Exepciones.SaldoInsuficienteException;
+import Exepciones.TiqueteNoTransferibleException;
 import logica.Tiquete;
 import logica.TiqueteMultiple;
 import logica.Cliente;
@@ -16,13 +18,19 @@ public class Oferta {
     private boolean vendida;
     private ArrayList<ContraOferta> contraOfertas;
 
-    public Oferta(Tiquete tiquete, TiqueteMultiple tiqueteMultiple, Cliente vendedor, String descripcion, double precio) {
+    public Oferta(Tiquete tiquete, TiqueteMultiple tiqueteMultiple, Cliente vendedor, String descripcion, double precio) throws TiqueteNoTransferibleException {
         if (tiquete != null && tiqueteMultiple != null) {
             throw new IllegalArgumentException("Una oferta no puede tener ambos tipos de tiquete.");
         }
         if (tiquete == null && tiqueteMultiple == null) {
             throw new IllegalArgumentException("Debe tener al menos un tiquete.");
         }
+        if (tiqueteMultiple!=null) {
+        	if (tiqueteMultiple.isTransferible()) {
+        	throw new TiqueteNoTransferibleException(tiqueteMultiple);
+        }
+        }
+        
 
         this.tiquete = tiquete;
         this.tiqueteMultiple = tiqueteMultiple;
@@ -72,6 +80,8 @@ public class Oferta {
     public boolean isVendida() {
         return vendida;
     }
+    
+
 
     public void setPrecio(double precio) {
         this.precio = precio;
@@ -86,6 +96,9 @@ public class Oferta {
     }
     
     //a hacer : AcceptarOferta
+    public void acceptarOferta(boolean usarSaldo) {
+    	
+    }
     
 
     @Override

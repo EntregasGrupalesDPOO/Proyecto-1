@@ -15,6 +15,7 @@ import Exepciones.TiqueteNoTransferibleException;
 import Exepciones.TiqueteVencidoFecha;
 import Exepciones.TransferirTiqueteDeluxeException;
 import Exepciones.UsuarioNoEncontradoException;
+import Marketplace.Oferta;
 import Exepciones.PasswordIncorrectoException;
 import java.io.Serializable;
 
@@ -292,6 +293,26 @@ public abstract class Usuario implements Serializable {
 				realizarReembolso(tiq);
 			}
 		}
+	}
+	
+	public void acceptarOferta(Oferta oferta, boolean usarSaldo) throws Exception {
+		if (usarSaldo == true && this.saldoVirtual < oferta.getPrecio()){
+			throw new SaldoInsuficienteException(this);
+    	}
+    	this.setSaldoVirtual(this.getSaldoVirtual()-oferta.getPrecio());
+        oferta.setVendida(true);
+        //transferirTiquete
+        Cliente vendedorOferta= oferta.getVendedor();
+        vendedorOferta.setSaldoVirtual(vendedorOferta.getSaldoVirtual()+oferta.getPrecio());
+        boolean multiple=oferta.esMultiple();
+        
+        if (multiple){
+        	
+        	vendedorOferta.transferirTiqueteMultiple(this.login, this.contrasena,oferta.getTiqueteMultiple() );
+        }
+        else {
+        	vendedorOferta.transferirTiquete(this.login, this.contrasena,oferta.getTiquete() );
+        }
 	}
 	
 	public void usarTiquete(Tiquete tiquete) {
