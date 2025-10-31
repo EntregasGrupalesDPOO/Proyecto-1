@@ -117,5 +117,8 @@ public class Organizador extends Usuario implements Serializable {
 		return new Tupla<>(evento, razon);
 	}
 	
+	public HashMap<String,Evento> getEventosCreados(){
+		return this.eventosCreados;
+	}
 	
 }

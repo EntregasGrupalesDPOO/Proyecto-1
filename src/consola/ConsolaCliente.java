@@ -79,9 +79,9 @@ public class ConsolaCliente {
 
         try {
             sistema.comprarTiquetes(cantidad, evento, idLocalidad);
-            System.out.println("✅ Compra realizada con éxito.");
+            System.out.println("Compra realizada con éxito.");
         } catch (Exception e) {
-            System.out.println("❌ Error al comprar: " + e.getMessage());
+            System.out.println("Error al comprar: " + e.getMessage());
         }
     }
 
@@ -130,7 +130,7 @@ public class ConsolaCliente {
                 System.out.println("Tipo inválido.");
             }
         } catch (Exception e) {
-            System.out.println("❌ Error: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
@@ -141,9 +141,9 @@ public class ConsolaCliente {
         String razon = scanner.nextLine();
         try {
             sistema.solicitarReembolso(id, razon);
-            System.out.println("✅ Solicitud enviada al administrador.");
+            System.out.println("Solicitud enviada al administrador.");
         } catch (Exception e) {
-            System.out.println("❌ Error: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
@@ -222,7 +222,7 @@ public class ConsolaCliente {
             return;
         }
         sistema.eliminarOferta(oferta);
-        System.out.println("✅ Oferta eliminada.");
+        System.out.println("Oferta eliminada.");
     }
 
     // === MÉTODOS AUXILIARES ===
