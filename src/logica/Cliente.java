@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import Exepciones.SaldoInsuficienteException;
+import Marketplace.Oferta;
+
 public class Cliente {
 	protected String login;
 	protected String contrasena;
@@ -145,5 +148,50 @@ public class Cliente {
 	public void actualizarSaldoVirtual(double valor) {
 		this.saldoVirtual += valor;
 	}
+
+public void acceptarOferta(Oferta oferta, boolean usarSaldo) throws Exception {
+	if (usarSaldo == true && this.saldoVirtual < oferta.getPrecio()){
+		throw new SaldoInsuficienteException(this);
+	}
+	this.setSaldoVirtual(this.getSaldoVirtual()-oferta.getPrecio());
+    oferta.setVendida(true);
+    //transferirTiquete
+    Cliente vendedorOferta= oferta.getVendedor();
+    vendedorOferta.setSaldoVirtual(vendedorOferta.getSaldoVirtual()+oferta.getPrecio());
+    vendedorOferta.transferirTiquete(oferta.getTiquete(),this.login, this.contrasena );
+    
+}
+
+public String getLogin() {
+	return login;
+}
+
+
+
+public void setLogin(String login) {
+	this.login = login;
+}
+
+
+
+public String getContrasena() {
+	return contrasena;
+}
+
+
+
+public void setContrasena(String contrasena) {
+	this.contrasena = contrasena;
+}
+
+
+
+public double getSaldoVirtual() {
+	return this.saldoVirtual;
+}
+
+public void setSaldoVirtual(double saldo) {
+	this.saldoVirtual=saldo;
+}
 }
 

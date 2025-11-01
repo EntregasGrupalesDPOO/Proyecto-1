@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import Persistencia.ArchivoSerializable;
 import java.io.Serializable;
-
+import Marketplace.*;
 
 import Exepciones.UsuarioNoEncontradoException;
 
@@ -26,7 +26,7 @@ public class BoletasMaster implements Serializable{
 	private Administrador administrador; 
 	private Usuario usuarioActual;
 	private transient ArchivoSerializable archivoSerializable = new ArchivoSerializable();
-	
+	private MarketPlace marketPlace;
 	
 	
 
@@ -45,7 +45,7 @@ public class BoletasMaster implements Serializable{
 		this.eventos = new ArrayList<Evento>();
 		this.eventosPorFecha = new HashMap<LocalDate, ArrayList<Evento>>();
 		this.tiquetesMultiples =  new HashMap<Integer, TiqueteMultiple>();
-		
+		this.marketPlace = new Marketplace.MarketPlace();
 		 
 	
 
@@ -298,7 +298,81 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 
 
 
+	// MÉTODOS MARKETPLACE
+		//quisas crear otras exceptiones para marketPlace
 
+		public void publicarOferta(Tiquete tiquete, TiqueteMultiple tm, String descripcion, double precio) {
+		    if (!(usuarioActual instanceof Cliente)) {
+		        System.out.println("Solo los clientes pueden publicar ofertas.");
+		        return;
+		    }
+
+		        Cliente vendedor = (Cliente) usuarioActual;
+		        Oferta nueva;
+				try {
+					nueva = new Oferta(tiquete, tm, vendedor, descripcion, precio);
+					marketPlace.publicarOferta(nueva);
+				} catch (TiqueteNoTransferibleException e) {
+					e.printStackTrace();
+				}
+		        
+		}
+
+		public void eliminarOferta(Oferta oferta) {
+		    if (!(usuarioActual instanceof Cliente)) {
+		    	return;
+		    }
+		    Cliente cliente = (Cliente) usuarioActual;
+		    if (oferta.getVendedor().equals(cliente)) {
+		        marketPlace.eliminarOferta(oferta, cliente);
+		    } else {
+		        System.out.println("No puedes eliminar una oferta que no te pertenece.");
+		    }
+		}
+
+		public void hacerContraOferta(Oferta oferta, double nuevoPrecio,boolean usarSaldo) {
+		    if (!(usuarioActual instanceof Cliente)) {
+		        System.out.println("Solo los clientes pueden hacer contraofertas.");
+		        return;
+		    }
+
+		    Cliente comprador = (Cliente) usuarioActual;
+		    ContraOferta contra = new ContraOferta(comprador,oferta, nuevoPrecio,usarSaldo);
+		    marketPlace.publicarContraOferta(contra);
+		}
+
+		public void aceptarContraOferta(ContraOferta contra) {
+		    Cliente vendedor = contra.getOfertaOriginal().getVendedor();
+		    if (!usuarioActual.equals(vendedor)) {
+		        System.out.println("Solo el vendedor puede aceptar una contraoferta.");
+		        return;
+		    }
+		    marketPlace.aceptarContraOferta(contra);
+		}
+
+		public void rechazarContraOferta(ContraOferta contra) {
+		    Cliente vendedor = contra.getOfertaOriginal().getVendedor();
+		    if (!usuarioActual.equals(vendedor)) {
+		        System.out.println("Solo el vendedor puede rechazar una contraoferta.");
+		        return;
+		    }
+		    marketPlace.rechazarContraOferta(contra);
+		}
+
+		public ArrayList<Oferta> verOfertas() {
+		    return new ArrayList<>(marketPlace.getOfertas());
+		}
+
+		public void verLogMarketplace() {
+		    if (!esAdministrador) {
+		        System.out.println("Solo el administrador puede ver el log del marketplace.");
+		        return;
+		    }
+		    System.out.println("===== LOG DEL MARKETPLACE =====");
+		    for (String evento : marketPlace.getLog().getEventos()) {
+		        System.out.println(evento);
+		    }
+		}
 
 
 
@@ -482,7 +556,18 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 	}
 
 
+	public void escribirMarketplace() {
+	    archivoSerializable.escribir(this.marketPlace, "./datos/marketplace.ser");
+	}
 
+	public void leerMarketplace() {
+	    Object obj = archivoSerializable.leer("./datos/marketplace.ser");
+	    if (obj != null) {
+	        this.marketPlace = (Marketplace.MarketPlace) obj;
+	    } else {
+	        this.marketPlace = new Marketplace.MarketPlace();
+	    }
+	}
 
 
 }
