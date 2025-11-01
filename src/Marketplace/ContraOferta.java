@@ -66,7 +66,7 @@ public class ContraOferta {
     	}
 
     public String getDescripcion() {
-    	return comprador.getLogin()+ " quiere comprar el tiquete para "+ ofertaOriginal.getTiquete().getEvento()+ " de " +ofertaOriginal.getVendedor()+
+    	return comprador.getLogin()+ " quiere comprar el tiquete : "+ ofertaOriginal.getTiquete().getId()+ " de " +ofertaOriginal.getVendedor()+
     			" al precio de "+ nuevoPrecio;
     }
     
