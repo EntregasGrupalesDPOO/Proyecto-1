@@ -9,11 +9,16 @@ public class Evento {
 	private Venue venue;
 	private Organizador organizador;
 	private ArrayList<Localidad> localidades;
-	private static HashMap<String, Double> tiposDeEventos = new HashMap<String,Double>();
+	public static HashMap<String, Double> tiposDeEventos = new HashMap<String,Double>();
 	private String tipoDeEvento;
 	private LocalDate fecha;
 	private LocalTime hora;
 	private String estado;
+
+	public static final String CULTURAL   = "Cultural";
+	public static final String DEPORTIVO  = "Deportivo";
+	public static final String MUSICAL    = "Musical";
+	public static final String RELIGIOSO  = "Religioso";
 	
 	public Evento(Venue venue, Organizador organizador, String tipoDeEvento, LocalDate fecha, LocalTime hora) {
 		this.venue = venue;
@@ -76,5 +81,11 @@ public class Evento {
 			capacidad += l.getCantidadCapacidad();
 		}
 		return capacidad;
+	}
+	public String getNombre (){
+		return this.venue.getNombre() + " - " + this.fecha.toString() + " - " + this.hora.toString();
+	}
+	public String getTipoDeEvento() {
+		return this.tipoDeEvento;
 	}
 }

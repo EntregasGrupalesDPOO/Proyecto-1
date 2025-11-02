@@ -1,10 +1,10 @@
 package Exepciones;
 
-import logica.Usuario;
+import logica.Cliente;
 
 public class ReembolsoNoPermitidoException extends Exception{
 	
-	public ReembolsoNoPermitidoException(Usuario usuario) {
+	public ReembolsoNoPermitidoException(Cliente usuario) {
         super("El reembolso para el usuario" + usuario.getLogin() + " no es permitido");
     }
     

@@ -1,5 +1,6 @@
 package logica;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ public class Administrador {
 		this.contrasena = contrasena;
 		this.eventosPorFecha = new HashMap<LocalDate, ArrayList<Evento>>();
 		this.eventosPorOrganizador = new HashMap<Organizador, ArrayList<Evento>>();
+		this.solicitudes = new ArrayList<Solicitud>();
 	}
 	// Método para autenticar al administrador
 	public boolean login(String login, String contrasena) {
@@ -142,6 +144,10 @@ public class Administrador {
 		}
 		
 	}
+	//metodos de solicitudes
+	public void agregarSolicitud(Solicitud solicitud) {
+		this.solicitudes.add(solicitud);
+	}
 
 	public String getLogin() {
 		return login;
@@ -167,7 +173,24 @@ public class Administrador {
 		return eventosPorOrganizador;
 	}
 	
-
+	public void mostrarSolicitudesPendientes
+	() {
+		for (Solicitud s: this.solicitudes) {
+			if (s.getEstado().equals(Solicitud.ESTADO_PENDIENTE)) {
+				System.out.println(s.toString());
+			}
+		}
+	}
+	public void atenderSolicitud(Solicitud solicitud, boolean aceptar) throws Exception {
+		if (aceptar) {
+			solicitud.aceptarSolicitud();
+		} else {
+			solicitud.rechazarSolicitud();
+		}
+	}
+	public ArrayList<Solicitud> getSolicitudes() {
+		return solicitudes;
+	}	
 
 	
 }

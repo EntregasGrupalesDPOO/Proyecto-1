@@ -117,6 +117,7 @@ public class BoletasMaster implements Serializable{
 			esAdministrador = true;
 			esCliente = false;
 			esOrganizador = false;
+			Solicitud.adm =  this.administrador;
 		}
 
 
@@ -226,32 +227,77 @@ public void comprarPaqueteDeluxe(Evento evento, String idLocalidad)
 	}
 
 	public void solicitarCancelacionEvento(Evento evento, String razon) {
-		administrador.agregarSolicitud(new SolicitudCancelacionEvento(this.usuarioActual, razon, evento, this.administrador));
+		administrador.agregarSolicitud(new SolicitudCancelacionEvento((Organizador)this.usuarioActual, razon, evento));
 
 	}
-	public void agendarEvento(String nombre, String descripcion, LocalDate fecha, LocalTime hora, Venue venue, String tipoEvento, List<Localidad> localidades) {
+	public void agendarEvento(Venue venue, Organizador organizador, String tipoDeEvento, LocalDate fecha, LocalTime hora) {
 
-		Evento nuevoEvento  =  (new Evento(nombre, fecha, hora, venue, (Organizador) this.usuarioActual, new HashMap<Integer, Localidad>(), tipoEvento));
+		Evento nuevoEvento  =  (new Evento( venue,  organizador,  tipoDeEvento,  fecha,  hora));
 		agregarEvento(nuevoEvento);
-		for (int i = 0; i < localidades.size(); i++) {
-			nuevoEvento.getLocalidades().put(i + 1, localidades.get(i));
-		}
+		System.out.println("Evento agendado: " + nuevoEvento.getTipoDeEvento() +  " Sin localidades asignadas.");
+
 
 	}
-	public void agendarEvento(String nombre, String descripcion, LocalDate fecha, LocalTime hora, Venue venue, String tipoEvento) {
 
-		Evento nuevoEvento  =  (new Evento(nombre, fecha, hora, venue, (Organizador) this.usuarioActual, new HashMap<Integer, Localidad>(), tipoEvento));
-		agregarEvento(nuevoEvento);
-		System.out.println("Evento agendado: " + nuevoEvento.getNombre()  +  " Sin localidades asignadas.");
-			
 
-	}
-	public Localidad crearLocalidadEvento(Evento evento, String nombre, double precioTiquete, int capacidad, boolean numerada) {
-		Localidad nuevaLocalidad = new Localidad(nombre, precioTiquete, capacidad, numerada, evento.getVenue());
-		int idLocalidad = evento.getLocalidades().size() + 1;
-		evento.getLocalidades().put(idLocalidad, nuevaLocalidad);
-		return nuevaLocalidad;
-	}
+
+// Helper de validacion para cliente organizador
+private Organizador getOrganizadorActual() throws Exception {
+    if (this.usuarioActual == null || !(this.usuarioActual instanceof Organizador)) {
+        throw new Exception("El usuario actual no es un Organizador.");
+    }
+    return (Organizador) this.usuarioActual;
+}
+
+//  Sin parámetros opcionales
+public Localidad crearLocalidadEvento(String nombre,
+                                      int capacidad,
+                                      double precioTiquete,
+                                      String tipoTiquete,
+                                      Evento evento) throws Exception {
+    Organizador org = getOrganizadorActual();
+    Localidad localidad = org.anadirLocalidadAEvento(nombre, capacidad, precioTiquete, tipoTiquete, evento);
+    return localidad;
+}
+
+//  Con descuento
+public Localidad crearLocalidadEvento(String nombre,
+                                      int capacidad,
+                                      double precioTiquete,
+                                      String tipoTiquete,
+                                      Evento evento,
+                                      double descuento) throws Exception {
+    Organizador org = getOrganizadorActual();
+    Localidad localidad = org.anadirLocalidadAEvento(nombre, capacidad, precioTiquete, tipoTiquete, evento, descuento);
+    return localidad;
+}
+
+//  Con capacidad de tiquetes múltiples
+public Localidad crearLocalidadEvento(String nombre,
+                                      int capacidad,
+                                      double precioTiquete,
+                                      String tipoTiquete,
+                                      Evento evento,
+                                      int capacidadTiquetesMultiples) throws Exception {
+    Organizador org = getOrganizadorActual();
+    Localidad localidad = org.anadirLocalidadAEvento(nombre, capacidad, precioTiquete, tipoTiquete, evento, capacidadTiquetesMultiples);
+    return localidad;
+}
+
+// Con descuento y capacidad de tiquetes múltiples
+public Localidad crearLocalidadEvento(String nombre,
+                                      int capacidad,
+                                      double precioTiquete,
+                                      String tipoTiquete,
+                                      Evento evento,
+                                      double descuento,
+                                      int capacidadTiquetesMultiples) throws Exception {
+    Organizador org = getOrganizadorActual();
+    Localidad localidad = org.anadirLocalidadAEvento(nombre, capacidad, precioTiquete, tipoTiquete, evento, descuento, capacidadTiquetesMultiples);
+  
+    return localidad;
+}
+
 
 
 
@@ -274,33 +320,114 @@ public void comprarPaqueteDeluxe(Evento evento, String idLocalidad)
 	public void atenderSolicitud(int nSolicitud, boolean aceptar) throws Exception {
 		Solicitud solicitud = administrador.getSolicitudes().get(nSolicitud);
 		if (aceptar){
-			solicitud.aceptarSolicitud();
+			Solicitud.adm.atenderSolicitud(solicitud, aceptar);
 		}
 		else {
 			solicitud.rechazarSolicitud();
-		}
+		} 
 		
-		administrador.atenderSolicitud(solicitud, aceptar);
 	} 
 
+	//metodos para obtener ganancias especificas o generales
+
 	public void obtenerGananciasGenerales(){
-		System.out.println("Las ganancias generales son: " + administrador.obtenerGananciasGenerales(this.eventos));
+		asegurarAdmin();
+		System.out.println("Las ganancias generales son: " + administrador.gananciasGlobales());
 	}
+
+
+private void asegurarAdmin() throws IllegalStateException {
+    if (!this.esAdministrador || this.administrador == null) {
+        throw new IllegalStateException("Se requieren privilegios de Administrador.");
+    }
+}
+
+// ------------------------
+// GANANCIAS POR ORGANIZADOR
+// ------------------------ 
+
+public void imprimirGananciasPorOrganizador(Organizador organizador) {
+    asegurarAdmin();
+    if (organizador == null) {
+        System.out.println("Organizador nulo. No se puede calcular ganancias.");
+        return;
+    }
+    double g = this.administrador.gananciasPorOrganizador(organizador);
+    System.out.printf("Ganancias del organizador %s: %.2f%n",
+            organizador.getLogin(), g);
+}
+
+public void imprimirGananciasPorTodosLosOrganizadores() {
+    asegurarAdmin();
+    if (this.organizadores == null || this.organizadores.isEmpty()) {
+        System.out.println("No hay organizadores registrados.");
+        return;
+    }
+
+    double total = 0.0;
+    for (Organizador org : this.organizadores.values()) {
+        if (org == null) continue;
+        double g = this.administrador.gananciasPorOrganizador(org);
+        total += g;
+        System.out.printf("Ganancias del organizador %s: %.2f%n",
+                org.getLogin(), g);
+    }
+    System.out.printf("Ganancias acumuladas (todos los organizadores): %.2f%n", total);
+}
+
+// --------------
+// GANANCIAS POR FECHA
+// --------------
+
+public void imprimirGananciasPorFecha(LocalDate fecha) {
+    asegurarAdmin();
+    if (fecha == null) {
+        System.out.println("Fecha nula. No se puede calcular ganancias.");
+        return;
+    }
+    if (this.eventosPorFecha == null || !this.eventosPorFecha.containsKey(fecha)) {
+        System.out.printf("No hay eventos en la fecha %s. Ganancias: 0.00%n", fecha);
+        return;
+    }
+    double g = this.administrador.gananciasPorFecha(fecha);
+    System.out.printf("Ganancias para la fecha %s: %.2f%n", fecha, g);
+}
+
+public void imprimirGananciasPorTodasLasFechas() {
+    asegurarAdmin();
+    if (this.eventosPorFecha == null || this.eventosPorFecha.isEmpty()) {
+        System.out.println("No hay fechas registradas en eventosPorFecha.");
+        return;
+    }
+
+    double total = 0.0;
+    for (LocalDate fecha : this.eventosPorFecha.keySet()) {
+        double g = 0.0;
+        if (this.eventosPorFecha.get(fecha) != null && !this.eventosPorFecha.get(fecha).isEmpty()) {
+            g = this.administrador.gananciasPorFecha(fecha);
+        }
+        total += g;
+        System.out.printf("Ganancias para la fecha %s: %.2f%n", fecha, g);
+    }
+    System.out.printf("Ganancias acumuladas (todas las fechas): %.2f%n", total);
+}
+
+
+	
 	public void fijarComisionPorTipoEvento (double cultural, double deportivo, double musical, double religioso) {
 		HashMap<String, Double> comisiones = new HashMap<String, Double>();
 		comisiones.put(Evento.CULTURAL, cultural);
 		comisiones.put(Evento.DEPORTIVO, deportivo);
 		comisiones.put(Evento.MUSICAL, musical);
 		comisiones.put(Evento.RELIGIOSO, religioso);
-		Evento.comisionEventos = comisiones;
-		Tiquete.tiposEventos=comisiones;
+		Evento.tiposDeEventos = comisiones;
 
 	}
 
 	public void mostrarComisionesPorTipoEvento() {
 		System.out.println("Comisiones por tipo de evento:");
-		for (String tipoEvento : Evento.comisionEventos.keySet()) {
-			System.out.println(tipoEvento + ": " + Evento.comisionEventos.get(tipoEvento) + "%");
+		for (String tipoEvento : Evento.tiposDeEventos.keySet()) {
+			System.out.println(tipoEvento + ": " + Evento.tiposDeEventos.get(tipoEvento) + "%");
 		}
 	}
 
@@ -473,13 +600,8 @@ public void comprarPaqueteDeluxe(Evento evento, String idLocalidad)
 		this.clientes = clientes;
 	}
 
-	public HashMap<String, Usuario> getUsuarios() {
-		return usuarios;
-	}
 
-	public void setUsuarios(HashMap<String, Usuario> usuarios) {
-		this.usuarios = usuarios;
-	}
+	
 
 	public Administrador getAdministrador() {
 		return administrador;
@@ -491,9 +613,7 @@ public void comprarPaqueteDeluxe(Evento evento, String idLocalidad)
 
 
 
-	public void setUsuarioActual(Usuario usuarioActual) {
-		this.usuarioActual = usuarioActual;
-	}
+	
 	
 	// Persistencia
 	

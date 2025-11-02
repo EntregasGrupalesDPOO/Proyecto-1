@@ -1,28 +1,30 @@
 package logica;
 
-import java.util.ArrayList;
 
-public class SolicitudCancelacionEvento extends Solicitud {
+import Exepciones.ReembolsoNoPermitidoException;
+
+public class SolicitudCancelacionEvento extends Solicitud implements IAprobable    {
 
     private Evento evento;
-    private Administrador administrador;
-    public SolicitudCancelacionEvento(Usuario solicitante, String descripcion, Evento evento, Administrador admin) {
-        super(solicitante, descripcion);
+    private Organizador solicitante;
+    public SolicitudCancelacionEvento(Organizador solicitante, String descripcion, Evento evento) {
+        super (solicitante, descripcion );
         this.evento = evento;
         this.tipo = "CancelacionEvento";
-        this.administrador = admin;
     }
 
     @Override
     public void aceptarSolicitud() {
-        administrador.(evento);
-        System.out.println("Solicitud de cancelación de evento aceptada. Se ha realizado el reembolso para el evento: " + evento.getNombre());
+        adm.cancelarEventoInsolvencia(evento);
+        this.estado = Solicitud.ESTADO_ACEPTADA;
+        System.out.println("Solicitud de cancelación de evento por insolvencia aceptada. Se ha realizado el reembolso para el evento: " + evento.getNombre());
     }
 
     @Override
-    public void rechazarSolicitud() throws Exception {
+    public void rechazarSolicitud() throws ReembolsoNoPermitidoException {
         System.out.println("Solicitud de cancelación de evento rechazada para el usuario " + this.solicitante.getLogin());
-        throw new UnsupportedOperationException("Unimplemented method 'rechazarSolicitud'");
+        this.estado = Solicitud.ESTADO_RECHAZADA;
+        throw new ReembolsoNoPermitidoException(solicitante);
     }
 
 }

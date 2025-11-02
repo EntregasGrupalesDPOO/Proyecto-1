@@ -2,44 +2,27 @@ package logica;
 
 import Exepciones.ReembolsoNoPermitidoException;
 
-public class SolicitudCalamidad extends Solicitud  {
+public class SolicitudCalamidad extends Solicitud implements IAprobable {
 
     
     private Tiquete tiqueteAsociado;
-    private TiqueteMultiple tiqueteAsociadoM;
-    private boolean esMultiple;
     
-    public SolicitudCalamidad(Usuario solicitante, String descripcion, Tiquete tiqueteAsociado) {
+    public SolicitudCalamidad(Cliente solicitante, String descripcion, Tiquete tiqueteAsociado) {
         super(solicitante, descripcion);
         this.tipo = "Calamidad";
         this.tiqueteAsociado = tiqueteAsociado;
-        this.esMultiple = false;
 
 
     }
-        public SolicitudCalamidad(Usuario solicitante, String descripcion, TiqueteMultiple tiqueteAsociado) {
-        super(solicitante, descripcion);
-        this.tipo = "Calamidad";
-        this.tiqueteAsociadoM = tiqueteAsociado;
-        this.esMultiple = true;
 
-
-    }
 
 
 
     public void aceptarSolicitud() {
 
-        if (esMultiple) {
-            solicitante.realizarReembolso(this.tiqueteAsociadoM);
-            System.out.println("Solicitud de calamidad aceptada. Se ha realizado el reembolso del tiquete multiple asociado a" + this.solicitante.getLogin());
-            return;
-        }
-        else{
-            solicitante.realizarReembolso(this.tiqueteAsociado);
-            System.out.println("Solicitud de calamidad aceptada. Se ha realizado el reembolso del tiquete asociado a" + this.solicitante.getLogin());
-            
-        }
+        adm.reembolsarTiqueteCalamidad(this.solicitante,this.tiqueteAsociado);
+        this.estado = Solicitud.ESTADO_ACEPTADA;
+        System.out.println("Solicitud de calamidad aceptada. Se ha realizado el reembolso para el tiquete ID: " + tiqueteAsociado.getId());
 
         
     }
@@ -47,7 +30,9 @@ public class SolicitudCalamidad extends Solicitud  {
 
     public void rechazarSolicitud() throws ReembolsoNoPermitidoException {
         System.out.println("Solicitud de calamidad rechazada para el usuario " + this.solicitante.getLogin());
+        this.estado = Solicitud.ESTADO_RECHAZADA;
         throw new ReembolsoNoPermitidoException(solicitante);
+
     }
 
 }
