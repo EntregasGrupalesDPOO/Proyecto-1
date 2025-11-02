@@ -3,6 +3,9 @@ package logica;
 import java.util.HashMap;
 import java.util.Map;
 
+import Exepciones.LocalidadNoExisteException;
+import Exepciones.TiqueteNoEncontradoException;
+
 public class TiqueteMultiEvento extends TiqueteMultiple {
 	private static final Map<Integer, Double> DESCUENTOS = new HashMap<>();
     static {
@@ -12,7 +15,7 @@ public class TiqueteMultiEvento extends TiqueteMultiple {
         DESCUENTOS.put(4, 0.15);  
     }
 	
-    public TiqueteMultiEvento(HashMap<Evento, String> eventos, Cliente cliente) {
+    public TiqueteMultiEvento(HashMap<Evento, String> eventos, Cliente cliente) throws Exception {
         // No tiene un solo precioBase ni una sola fecha, así que se pasan valores neutros
         super(0, 0, null, null, eventos.size());
         this.tipoTiquete = "MULTI_EVENTO";
@@ -21,7 +24,7 @@ public class TiqueteMultiEvento extends TiqueteMultiple {
         calcularPrecioTotal();
     }
 	
-	private void asociarTiquetes(HashMap<Evento, String> eventos) {
+	private void asociarTiquetes(HashMap<Evento, String> eventos) throws Exception {
 		for (Map.Entry<Evento, String> entry : eventos.entrySet()) {
 		    Evento evento = entry.getKey();
 		    String nombreLocalidad = entry.getValue();
@@ -30,7 +33,11 @@ public class TiqueteMultiEvento extends TiqueteMultiple {
 	    		Tiquete tiquete = l.obtenerTiqueteDisponible();
 	    		if (tiquete != null) {
 		    		this.tiquetes.add(tiquete);
+		    	} else {
+		    		throw new TiqueteNoEncontradoException(-1);
 		    	}
+	    	} else {
+	    		throw new LocalidadNoExisteException(nombreLocalidad);
 	    	}
 		}
 	}
