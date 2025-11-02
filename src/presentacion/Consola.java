@@ -1,4 +1,4 @@
-package presentacion;
+/*package presentacion;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -164,7 +164,7 @@ public class Consola {
             sistema.escribirAdministrador();
             sistema.escribirVenues();
 			*/
-            System.out.println("\n=== FIN DE LA SIMULACIÓN ===");
+/*            System.out.println("\n=== FIN DE LA SIMULACIÓN ===");
 
         } catch (Exception e) {
             System.out.println("Error durante la simulación: " + e.getMessage());
@@ -176,3 +176,4 @@ public class Consola {
         new Consola();
     }
 }
+*/
