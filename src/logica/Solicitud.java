@@ -3,7 +3,7 @@ package logica;
 public abstract class Solicitud {
 
     
-    protected Usuario solicitante;
+    protected Cliente solicitante;
 	protected String tipo;
     protected String descripcion;
 

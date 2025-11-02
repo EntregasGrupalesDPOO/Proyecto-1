@@ -24,11 +24,16 @@ public class Cliente {
 		this.tiquetes = new HashMap<Integer, Tiquete>();
 		clientes.put(login, this);
 	}
+
+	public boolean login(String login, String contrasena) {
+		return this.login.equals(login) && this.contrasena.equals(contrasena);
+	}
 	
 	
 	
 	// funciona si la localidad vende tiquetes multiples
-	public void comprarTiquete(int cantidad, Evento evento, String localidad, boolean comprarConSaldo) throws Exception {
+	public ArrayList<Tiquete> comprarTiquete(int cantidad, Evento evento, String localidad, boolean comprarConSaldo) throws Exception {
+		ArrayList<Tiquete> log = new ArrayList<Tiquete>();
 		Localidad l = evento.getLocalidadPorNombre(localidad);
 		if (l.getTipoTiquete().equals("MULTIPLE")) {
 			if(cantidad > TiqueteMultiple.getTiquetesMaximosPorTransaccion()) {
@@ -36,6 +41,7 @@ public class Cliente {
 			}
 		}
 		Tiquete ti = l.obtenerTiqueteDisponible();
+		log.add(ti);
 		if (comprarConSaldo) {
 			if (ti.getPrecioReal()*cantidad > this.saldoVirtual) {
 				throw new Exception();
@@ -44,18 +50,22 @@ public class Cliente {
 		}
 		for (int i = 0; i < cantidad; i++) {
 			Tiquete t = l.obtenerTiqueteDisponible();
+			log.add(t);
 			tiquetes.put(t.getId(), t);
 			t.setComprado(true);
 			t.setCliente(this);
 		}
+		return log;
 	}
 	
-	public void comprarTiquete(int cantidad, Evento evento, String localidad, int idSilla, boolean comprarConSaldo) throws Exception {
+	public ArrayList<Tiquete> comprarTiquete(int cantidad, Evento evento, String localidad, int idSilla, boolean comprarConSaldo) throws Exception {
+		ArrayList<Tiquete> log = new ArrayList<Tiquete>();
 		Localidad l = evento.getLocalidadPorNombre(localidad);
 		if(cantidad > Tiquete.getTiquetesMaximosPorTransaccion()) {
 			throw new Exception();
 		}
 		Tiquete ti = l.obtenerTiqueteDisponible(idSilla);
+		log.add(ti);
 		if (comprarConSaldo) {
 			if (ti.getPrecioReal() * cantidad > this.saldoVirtual) {
 				throw new Exception();
@@ -64,13 +74,15 @@ public class Cliente {
 		}
 		for (int i = 0; i < cantidad; i++) {
 			Tiquete t = l.obtenerTiqueteDisponible();
+			log.add(ti);
 			tiquetes.put(t.getId(), t);
 			t.setComprado(true);
 			t.setCliente(this);
 		}
+		return log;
 	}
 	
-	public void comprarTiqueteMultiEvento(HashMap<Evento, String> eventos, boolean comprarConSaldo) throws Exception {
+	public TiqueteMultiEvento comprarTiqueteMultiEvento(HashMap<Evento, String> eventos, boolean comprarConSaldo) throws Exception {
 		TiqueteMultiEvento t = new TiqueteMultiEvento(eventos, this);
 		if (eventos.size() > TiqueteMultiple.getTiquetesMaximosPorTransaccion()) {
 			throw new Exception();
@@ -84,13 +96,14 @@ public class Cliente {
 		tiquetes.put(t.getId(), t);
 		t.setComprado(true);
 		t.setCliente(this);
+		return t;
 	}
 
 	public String getTipoCliente() {
 		return tipoCliente;
 	}
 	
-	public void comprarPaqueteDeluxe(Evento evento, String localidad, boolean comprarConSaldo) throws Exception {
+	public PaqueteDeluxe comprarPaqueteDeluxe(Evento evento, String localidad, boolean comprarConSaldo) throws Exception {
 		PaqueteDeluxe pd = new PaqueteDeluxe(evento, localidad);
 		if (comprarConSaldo) {
 			if (pd.getTiquetePrincipal().getPrecioReal() > this.saldoVirtual) {
@@ -105,6 +118,7 @@ public class Cliente {
 		for (Tiquete t: pd.getCortesias()) {
 			this.tiquetes.put(t.getId(),t);
 		}
+		return pd;
 		
 	}
 	

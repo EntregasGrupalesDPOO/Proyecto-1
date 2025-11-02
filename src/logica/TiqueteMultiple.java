@@ -37,6 +37,9 @@ public abstract class TiqueteMultiple extends Tiquete{
 		}
 		return null;
 	}
+	public ArrayList<Tiquete> getTiquetes() {
+		return new ArrayList<Tiquete>(this.tiquetes);
+	}
 	
 	public static int getTiquetesMaximosPorTransaccion() {
 		return tiquetesMaximosPorTransaccionMultiples;

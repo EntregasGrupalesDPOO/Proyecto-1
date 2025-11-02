@@ -7,6 +7,20 @@ import java.util.HashMap;
 public class Administrador {
 	private HashMap<LocalDate, ArrayList<Evento>> eventosPorFecha;
 	private HashMap<Organizador, ArrayList<Evento>> eventosPorOrganizador;
+	private ArrayList<Solicitud> solicitudes;
+	private String login;
+	private String contrasena;
+
+	public Administrador(String login, String contrasena) {
+		this.login = login;
+		this.contrasena = contrasena;
+		this.eventosPorFecha = new HashMap<LocalDate, ArrayList<Evento>>();
+		this.eventosPorOrganizador = new HashMap<Organizador, ArrayList<Evento>>();
+	}
+	// Método para autenticar al administrador
+	public boolean login(String login, String contrasena) {
+		return this.login.equals(login) && this.contrasena.equals(contrasena);
+	}
 	
 	public void fijarTarifaImpresion(int valor) {
 		Tiquete.setImpresion(valor);
@@ -128,4 +142,32 @@ public class Administrador {
 		}
 		
 	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
+	}
+
+	public String getContrasena() {
+		return contrasena;
+	}
+
+	public void setContrasena(String contrasena) {
+		this.contrasena = contrasena;
+	}
+
+	public HashMap<LocalDate, ArrayList<Evento>> getEventosPorFecha() {
+		return eventosPorFecha;
+	}
+
+	public HashMap<Organizador, ArrayList<Evento>> getEventosPorOrganizador() {
+		return eventosPorOrganizador;
+	}
+	
+
+
+	
 }

@@ -57,5 +57,8 @@ public class PaqueteDeluxe {
 	public ArrayList<Tiquete> getCortesias() {
 		return cortesias;
 	}
+	public int getId() {
+		return id;
+	}
 	
 }

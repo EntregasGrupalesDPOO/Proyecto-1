@@ -8,7 +8,8 @@ import java.util.List;
 import Persistencia.ArchivoSerializable;
 import java.io.Serializable;
 import Marketplace.*;
-
+import Exepciones.PasswordIncorrectoException;
+import Exepciones.TiqueteNoTransferibleException;
 import Exepciones.UsuarioNoEncontradoException;
 
 public class BoletasMaster implements Serializable{
@@ -19,14 +20,17 @@ public class BoletasMaster implements Serializable{
 	private HashMap<LocalDate, ArrayList<Evento>> eventosPorFecha; 
 	private ArrayList<Venue> venues;
 	private HashMap<Integer, Tiquete> tiquetes;
-	private HashMap<Integer, TiqueteMultiple> tiquetesMultiples;
 	private HashMap<String, Organizador> organizadores;
 	private HashMap<String, Cliente> clientes;
-	private HashMap<String, Usuario> usuarios;
 	private Administrador administrador; 
-	private Usuario usuarioActual;
 	private transient ArchivoSerializable archivoSerializable = new ArchivoSerializable();
 	private MarketPlace marketPlace;
+	// Usuarios que accede a la plataforma(diferente de administrador)
+	private Cliente usuarioActual;
+	//paquetes deluxe
+
+	private HashMap<Integer, PaqueteDeluxe> paquetesDeluxe = new HashMap<Integer, PaqueteDeluxe>();
+
 	
 	
 
@@ -41,10 +45,8 @@ public class BoletasMaster implements Serializable{
 	    this.tiquetes = new HashMap<Integer, Tiquete>();
 	    this.organizadores = new HashMap<String, Organizador>();
 	    this.clientes = new HashMap<String, Cliente>();
-	    this.usuarios = new HashMap<String, Usuario>();
 		this.eventos = new ArrayList<Evento>();
 		this.eventosPorFecha = new HashMap<LocalDate, ArrayList<Evento>>();
-		this.tiquetesMultiples =  new HashMap<Integer, TiqueteMultiple>();
 		this.marketPlace = new Marketplace.MarketPlace();
 		 
 	
@@ -76,15 +78,13 @@ public class BoletasMaster implements Serializable{
 	public void  agregarCliente(String login, String contrasena) {
 		Cliente nuevoCliente = new Cliente(login, contrasena);
 		clientes.put(login, nuevoCliente);
-		usuarios.put(login, nuevoCliente);
 	}
 	public void agregarOrganizador(String login, String contrasena) {
-		Organizador nuevoOrganizador = new Organizador(login, contrasena);
+		Organizador nuevoOrganizador = new Organizador(login, contrasena, this.administrador);
 		organizadores.put(login, nuevoOrganizador);
-		usuarios.put(login, nuevoOrganizador);
 	}
 	
-	public void loginCliente(String login, String contrasena) throws UsuarioNoEncontradoException {
+	public void loginCliente(String login, String contrasena) throws UsuarioNoEncontradoException, PasswordIncorrectoException {
 		if (!clientes.containsKey(login)) throw new UsuarioNoEncontradoException(login);
 		Cliente cliente = clientes.get(login);
 		if (cliente != null && cliente.login(login, contrasena)) {
@@ -95,10 +95,11 @@ public class BoletasMaster implements Serializable{
 
 		}
 		else {
-			// lanzar excepcion de login fallido
+			throw new PasswordIncorrectoException(cliente);
 		}
 	}
-	public void loginOrganizador(String login, String contrasena) {
+	public void loginOrganizador(String login, String contrasena) throws UsuarioNoEncontradoException, PasswordIncorrectoException {
+		if (!organizadores.containsKey(login)) throw new UsuarioNoEncontradoException(login);
 		Organizador organizador = organizadores.get(login);
 		if (organizador != null && organizador.login(login, contrasena)) {
 			esOrganizador = true;
@@ -107,19 +108,20 @@ public class BoletasMaster implements Serializable{
 			this.usuarioActual = organizador;
 		}
 				else {
-			// lanzar excepcion de login fallido
+			throw new PasswordIncorrectoException(organizador);
 		}
 
 	}
-	public void loginAdministrador(String login, String contrasena) {
+	public void loginAdministrador(String login, String contrasena) throws PasswordIncorrectoException {
 		if (administrador != null && this.administrador.login(login, contrasena)) {
 			esAdministrador = true;
 			esCliente = false;
 			esOrganizador = false;
-			this.administrador = administrador;
 		}
-				else {
-			// lanzar excepcion de login fallido
+
+
+		else {	
+			throw new PasswordIncorrectoException("La contrasena para el administrador no es correcto");
 		}
 	}
 	// Métodos para verificar el rol del usuario actual
@@ -144,21 +146,21 @@ public class BoletasMaster implements Serializable{
 
 
 
-public void comprarTiquetes(int cantidad, Evento evento, Integer idLocalidad) throws Exception {
+public void comprarTiquetes(int cantidad, Evento evento, String idLocalidad) throws Exception {
     if (usuarioActual != null && esCliente) {
         boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
-        ArrayList<Tiquete> tiquetesCompra  = (usuarioActual.comprarTiquetes(cantidad, evento, idLocalidad, conSaldo));
+        ArrayList<Tiquete> tiquetesCompra  = (usuarioActual.comprarTiquete(cantidad, evento, idLocalidad, conSaldo));
 		for (Tiquete tiquete : tiquetesCompra) {
 			tiquetes.put(tiquete.getId(), tiquete);
 		}
 	}
 }
 
-public void comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLocalidad, int idSilla)
+public void comprarTiquetesEnumerados(int cantidad, Evento evento, String idLocalidad, int idSilla)
 		throws UsuarioNoEncontradoException, Exception {
 	if (usuarioActual != null && (esCliente || esOrganizador)) {
 		boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
-		ArrayList<Tiquete> tiquetesCompra  = (usuarioActual.comprarTiquetesEnumerados(cantidad, evento, idLocalidad, idSilla, conSaldo));
+		ArrayList<Tiquete> tiquetesCompra  = (usuarioActual.comprarTiquete(cantidad, evento, idLocalidad, idSilla, conSaldo));
 		for (Tiquete tiquete : tiquetesCompra) {
 			tiquetes.put(tiquete.getId(), tiquete);
 		}
@@ -166,21 +168,29 @@ public void comprarTiquetesEnumerados(int cantidad, Evento evento, Integer idLoc
 }
 
 
-public void comprarTiquetesMultiplesUE(int cantidad, Evento evento, Integer idLocalidad) throws UsuarioNoEncontradoException, Exception {
+public void comprarTiquetesMultiplesMultiEvento(HashMap<Evento,String> eventos) throws UsuarioNoEncontradoException, Exception {
     if (usuarioActual != null && (esCliente || esOrganizador)) {
         boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
-		TiqueteMultiple tm  = usuarioActual.comprarTiquetesMultiplesUE(cantidad, evento, idLocalidad, conSaldo);
-		tiquetesMultiples.put(tm.getId(), tm);
+		TiqueteMultiEvento tm  = usuarioActual.comprarTiqueteMultiEvento(eventos, conSaldo);
+		ArrayList<Tiquete> tiquetesVenta = tm.getTiquetes();
+		for (Tiquete tiquete : tiquetesVenta) {
+			tiquetes.put(tiquete.getId(), tiquete);
 		}
 	}
+	}
 
-public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
+public void comprarPaqueteDeluxe(Evento evento, String idLocalidad)
         throws UsuarioNoEncontradoException, Exception {
     if (usuarioActual != null && (esCliente || esOrganizador)) {
-        boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
+        boolean conSaldo = usuarioActual.getSaldoVirtual() > 0; 
 
-		TiqueteMultiple tm  = usuarioActual.comprarTiquetesMultiplesVE(eventos, conSaldo);
-        tiquetesMultiples.put(tm.getId(), tm);
+		PaqueteDeluxe tm  = usuarioActual.comprarPaqueteDeluxe(evento, idLocalidad, conSaldo);
+		Tiquete tiquetePrincipal = tm.getTiquetePrincipal();
+		tiquetes.put(tiquetePrincipal.getId(), tiquetePrincipal);
+		for (Tiquete cortesia :  tm.getCortesias()){
+			tiquetes.put(cortesia.getId(), cortesia);
+		}
+        paquetesDeluxe.put(tm.getId(), tm);
     }
 }
 
@@ -479,9 +489,7 @@ public void comprarTiquetesMultiplesVE(HashMap<Evento, Integer> eventos)
 		this.administrador = administrador;
 	}
 
-	public Usuario getUsuarioActual() {
-		return usuarioActual;
-	}
+
 
 	public void setUsuarioActual(Usuario usuarioActual) {
 		this.usuarioActual = usuarioActual;

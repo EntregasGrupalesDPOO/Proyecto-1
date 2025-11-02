@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
-public class Organizador extends Cliente{
+public class  Organizador extends Cliente{
 	private ArrayList<Evento> eventos;
 	private Administrador administrador;
 	private final static String ORGANIZADOR = "ORGANIZADOR";

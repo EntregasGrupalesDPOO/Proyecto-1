@@ -15,7 +15,7 @@ public class SolicitudCancelacionEvento extends Solicitud {
 
     @Override
     public void aceptarSolicitud() {
-        administrador.realizarReembolsoEvento(evento);
+        administrador.(evento);
         System.out.println("Solicitud de cancelación de evento aceptada. Se ha realizado el reembolso para el evento: " + evento.getNombre());
     }
 
