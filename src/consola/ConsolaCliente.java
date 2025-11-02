@@ -21,14 +21,16 @@ public class ConsolaCliente {
             System.out.println("\n===== MENÚ CLIENTE =====");
             System.out.println("1. Ver eventos disponibles");
             System.out.println("2. Comprar tiquete");
-            System.out.println("3. Comprar tiquete múltiple (UE o VE)");
-            System.out.println("4. Solicitar reembolso");
-            System.out.println("5. Publicar oferta en Marketplace");
-            System.out.println("6. Ver ofertas del Marketplace");
-            System.out.println("7. Hacer contraoferta");
-            System.out.println("8. Revisar mis contraofertas y aceptarlas/rechazarlas");
-            System.out.println("9. Eliminar una de mis ofertas");
-            System.out.println("10. Cerrar sesión");
+            System.out.println("3. Comprar tiquete enumerado");
+            System.out.println("4. Comprar tiquete múltiple (UE o VE)");
+            System.out.println("5. Comprar paquete deluxe");
+            System.out.println("6. Solicitar reembolso");
+            System.out.println("7. Publicar oferta en Marketplace");
+            System.out.println("8. Ver ofertas del Marketplace");
+            System.out.println("9. Hacer contraoferta");
+            System.out.println("10. Revisar mis contraofertas y aceptarlas/rechazarlas");
+            System.out.println("11. Eliminar una de mis ofertas");
+            System.out.println("12. Cerrar sesión");
             System.out.print("Seleccione una opción: ");
 
             int opcion = leerEntero();
@@ -36,14 +38,16 @@ public class ConsolaCliente {
             switch (opcion) {
                 case 1 -> mostrarEventos();
                 case 2 -> comprarTiquete();
-                case 3 -> comprarTiqueteMultiple();
-                case 4 -> solicitarReembolso();
-                case 5 -> publicarOferta();
-                case 6 -> verOfertasMarketplace();
-                case 7 -> hacerContraOferta();
-                case 8 -> gestionarMisContraOfertas();
-                case 9 -> eliminarMiOferta();
-                case 10 -> {
+                case 3 -> comprarTiqueteEnumerado();
+                case 4 -> comprarTiqueteMultiple();
+                case 5 -> comprarPaqueteDeluxe();
+                case 6 -> solicitarReembolso();
+                case 7 -> publicarOferta();
+                case 8 -> verOfertasMarketplace();
+                case 9 -> hacerContraOferta();
+                case 10 -> gestionarMisContraOfertas();
+                case 11 -> eliminarMiOferta();
+                case 12 -> {
                     System.out.println("Cerrando sesión...");
                     continuar = false;
                 }
@@ -73,7 +77,7 @@ public class ConsolaCliente {
         }
 
         System.out.print("Ingrese ID de localidad: ");
-        int idLocalidad = leerEntero();
+        String idLocalidad = scanner.nextLine();
         System.out.print("Cantidad de tiquetes: ");
         int cantidad = leerEntero();
 
@@ -84,55 +88,102 @@ public class ConsolaCliente {
             System.out.println("Error al comprar: " + e.getMessage());
         }
     }
+    
+    private void comprarTiqueteEnumerado() {
+        System.out.print("Ingrese nombre del evento: ");
+        String nombre = scanner.nextLine();
+        Evento evento = sistema.getEventos().stream()
+                .filter(e -> e.getNombre().equalsIgnoreCase(nombre))
+                .findFirst().orElse(null);
+        if (evento == null) {
+            System.out.println("Evento no encontrado.");
+            return;
+        }
 
-    private void comprarTiqueteMultiple() {
-        System.out.println("Compra de tiquete múltiple");
-        System.out.print("¿Tipo? (UE para un solo evento / VE para varios): ");
-        String tipo = scanner.nextLine().toUpperCase();
+        System.out.print("Ingrese ID de localidad: ");
+        String idLocalidad = scanner.nextLine();
+        System.out.print("Ingrese número de silla inicial: ");
+        int idSilla = leerEntero();
+        System.out.print("Cantidad de tiquetes: ");
+        int cantidad = leerEntero();
 
         try {
-            if (tipo.equals("UE")) {
-                System.out.print("Evento: ");
-                String nombre = scanner.nextLine();
-                Evento evento = sistema.getEventos().stream()
-                        .filter(e -> e.getNombre().equalsIgnoreCase(nombre))
-                        .findFirst().orElse(null);
-
-                if (evento == null) {
-                    System.out.println("Evento no encontrado.");
-                    return;
-                }
-
-                System.out.print("Localidad: ");
-                int idLocalidad = leerEntero();
-                System.out.print("Cantidad: ");
-                int cantidad = leerEntero();
-
-                sistema.comprarTiquetesMultiplesUE(cantidad, evento, idLocalidad);
-            } else if (tipo.equals("VE")) {
-                HashMap<Evento, Integer> mapa = new HashMap<>();
-                while (true) {
-                    System.out.print("Evento (o 'fin'): ");
-                    String nombre = scanner.nextLine();
-                    if (nombre.equalsIgnoreCase("fin")) break;
-                    Evento e = sistema.getEventos().stream()
-                            .filter(ev -> ev.getNombre().equalsIgnoreCase(nombre))
-                            .findFirst().orElse(null);
-                    if (e == null) {
-                        System.out.println("No existe ese evento.");
-                        continue;
-                    }
-                    System.out.print("Cantidad: ");
-                    mapa.put(e, leerEntero());
-                }
-                sistema.comprarTiquetesMultiplesVE(mapa);
-            } else {
-                System.out.println("Tipo inválido.");
-            }
+            sistema.comprarTiquetesEnumerados(cantidad, evento, idLocalidad, idSilla);
+            System.out.println("Compra enumerada realizada con éxito.");
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Error al comprar enumerado: " + e.getMessage());
         }
     }
+
+    private void comprarPaqueteDeluxe() {
+        System.out.print("Ingrese nombre del evento: ");
+        String nombre = scanner.nextLine();
+        Evento evento = sistema.getEventos().stream()
+                .filter(e -> e.getNombre().equalsIgnoreCase(nombre))
+                .findFirst().orElse(null);
+        if (evento == null) {
+            System.out.println("Evento no encontrado.");
+            return;
+        }
+
+        System.out.print("Ingrese ID de localidad: ");
+        String idLocalidad = scanner.nextLine();
+
+        try {
+            sistema.comprarPaqueteDeluxe(evento, idLocalidad);
+            System.out.println("Paquete Deluxe comprado exitosamente.");
+        } catch (Exception e) {
+            System.out.println("Error al comprar paquete deluxe: " + e.getMessage());
+        }
+    }
+
+    private void comprarTiqueteMultiple() {
+        System.out.println("\n=== Compra de Tiquete Múltiple (Multi-Evento) ===");
+        System.out.println("Podrás comprar varios eventos con descuento según la cantidad.");
+        System.out.println("Escribe 'fin' cuando termines de agregar eventos.\n");
+
+        HashMap<Evento, String> mapaEventos = new HashMap<>();
+
+        while (true) {
+            System.out.print("Nombre del evento (o 'fin' para terminar): ");
+            String nombre = scanner.nextLine().trim();
+            if (nombre.equalsIgnoreCase("fin")) break;
+
+            Evento evento = sistema.getEventos().stream()
+                    .filter(e -> e.getNombre().equalsIgnoreCase(nombre))
+                    .findFirst().orElse(null);
+
+            if (evento == null) {
+                System.out.println("Evento no encontrado. Intenta nuevamente.");
+                continue;
+            }
+
+            System.out.print("Nombre de la localidad para '" + evento.getNombre() + "': ");
+            String nombreLocalidad = scanner.nextLine().trim();
+
+            Localidad localidad = evento.getLocalidadPorNombre(nombreLocalidad);
+            if (localidad == null) {
+                System.out.println("Localidad no encontrada. Intenta nuevamente.");
+                continue;
+            }
+
+            mapaEventos.put(evento, nombreLocalidad);
+            System.out.println("Evento agregado: " + evento.getNombre() + " - " + nombreLocalidad);
+        }
+
+        if (mapaEventos.isEmpty()) {
+            System.out.println("No se seleccionaron eventos.");
+            return;
+        }
+
+        try {
+            sistema.comprarTiquetesMultiplesMultiEvento(mapaEventos);
+            System.out.println("\n Compra múltiple realizada con éxito.");
+        } catch (Exception e) {
+            System.out.println("Error al comprar: " + e.getMessage());
+        }
+    }
+
 
     private void solicitarReembolso() {
         System.out.print("Ingrese el ID del tiquete: ");
@@ -156,13 +207,12 @@ public class ConsolaCliente {
         double precio = leerDouble();
 
         Tiquete t = sistema.getTiquetes().get(id);
-        TiqueteMultiple tm = sistema.getTiquetesMultiples().get(id);
 
-        if (t == null && tm == null) {
+        if (t == null) {
             System.out.println("No se encontró ese tiquete.");
             return;
         }
-        sistema.publicarOferta(t, tm, desc, precio);
+        sistema.publicarOferta(t, desc, precio);
     }
 
     private void verOfertasMarketplace() {
@@ -176,8 +226,7 @@ public class ConsolaCliente {
         System.out.print("Ingrese ID del tiquete ofertado: ");
         int id = leerEntero();
         Oferta oferta = sistema.verOfertas().stream()
-                .filter(o -> o.getTiquete() != null && o.getTiquete().getId() == id
-                        || o.getTiqueteMultiple() != null && o.getTiqueteMultiple().getId() == id)
+                .filter(o -> o.getTiquete() != null && o.getTiquete().getId() == id)
                 .findFirst().orElse(null);
         if (oferta == null) {
             System.out.println("Oferta no encontrada.");
@@ -213,8 +262,7 @@ public class ConsolaCliente {
         System.out.print("Ingrese el ID del tiquete que desea retirar: ");
         int id = leerEntero();
         Oferta oferta = sistema.verOfertas().stream()
-                .filter(o -> (o.getTiquete() != null && o.getTiquete().getId() == id)
-                        || (o.getTiqueteMultiple() != null && o.getTiqueteMultiple().getId() == id))
+                .filter(o -> (o.getTiquete() != null && o.getTiquete().getId() == id))
                 .findFirst().orElse(null);
 
         if (oferta == null) {

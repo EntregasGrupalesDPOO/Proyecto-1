@@ -84,8 +84,9 @@ public class ConsolaOrganizador {
         System.out.print("Tipo de evento (CULTURAL / MUSICAL / DEPORTIVO / RELIGIOSO): ");
         String tipo = scanner.nextLine().toUpperCase();
 
+        Organizador orga= (Organizador) sistema.getUsuarioActual();
         try {
-            sistema.agendarEvento(nombre, descripcion, fecha, hora, venue, tipo);
+            sistema.agendarEvento(venue, orga,tipo, fecha, hora);
             System.out.println("Evento creado exitosamente.");
         } catch (Exception e) {
             System.out.println("Error al crear evento: " + e.getMessage());
@@ -97,25 +98,24 @@ public class ConsolaOrganizador {
         System.out.println("\n=== Crear localidad ===");
         Organizador organizador = (Organizador) sistema.getUsuarioActual();
 
-        HashMap<String, Evento> eventosCreados = organizador.getEventosCreados();
+        ArrayList<Evento> eventosCreados = organizador.getEventosCreados();
         if (eventosCreados.isEmpty()) {
             System.out.println("No tienes eventos creados todavía.");
             return;
         }
 
         System.out.println("Seleccione un evento propio:");
-        ArrayList<Evento> eventosPropios = new ArrayList<>(eventosCreados.values());
-        for (int i = 0; i < eventosPropios.size(); i++) {
-            System.out.println((i + 1) + ". " + eventosPropios.get(i).getNombre());
+        for (int i = 0; i < eventosCreados.size(); i++) {
+            System.out.println((i + 1) + ". " + eventosCreados.get(i).getNombre());
         }
 
         int idx = leerEntero() - 1;
-        if (idx < 0 || idx >= eventosPropios.size()) {
+        if (idx < 0 || idx >= eventosCreados.size()) {
             System.out.println("Evento inválido.");
             return;
         }
 
-        Evento evento = eventosPropios.get(idx);
+        Evento evento = eventosCreados.get(idx);
 
         System.out.print("Nombre de la localidad: ");
         String nombre = scanner.nextLine();
@@ -126,11 +126,16 @@ public class ConsolaOrganizador {
         System.out.print("Capacidad: ");
         int capacidad = leerEntero();
 
-        System.out.print("¿Es numerada? (true/false): ");
-        boolean numerada = Boolean.parseBoolean(scanner.nextLine());
+        System.out.print("tipo de tiquete: ");
+        String tipo = scanner.nextLine();
 
-        Localidad localidad = sistema.crearLocalidadEvento(evento, nombre, precio, capacidad, numerada);
-        System.out.println("Localidad '" + localidad.getNombre() + "' creada exitosamente para " + evento.getNombre());
+        Localidad localidad;
+		try {
+			localidad = sistema.crearLocalidadEvento(nombre, capacidad, precio, tipo, evento);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        System.out.println("Localidad '" + nombre + "' creada exitosamente para " + evento.getNombre());
     }
 
     //PROPONER NUEVO VENUE
@@ -152,25 +157,24 @@ public class ConsolaOrganizador {
         System.out.println("\n=== Solicitar cancelación ===");
         Organizador organizador = (Organizador) sistema.getUsuarioActual();
 
-        HashMap<String, Evento> eventosCreados = organizador.getEventosCreados();
+        ArrayList<Evento> eventosCreados = organizador.getEventosCreados();
         if (eventosCreados.isEmpty()) {
             System.out.println("No tienes eventos que cancelar.");
             return;
         }
 
-        ArrayList<Evento> eventosPropios = new ArrayList<>(eventosCreados.values());
         System.out.println("Seleccione el evento que desea cancelar:");
-        for (int i = 0; i < eventosPropios.size(); i++) {
-            System.out.println((i + 1) + ". " + eventosPropios.get(i).getNombre());
+        for (int i = 0; i < eventosCreados.size(); i++) {
+            System.out.println((i + 1) + ". " + eventosCreados.get(i).getNombre());
         }
 
         int idx = leerEntero() - 1;
-        if (idx < 0 || idx >= eventosPropios.size()) {
+        if (idx < 0 || idx >= eventosCreados.size()) {
             System.out.println("Evento inválido.");
             return;
         }
 
-        Evento evento = eventosPropios.get(idx);
+        Evento evento = eventosCreados.get(idx);
         System.out.print("Motivo de cancelación: ");
         String razon = scanner.nextLine();
 
@@ -184,14 +188,14 @@ public class ConsolaOrganizador {
         System.out.println("\n=== Mis eventos ===");
         Organizador organizador = (Organizador) sistema.getUsuarioActual();
 
-        HashMap<String, Evento> eventosCreados = organizador.getEventosCreados();
+        ArrayList<Evento> eventosCreados = organizador.getEventosCreados();
 
         if (eventosCreados.isEmpty()) {
             System.out.println("No tienes eventos registrados.");
             return;
         }
 
-        for (Evento e : eventosCreados.values()) {
+        for (Evento e : eventosCreados) {
             System.out.println("- " + e.getNombre() + " (" + e.getFecha() + ")");
         }
     }
@@ -209,9 +213,9 @@ public class ConsolaOrganizador {
         int opcion = leerEntero();
 
         switch (opcion) {
-            case 1 -> System.out.println("Ganancias globales: $" + org.obtenerGananciasGlobales());
+            case 1 -> System.out.println("Ganancias globales: $" + org.consultarGananciasGlobales());
             case 2 -> {
-                ArrayList<Evento> propios = new ArrayList<>(org.getEventosCreados().values());
+                ArrayList<Evento> propios = new ArrayList<>(org.getEventosCreados());
                 if (propios.isEmpty()) {
                     System.out.println("No hay eventos.");
                     return;
@@ -219,10 +223,10 @@ public class ConsolaOrganizador {
                 mostrarEventos(propios);
                 int idx = leerEntero() - 1;
                 if (idx < 0 || idx >= propios.size()) return;
-                System.out.println("Ganancia: $" + org.obtenerGananciasEvento(propios.get(idx)));
+                System.out.println("Ganancia: $" + org.consultarGananciasEvento(propios.get(idx)));
             }
             case 3 -> {
-                ArrayList<Evento> propios = new ArrayList<>(org.getEventosCreados().values());
+                ArrayList<Evento> propios = new ArrayList<>(org.getEventosCreados());
                 if (propios.isEmpty()) {
                     System.out.println("No hay eventos.");
                     return;
@@ -232,7 +236,7 @@ public class ConsolaOrganizador {
                 if (eIdx < 0 || eIdx >= propios.size()) return;
 
                 Evento evento = propios.get(eIdx);
-                ArrayList<Localidad> locs = new ArrayList<>(evento.getLocalidades().values());
+                ArrayList<Localidad> locs = new ArrayList<>(evento.getLocalidades());
                 if (locs.isEmpty()) {
                     System.out.println("No hay localidades.");
                     return;
@@ -243,7 +247,7 @@ public class ConsolaOrganizador {
                 int lIdx = leerEntero() - 1;
                 if (lIdx < 0 || lIdx >= locs.size()) return;
 
-                System.out.println("Ganancia: $" + org.obtenerGananciasLocalidad(evento, locs.get(lIdx)));
+                System.out.println("Ganancia: $" + org.consultarGananciasLocalidad(locs.get(lIdx)));
             }
             default -> System.out.println("Opción inválida.");
         }

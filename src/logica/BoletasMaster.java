@@ -346,15 +346,14 @@ private void asegurarAdmin() throws IllegalStateException {
 // GANANCIAS POR ORGANIZADOR
 // ------------------------ 
 
-public void imprimirGananciasPorOrganizador(Organizador organizador) {
+public double imprimirGananciasPorOrganizador(Organizador organizador) {
     asegurarAdmin();
     if (organizador == null) {
         System.out.println("Organizador nulo. No se puede calcular ganancias.");
-        return;
+        return 0;
     }
     double g = this.administrador.gananciasPorOrganizador(organizador);
-    System.out.printf("Ganancias del organizador %s: %.2f%n",
-            organizador.getLogin(), g);
+    return g;
 }
 
 public void imprimirGananciasPorTodosLosOrganizadores() {
@@ -373,6 +372,22 @@ public void imprimirGananciasPorTodosLosOrganizadores() {
                 org.getLogin(), g);
     }
     System.out.printf("Ganancias acumuladas (todos los organizadores): %.2f%n", total);
+}
+
+
+//--------------
+//GANANCIAS POR EVENTO
+//---------
+
+public double obtenerGananciasEvento(Evento evento) {
+    asegurarAdmin();
+    if (evento == null) {
+        System.out.println("Evento nulo, no se puede calcular las ganancias.");
+        return 0.0;
+    }
+    double ganancias = administrador.gananciasPorEvento(evento);
+    System.out.println("Ganancias del evento '" + evento.getNombre() + "': $" + ganancias);
+    return ganancias;
 }
 
 // --------------
@@ -438,7 +453,7 @@ public void imprimirGananciasPorTodasLasFechas() {
 	// MÉTODOS MARKETPLACE
 		//quisas crear otras exceptiones para marketPlace
 
-		public void publicarOferta(Tiquete tiquete, TiqueteMultiple tm, String descripcion, double precio) {
+		public void publicarOferta(Tiquete tiquete, String descripcion, double precio) {
 		    if (!(usuarioActual instanceof Cliente)) {
 		        System.out.println("Solo los clientes pueden publicar ofertas.");
 		        return;
@@ -447,7 +462,7 @@ public void imprimirGananciasPorTodasLasFechas() {
 		        Cliente vendedor = (Cliente) usuarioActual;
 		        Oferta nueva;
 				try {
-					nueva = new Oferta(tiquete, tm, vendedor, descripcion, precio);
+					nueva = new Oferta(tiquete, vendedor, descripcion, precio);
 					marketPlace.publicarOferta(nueva);
 				} catch (TiqueteNoTransferibleException e) {
 					e.printStackTrace();
@@ -600,6 +615,9 @@ public void imprimirGananciasPorTodasLasFechas() {
 		this.clientes = clientes;
 	}
 
+	public Cliente getUsuarioActual() {
+		return this.usuarioActual;
+	}
 
 	
 
@@ -617,16 +635,16 @@ public void imprimirGananciasPorTodasLasFechas() {
 	
 	// Persistencia
 	
-	public void escribirUsuarios() {
-	    archivoSerializable.escribir(this.usuarios, "./datos/usuarios.ser");
+	public void escribirCliente() {
+	    archivoSerializable.escribir(this.clientes, "./datos/usuarios.ser");
 	}
 
-	public void leerUsuarios() {
+	public void leerCliente() {
 	    Object obj = archivoSerializable.leer("./datos/usuarios.ser");
 	    if (obj != null) {
-	        this.usuarios = (HashMap<String, Usuario>) obj;
+	        this.clientes = (HashMap<String, Cliente>) obj;
 	    } else {
-	        this.usuarios = new HashMap<>();
+	        this.clientes = new HashMap<>();
 	    }
 	}
 
