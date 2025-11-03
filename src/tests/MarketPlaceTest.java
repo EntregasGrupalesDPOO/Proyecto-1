@@ -24,7 +24,7 @@ public class MarketPlaceTest {
         comprador = new Cliente("maria", "abcd");
 
         logica.Tiquete tiqueteMock = new logica.TiqueteBasico(100, 0.1, java.time.LocalDate.now(), java.time.LocalTime.now());
-
+        tiqueteMock.setTransferible(true);
         oferta = new Oferta(tiqueteMock, vendedor, "Tiquete para concierto", 150.0);
         contra = new ContraOferta(comprador, oferta, 140.0, false);
     }
