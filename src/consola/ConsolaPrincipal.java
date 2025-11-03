@@ -16,6 +16,12 @@ public class ConsolaPrincipal {
         this.sistema = new BoletasMaster();
         this.scanner = new Scanner(System.in);
         sistema.agregarAdministrador("admin", "admin");
+        sistema.leerAdministrador();
+        sistema.leerCliente();
+        sistema.leerEventos();
+        sistema.leerTiquetes();
+        sistema.leerVenues();
+        sistema.leerMarketplace();
     }
 
     public void iniciar() {
@@ -41,6 +47,14 @@ public class ConsolaPrincipal {
                 case "3":
                     salir = true;
                     System.out.println("¡Hasta pronto!");
+                    // Persistir automáticamente
+                    sistema.escribirAdministrador();
+                    sistema.escribirCliente();
+                    sistema.escribirEventos();
+                    sistema.escribirTiquetes();
+                    sistema.escribirVenues();
+                    sistema.escribirMarketplace();
+
                     break;
                 default:
                     System.out.println("❌ Opción inválida. Intente de nuevo.");
@@ -117,8 +131,7 @@ public class ConsolaPrincipal {
                 System.out.println("❌ Tipo inválido. Solo puede registrar Cliente u Organizador.");
         }
 
-        // Persistir automáticamente
-        sistema.escribirCliente();
+
     }
 
     public static void main(String[] args) {

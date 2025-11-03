@@ -88,6 +88,7 @@ public class ConsolaAdministrador {
         } catch (Exception e) {
             System.out.println("Error al atender la solicitud: " + e.getMessage());
         }
+        
     }
 
     private void verGananciasGenerales() {

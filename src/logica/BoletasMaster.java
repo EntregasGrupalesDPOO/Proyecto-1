@@ -325,6 +325,7 @@ public Localidad crearLocalidadEvento(String nombre,
 		else {
 			solicitud.rechazarSolicitud();
 		} 
+		this.administrador.getSolicitudes().remove(solicitud);
 		
 	} 
 
@@ -634,6 +635,9 @@ public void imprimirGananciasPorTodasLasFechas() {
 	
 	
 	// Persistencia
+	
+
+
 	
 	public void escribirCliente() {
 	    archivoSerializable.escribir(this.clientes, "./datos/usuarios.ser");
