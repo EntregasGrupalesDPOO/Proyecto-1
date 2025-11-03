@@ -12,10 +12,14 @@ public abstract class TiqueteMultiple extends Tiquete{
 		super(precioBase, cargoPorServicio, fecha, hora);
 		this.precioReal = precioBase * (1 + cargoPorServicio) + impresion * cantidad;
 		this.tiquetes = new ArrayList<Tiquete>();
+		if (TiqueteMultiple.tiquetesMaximosPorTransaccionMultiples==0){
+			TiqueteMultiple.tiquetesMaximosPorTransaccionMultiples=5;
+		}
 	}
 	
 	@Override
 	public void setComprado(boolean comprado) {
+		this.comprado=comprado;
 		for (Tiquete t : tiquetes) {
 			t.setComprado(comprado);
 		}

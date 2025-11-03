@@ -12,6 +12,8 @@ public class Cliente {
 	protected String contrasena;
 	protected double saldoVirtual;
 	protected HashMap<Integer, Tiquete> tiquetes;
+
+
 	protected String tipoCliente;
 	protected static HashMap<String, Cliente> clientes = new HashMap<String, Cliente>();
 	protected ArrayList<String> beneficios;
@@ -41,7 +43,6 @@ public class Cliente {
 			}
 		}
 		Tiquete ti = l.obtenerTiqueteDisponible();
-		log.add(ti);
 		if (comprarConSaldo) {
 			if (ti.getPrecioReal()*cantidad > this.saldoVirtual) {
 				throw new Exception();
@@ -55,6 +56,9 @@ public class Cliente {
 			t.setComprado(true);
 			t.setCliente(this);
 		}
+
+
+
 		return log;
 	}
 	
@@ -84,6 +88,7 @@ public class Cliente {
 	
 	public TiqueteMultiEvento comprarTiqueteMultiEvento(HashMap<Evento, String> eventos, boolean comprarConSaldo) throws Exception {
 		TiqueteMultiEvento t = new TiqueteMultiEvento(eventos, this);
+		System.out.println("max = " + t.getTiquetesMaximosPorTransaccion());
 		if (eventos.size() > TiqueteMultiple.getTiquetesMaximosPorTransaccion()) {
 			throw new Exception();
 		}
@@ -93,9 +98,10 @@ public class Cliente {
 			}
 			this.saldoVirtual = this.saldoVirtual - t.getPrecioReal();
 		}
-		tiquetes.put(t.getId(), t);
 		t.setComprado(true);
 		t.setCliente(this);
+		tiquetes.put(t.getId(), t);
+		
 		return t;
 	}
 
@@ -153,6 +159,7 @@ public class Cliente {
 	
 	public void agregarTiquete(Tiquete tiquete) {
 		this.tiquetes.put(tiquete.getId(), tiquete);
+		tiquete.setCliente(this);
 	}
 	
 	public void eliminarTiquete(Tiquete tiquete) {
@@ -172,7 +179,7 @@ public void acceptarOferta(Oferta oferta, boolean usarSaldo) throws Exception {
     //transferirTiquete
     Cliente vendedorOferta= oferta.getVendedor();
     vendedorOferta.setSaldoVirtual(vendedorOferta.getSaldoVirtual()+oferta.getPrecio());
-    vendedorOferta.transferirTiquete(oferta.getTiquete(),this.login, this.contrasena );
+    vendedorOferta.transferirTiquete(oferta.getTiquete(),this.login, oferta.getVendedor().getContrasena() );
     
 }
 
@@ -207,5 +214,13 @@ public double getSaldoVirtual() {
 public void setSaldoVirtual(double saldo) {
 	this.saldoVirtual=saldo;
 }
+public HashMap<Integer, Tiquete> getTiquetes() {
+	return tiquetes;
+}
+
+public void setTiquetes(HashMap<Integer, Tiquete> tiquetes) {
+	this.tiquetes = tiquetes;
+}
+
 }
 

@@ -28,6 +28,14 @@ public class Evento {
 		this.hora = hora;
 		this.localidades = new ArrayList<Localidad>();
 		this.estado = "AGENDADO";
+		
+		if (Evento.tiposDeEventos.isEmpty()) {
+			Evento.tiposDeEventos = new HashMap<>();
+			Evento.tiposDeEventos.put("CULTURAL", 1.0);
+			Evento.tiposDeEventos.put("DEPORTIVO", 1.0);
+			Evento.tiposDeEventos.put("MUSICAL", 1.0);
+			Evento.tiposDeEventos.put("RELIGIOSO", 1.0);
+	    }
 	}
 
 	public void añadirLocalidad(Localidad localidad) {
