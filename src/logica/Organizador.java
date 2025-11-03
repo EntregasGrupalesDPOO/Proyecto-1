@@ -47,7 +47,7 @@ public class  Organizador extends Cliente{
 	}
 	
 	public Localidad anadirLocalidadAEvento(String nombre, int capacidad, double precioTiquete, String tipoTiquete, Evento evento, int capacidadTiquetesMultiples) throws Exception {
-		if(evento.capacidadActual() + capacidad > evento.getVenue().getCapacidad()) {
+		if(evento.capacidadActual() + capacidad*capacidadTiquetesMultiples > evento.getVenue().getCapacidad()) {
 			throw new CapacidadVenueExcedidaException(capacidad);
 		}
 		Localidad localidad = new Localidad(nombre, capacidad, precioTiquete, tipoTiquete, evento, capacidadTiquetesMultiples);
@@ -55,7 +55,7 @@ public class  Organizador extends Cliente{
 	}
 	
 	public Localidad anadirLocalidadAEvento(String nombre, int capacidad, double precioTiquete, String tipoTiquete, Evento evento, double descuento, int capacidadTiquetesMultiples) throws Exception {
-		if(evento.capacidadActual() + capacidad > evento.getVenue().getCapacidad()) {
+		if(evento.capacidadActual() + capacidad*capacidadTiquetesMultiples > evento.getVenue().getCapacidad()) {
 			throw new CapacidadVenueExcedidaException(capacidad);
 		}
 		Localidad localidad = new Localidad(nombre, capacidad, precioTiquete, tipoTiquete, evento, descuento, capacidadTiquetesMultiples);

@@ -55,10 +55,10 @@ public class TiqueteMultiEvento extends TiqueteMultiple {
         int cantidad = this.tiquetes.size();
         double descuento = DESCUENTOS.getOrDefault(cantidad, DESCUENTOS.get(4));
         this.precioBase = sumaPreciosBase;
-        this.precioReal = (sumaPreciosReales * (1 - descuento)) + impresion;
+        this.precioReal = (sumaPreciosReales * (1 - descuento));
 
         for (Tiquete t : this.tiquetes) {
-            t.actualizarPrecios(t.getPrecioReal() * (1 - descuento));
+            t.setPrecioReal(t.getPrecioReal() * (1 - descuento));
         }
     }
 

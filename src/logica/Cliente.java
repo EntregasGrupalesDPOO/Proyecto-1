@@ -68,7 +68,7 @@ public class Cliente {
 		return log;
 	}
 	
-	public ArrayList<Tiquete> comprarTiquete(int cantidad, Evento evento, String localidad, int idSilla, boolean comprarConSaldo) throws Exception {
+	public ArrayList<Tiquete> comprarTiquete(int cantidad, Evento evento, String localidad, ArrayList<Integer> idSillas, boolean comprarConSaldo) throws Exception {
 		ArrayList<Tiquete> log = new ArrayList<Tiquete>();
 		Localidad l = evento.getLocalidadPorNombre(localidad);
 		if(cantidad > Tiquete.getTiquetesMaximosPorTransaccion()) {
@@ -77,7 +77,7 @@ public class Cliente {
 		if (l.getCantidadTiquetesDisponibles() > cantidad) {
 			throw new CapacidadLocalidadExcedidaException(cantidad);
 		}
-		Tiquete ti = l.obtenerTiqueteDisponible(idSilla);
+		Tiquete ti = l.obtenerTiqueteDisponible(idSillas.get(0));
 		log.add(ti);
 		if (comprarConSaldo) {
 			if (ti.getPrecioReal() * cantidad > this.saldoVirtual) {
@@ -86,7 +86,7 @@ public class Cliente {
 			this.saldoVirtual = this.saldoVirtual - ti.getPrecioReal() * cantidad;
 		}
 		for (int i = 0; i < cantidad; i++) {
-			Tiquete t = l.obtenerTiqueteDisponible();
+			Tiquete t = l.obtenerTiqueteDisponible(i);
 			log.add(ti);
 			tiquetes.put(t.getId(), t);
 			t.setComprado(true);

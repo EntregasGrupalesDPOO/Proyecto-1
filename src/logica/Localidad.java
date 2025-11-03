@@ -64,7 +64,7 @@ public class Localidad {
 	}
 	
 	private void tiquetesMultiples(int capacidad, Evento evento, int capacidadTiquetesMultiples) {
-		for (int i = 0; i < capacidad; i++) {
+		for (int i = 1; i <= capacidad; i++) {
 			this.tiquetes.add(new TiqueteMultiEntrada(precioTiquete*(1-this.descuento), evento.getValorTipoDeEvento(), evento.getFecha(), evento.getHora(), capacidadTiquetesMultiples));
 		}
 	}
