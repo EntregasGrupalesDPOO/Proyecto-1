@@ -8,6 +8,7 @@ import Exepciones.TiqueteNoEncontradoException;
 
 public class TiqueteMultiEvento extends TiqueteMultiple {
 	private static final Map<Integer, Double> DESCUENTOS = new HashMap<>();
+	private static final String MULTIEVENTO = "MULTIEVENTO";
     static {
         DESCUENTOS.put(1, 0.0);  
         DESCUENTOS.put(2, 0.05);  
@@ -18,7 +19,7 @@ public class TiqueteMultiEvento extends TiqueteMultiple {
     public TiqueteMultiEvento(HashMap<Evento, String> eventos, Cliente cliente) throws Exception {
         // No tiene un solo precioBase ni una sola fecha, así que se pasan valores neutros
         super(0, 0, null, null, eventos.size());
-        this.tipoTiquete = "MULTI_EVENTO";
+        this.tipoTiquete = MULTIEVENTO;
 
         asociarTiquetes(eventos);
         calcularPrecioTotal();

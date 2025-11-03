@@ -32,6 +32,11 @@ public class Administrador {
 		Evento.addTipoEvento(tipoEvento, valor);
 	}
 	
+	public void fijarMaximosPorTransaccion(int tiquetesIndividuales, int tiquetesMultiples) {
+		Tiquete.setTiquetesMaximosPorTransaccion(tiquetesIndividuales);
+		TiqueteMultiple.setTiquetesMaximosPorTransaccion(tiquetesMultiples);
+	}
+	
 	public double gananciasPorEvento(Evento evento) {
 		double ganancias = 0;
 		for (Localidad l: evento.getLocalidades()) {
