@@ -10,7 +10,6 @@ public abstract class TiqueteMultiple extends Tiquete{
 	
 	public TiqueteMultiple(double precioBase, double cargoPorServicio, LocalDate fecha, LocalTime hora, int cantidad) {
 		super(precioBase, cargoPorServicio, fecha, hora);
-		this.precioReal = precioBase * (1 + cargoPorServicio) + impresion * cantidad;
 		this.tiquetes = new ArrayList<Tiquete>();
 		if (TiqueteMultiple.tiquetesMaximosPorTransaccionMultiples==0){
 			TiqueteMultiple.tiquetesMaximosPorTransaccionMultiples=5;
@@ -42,7 +41,7 @@ public abstract class TiqueteMultiple extends Tiquete{
 		return null;
 	}
 	public ArrayList<Tiquete> getTiquetes() {
-		return new ArrayList<Tiquete>(this.tiquetes);
+		return this.tiquetes;
 	}
 	
 	public static int getTiquetesMaximosPorTransaccion() {

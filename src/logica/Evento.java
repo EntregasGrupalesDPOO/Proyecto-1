@@ -31,10 +31,12 @@ public class Evento {
 		
 		if (Evento.tiposDeEventos.isEmpty()) {
 			Evento.tiposDeEventos = new HashMap<>();
-			Evento.tiposDeEventos.put("CULTURAL", 1.0);
-			Evento.tiposDeEventos.put("DEPORTIVO", 1.0);
-			Evento.tiposDeEventos.put("MUSICAL", 1.0);
-			Evento.tiposDeEventos.put("RELIGIOSO", 1.0);
+
+			Evento.tiposDeEventos.put("CULTURAL", 0.2);
+			Evento.tiposDeEventos.put("DEPORTIVO", 0.15);
+			Evento.tiposDeEventos.put("MUSICAL", 0.3);
+			Evento.tiposDeEventos.put("RELIGIOSO", 0.4);
+
 	    }
 	}
 
@@ -69,6 +71,10 @@ public class Evento {
 	
 	public static void addTipoEvento(String nombre, double valor) {
 		tiposDeEventos.put(nombre, valor);
+	}
+
+	public String getEstado() {
+		return estado;
 	}
 
 	public Venue getVenue() {

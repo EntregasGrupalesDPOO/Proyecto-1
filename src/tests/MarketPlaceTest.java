@@ -26,6 +26,8 @@ public class MarketPlaceTest {
 
         oferta = new Oferta(tiquete, vendedor, "Entrada VIP", 120.0);
     }
+    
+    
 
     @Test
     public void testPublicarOferta() {

@@ -31,13 +31,9 @@ public class BoletasMaster implements Serializable{
 	//paquetes deluxe
 
 	private HashMap<Integer, PaqueteDeluxe> paquetesDeluxe = new HashMap<Integer, PaqueteDeluxe>();
-
 	
 	
 
-	
-	
-	
 	public BoletasMaster() {
 		esAdministrador = false;
 		esOrganizador = false;

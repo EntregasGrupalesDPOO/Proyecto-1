@@ -4,7 +4,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import Exepciones.CantidadTiquetesExcedidaException;
+import Exepciones.CapacidadLocalidadExcedidaException;
+import Exepciones.PasswordIncorrectoException;
 import Exepciones.SaldoInsuficienteException;
+import Exepciones.TiqueteNoEncontradoException;
+import Exepciones.TiqueteNoTransferibleException;
+import Exepciones.TiqueteVencidoFecha;
+import Exepciones.UsuarioNoEncontradoException;
 import Marketplace.Oferta;
 
 public class Cliente {
@@ -15,7 +22,7 @@ public class Cliente {
 
 
 	protected String tipoCliente;
-	protected static HashMap<String, Cliente> clientes = new HashMap<String, Cliente>();
+	public static HashMap<String, Cliente> clientes = new HashMap<String, Cliente>();
 	protected ArrayList<String> beneficios;
 	
 	
@@ -39,22 +46,30 @@ public class Cliente {
 		Localidad l = evento.getLocalidadPorNombre(localidad);
 		if (l.getTipoTiquete().equals("MULTIPLE")) {
 			if(cantidad > TiqueteMultiple.getTiquetesMaximosPorTransaccion()) {
-				throw new Exception();
+				throw new CantidadTiquetesExcedidaException(TiqueteMultiple.getTiquetesMaximosPorTransaccion());
 			}
+		}
+		if (cantidad > Tiquete.getTiquetesMaximosPorTransaccion()) {
+			throw new CantidadTiquetesExcedidaException(Tiquete.getTiquetesMaximosPorTransaccion());
+		}
+		if (cantidad > l.getCantidadTiquetesDisponibles() ) {
+			throw new CapacidadLocalidadExcedidaException(cantidad);
 		}
 		Tiquete ti = l.obtenerTiqueteDisponible();
 		if (comprarConSaldo) {
 			if (ti.getPrecioReal()*cantidad > this.saldoVirtual) {
-				throw new Exception();
+				throw new SaldoInsuficienteException(this);
 			}
 			this.saldoVirtual = this.saldoVirtual - ti.getPrecioReal()*cantidad;
 		}
 		for (int i = 0; i < cantidad; i++) {
 			Tiquete t = l.obtenerTiqueteDisponible();
-			log.add(t);
-			tiquetes.put(t.getId(), t);
-			t.setComprado(true);
-			t.setCliente(this);
+			if (!(t == null)) {
+				log.add(t);
+				tiquetes.put(t.getId(), t);
+				t.setComprado(true);
+				t.setCliente(this);
+			}
 		}
 
 
@@ -62,44 +77,50 @@ public class Cliente {
 		return log;
 	}
 	
-	public ArrayList<Tiquete> comprarTiquete(int cantidad, Evento evento, String localidad, int idSilla, boolean comprarConSaldo) throws Exception {
+	public ArrayList<Tiquete> comprarTiquete(int cantidad, Evento evento, String localidad, ArrayList<Integer> idSillas, boolean comprarConSaldo) throws Exception {
 		ArrayList<Tiquete> log = new ArrayList<Tiquete>();
 		Localidad l = evento.getLocalidadPorNombre(localidad);
 		if(cantidad > Tiquete.getTiquetesMaximosPorTransaccion()) {
-			throw new Exception();
+			throw new CantidadTiquetesExcedidaException(Tiquete.getTiquetesMaximosPorTransaccion());
 		}
-		Tiquete ti = l.obtenerTiqueteDisponible(idSilla);
+		if (cantidad > l.getCantidadTiquetesDisponibles()) {
+			throw new CapacidadLocalidadExcedidaException(cantidad);
+		}
+		Tiquete ti = l.obtenerTiqueteDisponible(0);
 		log.add(ti);
 		if (comprarConSaldo) {
 			if (ti.getPrecioReal() * cantidad > this.saldoVirtual) {
-				throw new Exception();
+				throw new SaldoInsuficienteException(this);
 			}
 			this.saldoVirtual = this.saldoVirtual - ti.getPrecioReal() * cantidad;
 		}
-		for (int i = 0; i < cantidad; i++) {
-			Tiquete t = l.obtenerTiqueteDisponible();
-			log.add(ti);
-			tiquetes.put(t.getId(), t);
-			t.setComprado(true);
-			t.setCliente(this);
+		for (int i:idSillas) {
+			
+			Tiquete t = l.obtenerTiqueteDisponible(i);
+			if(!(t == null)) {
+				log.add(ti);
+				tiquetes.put(t.getId(), t);
+				t.setComprado(true);
+				t.setCliente(this);
+				
+			}
 		}
 		return log;
 	}
 	
 	public TiqueteMultiEvento comprarTiqueteMultiEvento(HashMap<Evento, String> eventos, boolean comprarConSaldo) throws Exception {
 		TiqueteMultiEvento t = new TiqueteMultiEvento(eventos, this);
-		System.out.println("max = " + t.getTiquetesMaximosPorTransaccion());
 		if (eventos.size() > TiqueteMultiple.getTiquetesMaximosPorTransaccion()) {
-			throw new Exception();
+			throw new CantidadTiquetesExcedidaException(TiqueteMultiple.getTiquetesMaximosPorTransaccion());
 		}
 		if (comprarConSaldo) {
 			if (t.getPrecioReal() > this.saldoVirtual) {
-				throw new Exception();
+				throw new SaldoInsuficienteException(this);
 			}
 			this.saldoVirtual = this.saldoVirtual - t.getPrecioReal();
 		}
 		t.setComprado(true);
-		t.setCliente(this);
+		t.setCliente(this); 
 		tiquetes.put(t.getId(), t);
 		
 		return t;
@@ -113,7 +134,7 @@ public class Cliente {
 		PaqueteDeluxe pd = new PaqueteDeluxe(evento, localidad);
 		if (comprarConSaldo) {
 			if (pd.getTiquetePrincipal().getPrecioReal() > this.saldoVirtual) {
-				throw new Exception();
+				throw new SaldoInsuficienteException(this);
 			}
 		this.saldoVirtual = this.saldoVirtual - pd.getTiquetePrincipal().getPrecioReal();
 		}
@@ -130,20 +151,20 @@ public class Cliente {
 	
 	public void transferirTiquete(Tiquete tiquete, String login, String contrasena ) throws Exception {
 		if (!contrasena.equals(this.contrasena)) {
-			throw new Exception();
+			throw new PasswordIncorrectoException(this);
 		}
 		
 		if (!tiquete.isTransferible()) {
-			throw new Exception();
+			throw new TiqueteNoTransferibleException(tiquete);
 		}
 		
 		if (tiquete.getFecha().isBefore(LocalDate.now())){
-			throw new Exception();
+			throw new TiqueteVencidoFecha(tiquete);
 		}
 		eliminarTiquete(tiquete);
 		clientes.get(login).agregarTiquete(tiquete);
 		if (clientes.get(login).equals(null)) {
-			throw new Exception();
+			throw new UsuarioNoEncontradoException(login);
 		}
 		tiquete.setCliente(clientes.get(login));
 	}
@@ -151,8 +172,10 @@ public class Cliente {
 	public void transferirTiquete(TiqueteMultiple tiqueteMultiple, Tiquete tiquete, String login, String contrasena ) throws Exception {
 		Tiquete t = tiqueteMultiple.getTiquete(tiquete);
 		if (t.equals(null)) {
-			throw new Exception();
+			throw new TiqueteNoEncontradoException(tiquete.getId());
 		}
+
+		tiqueteMultiple.getTiquetes().remove(t);
 		transferirTiquete(tiquete, login, contrasena);
 		tiqueteMultiple.setTransferible(false);
 	}
