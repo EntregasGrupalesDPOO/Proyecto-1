@@ -3,9 +3,6 @@ package tests;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 import logica.Administrador;
 import logica.Cliente;
