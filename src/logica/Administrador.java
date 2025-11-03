@@ -104,7 +104,9 @@ public class Administrador {
 		evento.setEstado("CANCELADO");
 		for (Localidad l: evento.getLocalidades()) {
 			for (Tiquete t: l.getTiquetes()) {
-				reembolsarTiqueteCancelacionEvento(t.getCliente(), t);
+				if (t.isComprado()) {
+					reembolsarTiqueteCancelacionEvento(t.getCliente(), t);
+				}
 			}
 		}
 	}
@@ -113,7 +115,9 @@ public class Administrador {
 		evento.setEstado("CANCELADO");
 		for (Localidad l: evento.getLocalidades()) {
 			for (Tiquete t: l.getTiquetes()) {
-				reembolsarTiqueteCancelacionEventoInsolvencia(t.getCliente(), t);
+				if (t.isComprado()) {
+					reembolsarTiqueteCancelacionEventoInsolvencia(t.getCliente(), t);
+				}
 			}
 		}
 	}
@@ -190,7 +194,16 @@ public class Administrador {
 	}
 	public ArrayList<Solicitud> getSolicitudes() {
 		return solicitudes;
+	}
+	
+	public Venue crearVenue(int i, String string, String string2) {
+		return new Venue(i, string, string2);
 	}	
 
+	public void fijarMaximosPorTransaccion(int tiquetesIndividuales, int tiquetesMultiples) {
+		Tiquete.setTiquetesMaximosPorTransaccion(tiquetesIndividuales);
+		TiqueteMultiple.setTiquetesMaximosPorTransaccion(tiquetesMultiples);
+	}
+	
 	
 }

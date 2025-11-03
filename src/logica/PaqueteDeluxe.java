@@ -10,7 +10,7 @@ public class PaqueteDeluxe {
 	private Tiquete tiquetePrincipal;
 	private ArrayList<String> beneficios;
 	private ArrayList<Tiquete> cortesias;
-	private static double porcentajeExtra;
+	private static double porcentajeExtra; 
 	
 	public PaqueteDeluxe(Evento evento, String nombreLocalidad) throws Exception {
 		Localidad localidad = evento.getLocalidadPorNombre(nombreLocalidad);

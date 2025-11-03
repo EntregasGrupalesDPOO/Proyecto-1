@@ -15,7 +15,7 @@ public class Cliente {
 
 
 	protected String tipoCliente;
-	protected static HashMap<String, Cliente> clientes = new HashMap<String, Cliente>();
+	public static HashMap<String, Cliente> clientes = new HashMap<String, Cliente>();
 	protected ArrayList<String> beneficios;
 	
 	
@@ -51,10 +51,12 @@ public class Cliente {
 		}
 		for (int i = 0; i < cantidad; i++) {
 			Tiquete t = l.obtenerTiqueteDisponible();
-			log.add(t);
-			tiquetes.put(t.getId(), t);
-			t.setComprado(true);
-			t.setCliente(this);
+			if (!(t == null)) {
+				log.add(t);
+				tiquetes.put(t.getId(), t);
+				t.setComprado(true);
+				t.setCliente(this);
+			}
 		}
 
 
@@ -62,13 +64,13 @@ public class Cliente {
 		return log;
 	}
 	
-	public ArrayList<Tiquete> comprarTiquete(int cantidad, Evento evento, String localidad, int idSilla, boolean comprarConSaldo) throws Exception {
+	public ArrayList<Tiquete> comprarTiquete(int cantidad, Evento evento, String localidad, ArrayList<Integer> idSillas, boolean comprarConSaldo) throws Exception {
 		ArrayList<Tiquete> log = new ArrayList<Tiquete>();
 		Localidad l = evento.getLocalidadPorNombre(localidad);
 		if(cantidad > Tiquete.getTiquetesMaximosPorTransaccion()) {
 			throw new Exception();
 		}
-		Tiquete ti = l.obtenerTiqueteDisponible(idSilla);
+		Tiquete ti = l.obtenerTiqueteDisponible(0);
 		log.add(ti);
 		if (comprarConSaldo) {
 			if (ti.getPrecioReal() * cantidad > this.saldoVirtual) {
@@ -76,19 +78,23 @@ public class Cliente {
 			}
 			this.saldoVirtual = this.saldoVirtual - ti.getPrecioReal() * cantidad;
 		}
-		for (int i = 0; i < cantidad; i++) {
-			Tiquete t = l.obtenerTiqueteDisponible();
-			log.add(ti);
-			tiquetes.put(t.getId(), t);
-			t.setComprado(true);
-			t.setCliente(this);
+		for (int i:idSillas) {
+			
+			Tiquete t = l.obtenerTiqueteDisponible(i);
+			if(!(t == null)) {
+				log.add(ti);
+				tiquetes.put(t.getId(), t);
+				t.setComprado(true);
+				t.setCliente(this);
+				
+			}
 		}
 		return log;
 	}
 	
 	public TiqueteMultiEvento comprarTiqueteMultiEvento(HashMap<Evento, String> eventos, boolean comprarConSaldo) throws Exception {
 		TiqueteMultiEvento t = new TiqueteMultiEvento(eventos, this);
-		System.out.println("max = " + t.getTiquetesMaximosPorTransaccion());
+		System.out.println("max = " + TiqueteMultiple.getTiquetesMaximosPorTransaccion());
 		if (eventos.size() > TiqueteMultiple.getTiquetesMaximosPorTransaccion()) {
 			throw new Exception();
 		}
@@ -99,7 +105,7 @@ public class Cliente {
 			this.saldoVirtual = this.saldoVirtual - t.getPrecioReal();
 		}
 		t.setComprado(true);
-		t.setCliente(this);
+		t.setCliente(this); 
 		tiquetes.put(t.getId(), t);
 		
 		return t;
@@ -153,6 +159,8 @@ public class Cliente {
 		if (t.equals(null)) {
 			throw new Exception();
 		}
+
+		tiqueteMultiple.getTiquetes().remove(t);
 		transferirTiquete(tiquete, login, contrasena);
 		tiqueteMultiple.setTransferible(false);
 	}
