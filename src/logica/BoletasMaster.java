@@ -8,6 +8,7 @@ import java.util.List;
 import Persistencia.ArchivoSerializable;
 import java.io.Serializable;
 import Marketplace.*;
+import Exepciones.OperacionNoAutorizadaException;
 import Exepciones.PasswordIncorrectoException;
 import Exepciones.TiqueteNoTransferibleException;
 import Exepciones.UsuarioNoEncontradoException;
@@ -226,13 +227,16 @@ public void comprarPaqueteDeluxe(Evento evento, String idLocalidad)
 		administrador.agregarSolicitud(new SolicitudVenue(this.usuarioActual, "Propuesta de Venue: " + nombre, nuevoVenue, this ));	
 	}
 
-	public void solicitarCancelacionEvento(Evento evento, String razon) {
-		administrador.agregarSolicitud(new SolicitudCancelacionEvento((Organizador)this.usuarioActual, razon, evento));
+	public void solicitarCancelacionEvento(Evento evento, String razon) throws OperacionNoAutorizadaException {
+		Organizador org  = getOrganizadorActual();
+		administrador.agregarSolicitud(new SolicitudCancelacionEvento(org, razon, evento));
 
 	}
-	public void agendarEvento(Venue venue, Organizador organizador, String tipoDeEvento, LocalDate fecha, LocalTime hora) {
+	public void agendarEvento(Venue venue, Organizador organizador, String tipoDeEvento, LocalDate fecha, LocalTime hora) throws OperacionNoAutorizadaException,Exception {
 
-		Evento nuevoEvento  =  (new Evento( venue,  organizador,  tipoDeEvento,  fecha,  hora));
+		Organizador org  = getOrganizadorActual();
+
+		Evento nuevoEvento  = org.crearEvento(venue, tipoDeEvento, fecha, hora);
 		agregarEvento(nuevoEvento);
 		System.out.println("Evento agendado: " + nuevoEvento.getTipoDeEvento() +  " Sin localidades asignadas.");
 
@@ -242,9 +246,9 @@ public void comprarPaqueteDeluxe(Evento evento, String idLocalidad)
 
 
 // Helper de validacion para cliente organizador
-private Organizador getOrganizadorActual() throws Exception {
+private Organizador getOrganizadorActual() throws OperacionNoAutorizadaException {
     if (this.usuarioActual == null || !(this.usuarioActual instanceof Organizador)) {
-        throw new Exception("El usuario actual no es un Organizador.");
+        throw new OperacionNoAutorizadaException("El usuario actual no es un Organizador.");
     }
     return (Organizador) this.usuarioActual;
 }
@@ -693,6 +697,7 @@ public void imprimirGananciasPorTodasLasFechas() {
 	    if (obj != null) {
 	        this.marketPlace = (Marketplace.MarketPlace) obj;
 	    } else {
+			
 	        this.marketPlace = new Marketplace.MarketPlace();
 	    }
 	}
