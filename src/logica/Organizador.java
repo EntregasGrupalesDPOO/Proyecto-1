@@ -18,7 +18,7 @@ public class  Organizador extends Cliente{
 	}
 	
 	public Evento crearEvento(Venue venue, String tipoDeEvento, LocalDate fecha, LocalTime hora) throws Exception {
-		if (!venue.getEventos().get(fecha).equals(null)) {
+		if (!(venue.getEventos().get(fecha) ==null)) {
 			throw new Exception();
 		}
 		Evento evento = new Evento(venue, this, tipoDeEvento, fecha, hora);

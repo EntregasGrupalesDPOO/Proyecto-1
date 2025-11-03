@@ -31,10 +31,10 @@ public class Evento {
 		
 		if (Evento.tiposDeEventos.isEmpty()) {
 			Evento.tiposDeEventos = new HashMap<>();
-			Evento.tiposDeEventos.put("CULTURAL", 1.0);
-			Evento.tiposDeEventos.put("DEPORTIVO", 1.0);
-			Evento.tiposDeEventos.put("MUSICAL", 1.0);
-			Evento.tiposDeEventos.put("RELIGIOSO", 1.0);
+			Evento.tiposDeEventos.put("Cultural", 1.0);
+			Evento.tiposDeEventos.put("Deportivo", 1.0);
+			Evento.tiposDeEventos.put("Musical", 1.0);
+			Evento.tiposDeEventos.put("Religioso", 1.0);
 	    }
 	}
 
