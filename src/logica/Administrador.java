@@ -18,7 +18,7 @@ public class Administrador {
 		this.eventosPorFecha = new HashMap<LocalDate, ArrayList<Evento>>();
 		this.eventosPorOrganizador = new HashMap<Organizador, ArrayList<Evento>>();
 		this.solicitudes = new ArrayList<Solicitud>();
-	}
+	} 
 	
 	// Método para autenticar al administrador
 	public boolean login(String login, String contrasena) {
