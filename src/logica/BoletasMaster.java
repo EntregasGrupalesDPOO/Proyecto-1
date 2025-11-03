@@ -639,18 +639,34 @@ public void imprimirGananciasPorTodasLasFechas() {
 
 
 	
-	public void escribirCliente() {
-	    archivoSerializable.escribir(this.clientes, "./datos/usuarios.ser");
+	// === CLIENTES ===
+	public void escribirClientes() {
+	    archivoSerializable.escribir(this.clientes, "./datos/clientes.ser");
 	}
 
-	public void leerCliente() {
-	    Object obj = archivoSerializable.leer("./datos/usuarios.ser");
+	public void leerClientes() {
+	    Object obj = archivoSerializable.leer("./datos/clientes.ser");
 	    if (obj != null) {
 	        this.clientes = (HashMap<String, Cliente>) obj;
 	    } else {
 	        this.clientes = new HashMap<>();
 	    }
 	}
+
+	// === ORGANIZADORES ===
+	public void escribirOrganizadores() {
+	    archivoSerializable.escribir(this.organizadores, "./datos/organizadores.ser");
+	}
+
+	public void leerOrganizadores() {
+	    Object obj = archivoSerializable.leer("./datos/organizadores.ser");
+	    if (obj != null) {
+	        this.organizadores = (HashMap<String, Organizador>) obj;
+	    } else {
+	        this.organizadores = new HashMap<>();
+	    }
+	}
+
 
 	public void escribirEventos() {
 	    archivoSerializable.escribir(this.eventos, "./datos/eventos.ser");

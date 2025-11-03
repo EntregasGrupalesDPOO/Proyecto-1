@@ -1,9 +1,10 @@
 package logica;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TiqueteMultiEvento extends TiqueteMultiple {
+public class TiqueteMultiEvento extends TiqueteMultiple implements Serializable {
 	private static final Map<Integer, Double> DESCUENTOS = new HashMap<>();
     static {
         DESCUENTOS.put(1, 0.0);  

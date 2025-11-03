@@ -1,10 +1,11 @@
 package Marketplace;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LogReventa {
+public class LogReventa implements Serializable {
     private List<String> eventos;
 
     public LogReventa() {

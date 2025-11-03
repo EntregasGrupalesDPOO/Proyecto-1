@@ -1,11 +1,12 @@
 package logica;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class  Organizador extends Cliente{
+public class  Organizador extends Cliente implements Serializable{
 	private ArrayList<Evento> eventos;
 	private Administrador administrador;
 	private final static String ORGANIZADOR = "ORGANIZADOR";

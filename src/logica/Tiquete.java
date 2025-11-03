@@ -1,9 +1,10 @@
 package logica;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public abstract class Tiquete {
+public abstract class Tiquete implements Serializable {
 	protected int id;
 	protected double precioBase;
 	protected double cargoPorServicio;

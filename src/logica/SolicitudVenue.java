@@ -1,6 +1,8 @@
 package logica;
 
-public class SolicitudVenue extends Solicitud implements IAprobable {
+import java.io.Serializable;
+
+public class SolicitudVenue extends Solicitud implements IAprobable,Serializable {
 
     private Venue venue;
     private BoletasMaster sistema;

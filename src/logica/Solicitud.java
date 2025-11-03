@@ -1,6 +1,8 @@
 package logica;
 
-public abstract class Solicitud {
+import java.io.Serializable;
+
+public abstract class Solicitud implements Serializable{
 
     
     protected Cliente solicitante;

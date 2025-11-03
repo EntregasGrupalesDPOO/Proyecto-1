@@ -1,5 +1,6 @@
 package logica;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +8,7 @@ import java.util.HashMap;
 import Exepciones.SaldoInsuficienteException;
 import Marketplace.Oferta;
 
-public class Cliente {
+public class Cliente implements Serializable{
 	protected String login;
 	protected String contrasena;
 	protected double saldoVirtual;

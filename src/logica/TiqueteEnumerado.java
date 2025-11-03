@@ -1,9 +1,10 @@
 package logica;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class TiqueteEnumerado extends Tiquete{
+public class TiqueteEnumerado extends Tiquete implements Serializable{
 	private int idSilla;
 	public static final String ENUMERADO = "ENUMERADO";
 

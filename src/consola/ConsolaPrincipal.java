@@ -17,7 +17,8 @@ public class ConsolaPrincipal {
         this.scanner = new Scanner(System.in);
         sistema.agregarAdministrador("admin", "admin");
         sistema.leerAdministrador();
-        sistema.leerCliente();
+        sistema.leerClientes();
+        sistema.leerOrganizadores();
         sistema.leerEventos();
         sistema.leerTiquetes();
         sistema.leerVenues();
@@ -49,7 +50,8 @@ public class ConsolaPrincipal {
                     System.out.println("¡Hasta pronto!");
                     // Persistir automáticamente
                     sistema.escribirAdministrador();
-                    sistema.escribirCliente();
+                    sistema.escribirClientes();
+                    sistema.escribirOrganizadores();
                     sistema.escribirEventos();
                     sistema.escribirTiquetes();
                     sistema.escribirVenues();

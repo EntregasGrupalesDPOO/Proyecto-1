@@ -1,11 +1,12 @@
 package Marketplace;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import logica.Cliente;
 
-public class MarketPlace {
+public class MarketPlace implements Serializable{
     private List<Oferta> ofertas;
     private LogReventa log;
 
