@@ -103,5 +103,13 @@ public class Localidad {
 		return tipoTiquete;
 	}
 	
-	
+	public int getCantidadTiquetesDisponibles() {
+		int tiquetesDisponibles = 0;
+		for (Tiquete t: this.tiquetes) {
+			if (!t.comprado) {
+				tiquetesDisponibles++;
+			}
+		}
+		return tiquetesDisponibles;
+	}
 }

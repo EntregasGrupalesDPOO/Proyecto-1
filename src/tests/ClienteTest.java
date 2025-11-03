@@ -40,7 +40,10 @@ public class ClienteTest {
         tiquete = localidad.getTiquetes().get(0);
         tiquete.setTransferible(true);
         this.admin.fijarTarifaImpresion(1);
+        this.admin.fijarMaximosPorTransaccion(5, 10);
     }
+    
+    
 
     // === TEST ACHAT TIQUETE SIMPLE ===
     @Test

@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import Exepciones.CapacidadVenueExcedidaException;
 import Exepciones.VenueNoDisponibleException;
 
 public class  Organizador extends Cliente{
@@ -32,7 +33,7 @@ public class  Organizador extends Cliente{
 	
 	public Localidad anadirLocalidadAEvento(String nombre, int capacidad, double precioTiquete, String tipoTiquete, Evento evento) throws Exception {
 		if(evento.capacidadActual() + capacidad > evento.getVenue().getCapacidad()) {
-			throw new Exception();
+			throw new CapacidadVenueExcedidaException(capacidad);
 		}
 		Localidad localidad = new Localidad(nombre, capacidad, precioTiquete, tipoTiquete, evento);
 		return localidad;
@@ -40,7 +41,7 @@ public class  Organizador extends Cliente{
 
 	public Localidad anadirLocalidadAEvento(String nombre, int capacidad, double precioTiquete, String tipoTiquete, Evento evento, double descuento) throws Exception {
 		if(evento.capacidadActual() + capacidad > evento.getVenue().getCapacidad()) {
-			throw new Exception();
+			throw new CapacidadVenueExcedidaException(capacidad);
 		}
 		Localidad localidad = new Localidad(nombre, capacidad, precioTiquete, tipoTiquete, evento, descuento);
 		return localidad;
@@ -48,7 +49,7 @@ public class  Organizador extends Cliente{
 	
 	public Localidad anadirLocalidadAEvento(String nombre, int capacidad, double precioTiquete, String tipoTiquete, Evento evento, int capacidadTiquetesMultiples) throws Exception {
 		if(evento.capacidadActual() + capacidad*capacidadTiquetesMultiples > evento.getVenue().getCapacidad()) {
-			throw new Exception();
+			throw new CapacidadVenueExcedidaException(capacidad*capacidadTiquetesMultiples);
 		}
 		Localidad localidad = new Localidad(nombre, capacidad, precioTiquete, tipoTiquete, evento, capacidadTiquetesMultiples);
 		return localidad;

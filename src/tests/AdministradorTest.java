@@ -81,6 +81,8 @@ public class AdministradorTest {
 		}
 	}
 	
+	
+	
 	@Test
 	public void obtenerGananciasGlobalesTest() {
 		assertEquals(178000, this.admin.gananciasGlobales());

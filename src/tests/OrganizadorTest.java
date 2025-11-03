@@ -70,6 +70,8 @@ public class OrganizadorTest {
 
 	}
 	
+	
+	
 	@Test
 	public void consultarGananciasLocalidadTest() {
 		assertEquals(75000, this.organizador.consultarGananciasLocalidad(this.organizador.getEventosCreados().get(0).getLocalidadPorNombre("loc1")));
