@@ -19,6 +19,7 @@ public class Administrador {
 		this.eventosPorOrganizador = new HashMap<Organizador, ArrayList<Evento>>();
 		this.solicitudes = new ArrayList<Solicitud>();
 	}
+	
 	// Método para autenticar al administrador
 	public boolean login(String login, String contrasena) {
 		return this.login.equals(login) && this.contrasena.equals(contrasena);
@@ -30,6 +31,10 @@ public class Administrador {
 	
 	public void anadirTarifaTipoEvento(String tipoEvento, double valor) {
 		Evento.addTipoEvento(tipoEvento, valor);
+	}
+	
+	public Venue crearVenue(int capacidad, String nombre, String ubicacion) {
+		return new Venue(capacidad, nombre, ubicacion);
 	}
 	
 	public void fijarMaximosPorTransaccion(int tiquetesIndividuales, int tiquetesMultiples) {
