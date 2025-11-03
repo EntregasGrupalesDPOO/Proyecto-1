@@ -228,11 +228,11 @@ public void comprarPaqueteDeluxe(Evento evento, String idLocalidad)
 		administrador.agregarSolicitud(new SolicitudCancelacionEvento(org, razon, evento));
 
 	}
-	public void agendarEvento(Venue venue, Organizador organizador, String tipoDeEvento, LocalDate fecha, LocalTime hora) throws OperacionNoAutorizadaException,Exception {
+	public void agendarEvento(String nombre,String descripcion,Venue venue, Organizador organizador, String tipoDeEvento, LocalDate fecha, LocalTime hora) throws OperacionNoAutorizadaException,Exception {
 
 		Organizador org  = getOrganizadorActual();
 
-		Evento nuevoEvento  = org.crearEvento(venue, tipoDeEvento, fecha, hora);
+		Evento nuevoEvento  = org.crearEvento(nombre,descripcion,venue, tipoDeEvento, fecha, hora);
 		agregarEvento(nuevoEvento);
 		System.out.println("Evento agendado: " + nuevoEvento.getTipoDeEvento() +  " Sin localidades asignadas.");
 

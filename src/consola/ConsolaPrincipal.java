@@ -15,6 +15,7 @@ public class ConsolaPrincipal {
     public ConsolaPrincipal() {
         this.sistema = new BoletasMaster();
         this.scanner = new Scanner(System.in);
+        sistema.agregarAdministrador("admin", "admin");
     }
 
     public void iniciar() {
@@ -72,12 +73,14 @@ public class ConsolaPrincipal {
                 case "2":
                     sistema.loginOrganizador(login, contrasena);
                     System.out.println("Sesión iniciada como Organizador.");
+                    new ConsolaOrganizador(sistema).mostrarMenu();
                     //new ConsolaOrganizador(sistema, scanner).mostrarMenuOrganizador();
                     break;
                 case "3":
                     sistema.loginAdministrador(login, contrasena);
                     System.out.println("Sesión iniciada como Administrador.");
-                    //new ConsolaAdministrador(sistema, scanner).mostrarMenuAdministrador();
+                    new ConsolaAdministrador(sistema).ejecutar();
+                    
                     break;
                 default:
                     System.out.println("Tipo de usuario inválido.");
