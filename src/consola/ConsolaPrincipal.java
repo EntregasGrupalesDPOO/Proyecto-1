@@ -115,7 +115,7 @@ public class ConsolaPrincipal {
         }
 
         // Persistir automáticamente
-        sistema.escribirUsuarios();
+        sistema.escribirCliente();
     }
 
     public static void main(String[] args) {

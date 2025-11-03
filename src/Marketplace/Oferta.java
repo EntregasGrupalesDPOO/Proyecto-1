@@ -18,7 +18,7 @@ public class Oferta {
     private ArrayList<ContraOferta> contraOfertas;
 
     public Oferta(Tiquete tiquete, Cliente vendedor, String descripcion, double precio) throws TiqueteNoTransferibleException {
-        if (tiquete.isTransferible()) {
+        if (!tiquete.isTransferible()) {
         	throw new TiqueteNoTransferibleException(tiquete);
         }
         

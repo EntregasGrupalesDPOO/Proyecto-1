@@ -30,8 +30,9 @@ public class ContraOferta {
         //transferirTiquete
         Cliente vendedorOferta=getVendedor();
         vendedorOferta.setSaldoVirtual(vendedorOferta.getSaldoVirtual()+this.nuevoPrecio);
-        
-        vendedorOferta.transferirTiquete(this.ofertaOriginal.getTiquete(),this.comprador.getLogin(), this.comprador.getContrasena() );
+        vendedorOferta.transferirTiquete(ofertaOriginal.getTiquete(), this.comprador.getLogin(), this.ofertaOriginal.getVendedor().getContrasena());
+
+
 
         
         

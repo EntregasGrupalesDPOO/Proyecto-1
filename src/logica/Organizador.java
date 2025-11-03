@@ -3,6 +3,7 @@ package logica;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class  Organizador extends Cliente{
 	private ArrayList<Evento> eventos;
@@ -147,6 +148,10 @@ public class  Organizador extends Cliente{
 			}
 		}
 		return cantidad;
+	}
+	
+	public ArrayList<Evento> getEventosCreados(){
+		return this.eventos;
 	}
 
 }

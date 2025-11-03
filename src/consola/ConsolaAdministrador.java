@@ -117,7 +117,7 @@ public class ConsolaAdministrador {
         }
 
         Evento evento = eventos.get(idx);
-        double ganancias = sistema.getAdministrador().obtenerGananciasEvento(evento);
+        double ganancias = sistema.obtenerGananciasEvento(evento);
         System.out.println("Ganancias del evento '" + evento.getNombre() + "': $" + ganancias);
     }
 
@@ -143,9 +143,9 @@ public class ConsolaAdministrador {
         }
 
         String login = (String) organizadores.keySet().toArray()[idx];
-        double ganancias = sistema.getAdministrador()
-                .obtenerGananciasOrganizador(organizadores.get(login));
+        double ganancias = sistema.imprimirGananciasPorOrganizador(organizadores.get(login));
         System.out.println("Ganancias del organizador '" + login + "': $" + ganancias);
+        
     }
 
     // === UTILIDADES ===
