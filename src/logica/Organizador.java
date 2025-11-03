@@ -5,6 +5,9 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import Exepciones.CapacidadVenueExcedidaException;
+import Exepciones.VenueNoDisponibleException;
+
 public class  Organizador extends Cliente{
 	private ArrayList<Evento> eventos;
 	private Administrador administrador;
@@ -18,8 +21,9 @@ public class  Organizador extends Cliente{
 	}
 	
 	public Evento crearEvento(Venue venue, String tipoDeEvento, LocalDate fecha, LocalTime hora) throws Exception {
-		if (!(venue.getEventos().get(fecha) ==null)) {
-			throw new Exception();
+
+		if (!(venue.getEventos().get(fecha) == null)) {
+			throw new VenueNoDisponibleException(venue);
 		}
 		Evento evento = new Evento(venue, this, tipoDeEvento, fecha, hora);
 		this.eventos.add(evento);
@@ -30,30 +34,30 @@ public class  Organizador extends Cliente{
 	
 	public Localidad anadirLocalidadAEvento(String nombre, int capacidad, double precioTiquete, String tipoTiquete, Evento evento) throws Exception {
 		if(evento.capacidadActual() + capacidad > evento.getVenue().getCapacidad()) {
-			throw new Exception();
+			throw new CapacidadVenueExcedidaException(capacidad);
 		}
 		Localidad localidad = new Localidad(nombre, capacidad, precioTiquete, tipoTiquete, evento);
 		return localidad;
-	}
+	} 
 
 	public Localidad anadirLocalidadAEvento(String nombre, int capacidad, double precioTiquete, String tipoTiquete, Evento evento, double descuento) throws Exception {
 		if(evento.capacidadActual() + capacidad > evento.getVenue().getCapacidad()) {
-			throw new Exception();
+			throw new CapacidadVenueExcedidaException(capacidad);
 		}
 		Localidad localidad = new Localidad(nombre, capacidad, precioTiquete, tipoTiquete, evento, descuento);
 		return localidad;
 	}
 	
 	public Localidad anadirLocalidadAEvento(String nombre, int capacidad, double precioTiquete, String tipoTiquete, Evento evento, int capacidadTiquetesMultiples) throws Exception {
-		if(evento.capacidadActual() + capacidad > evento.getVenue().getCapacidad()) {
-			throw new Exception();
+		if(evento.capacidadActual() + capacidad*capacidadTiquetesMultiples > evento.getVenue().getCapacidad()) {
+			throw new CapacidadVenueExcedidaException(capacidad*capacidadTiquetesMultiples);
 		}
 		Localidad localidad = new Localidad(nombre, capacidad, precioTiquete, tipoTiquete, evento, capacidadTiquetesMultiples);
 		return localidad;
 	}
 	
 	public Localidad anadirLocalidadAEvento(String nombre, int capacidad, double precioTiquete, String tipoTiquete, Evento evento, double descuento, int capacidadTiquetesMultiples) throws Exception {
-		if(evento.capacidadActual() + capacidad > evento.getVenue().getCapacidad()) {
+		if(evento.capacidadActual() + capacidad*capacidadTiquetesMultiples > evento.getVenue().getCapacidad()) {
 			throw new Exception();
 		}
 		Localidad localidad = new Localidad(nombre, capacidad, precioTiquete, tipoTiquete, evento, descuento, capacidadTiquetesMultiples);
@@ -93,7 +97,7 @@ public class  Organizador extends Cliente{
 	}
 	
 	public double consultarPorcentajeEvento(Evento evento) {
-		double ganancias = cantidadTiqueteEvento(evento);
+		double ganancias = cantidadTiqueteEventoVendido(evento);
 		double total = cantidadTiqueteEvento(evento);
 		return ganancias/total;
 	}
@@ -121,7 +125,17 @@ public class  Organizador extends Cliente{
 	}
 	
 	public int cantidadTiqueteLocalidad(Localidad localidad) {
-		return localidad.getTiquetes().size();
+		int cantidad = 0;
+		if (localidad.getTipoTiquete().equals("MULTIPLE")) {
+			for (Tiquete t:localidad.getTiquetes()) {
+				for (Tiquete ti: ((TiqueteMultiple) t).getTiquetes()) {
+					cantidad++;
+				}
+			}
+		} else {
+			cantidad += localidad.getTiquetes().size();
+		}
+		return cantidad;
 	}
 	
 	public int cantidadTiqueteGlobalVendido() {
@@ -142,9 +156,19 @@ public class  Organizador extends Cliente{
 	
 	public int cantidadTiqueteLocalidadVendido(Localidad localidad) {
 		int cantidad = 0;
-		for(Tiquete t: localidad.getTiquetes()) {
-			if(t.isComprado()) {
-				cantidad++;
+		if(localidad.getTipoTiquete().equals("MULTIPLE")) {
+			for (Tiquete t:localidad.getTiquetes()) {
+				for (Tiquete ti: ((TiqueteMultiple) t).getTiquetes()) {
+					if(ti.isComprado()) {
+						cantidad++;
+					}
+				}
+			}
+		}else {
+			for(Tiquete t: localidad.getTiquetes()) {
+				if(t.isComprado()) {
+					cantidad++;
+				}
 			}
 		}
 		return cantidad;

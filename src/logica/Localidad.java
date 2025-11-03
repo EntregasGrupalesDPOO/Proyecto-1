@@ -58,13 +58,13 @@ public class Localidad {
 	}
 	
 	private void tiquetesEnumerados(int capacidad, Evento evento) {
-		for (int i = 0; i < capacidad; i++) {
+		for (int i = 1; i <= capacidad; i++) {
 			this.tiquetes.add(new TiqueteEnumerado(precioTiquete*(1-this.descuento), evento.getValorTipoDeEvento(), evento.getFecha(), evento.getHora(), i));
 		}
 	}
 	
 	private void tiquetesMultiples(int capacidad, Evento evento, int capacidadTiquetesMultiples) {
-		for (int i = 0; i < capacidad; i++) {
+		for (int i = 1; i <= capacidad; i++) {
 			this.tiquetes.add(new TiqueteMultiEntrada(precioTiquete*(1-this.descuento), evento.getValorTipoDeEvento(), evento.getFecha(), evento.getHora(), capacidadTiquetesMultiples));
 		}
 	}
@@ -92,7 +92,7 @@ public class Localidad {
 	            return t;
 	        }
 	    }
-	    return null;
+	    return null; 
 	}
 	
 	public int getCantidadCapacidad() {
@@ -103,5 +103,13 @@ public class Localidad {
 		return tipoTiquete;
 	}
 	
-	
+	public int getCantidadTiquetesDisponibles() {
+		int tiquetesDisponibles = 0;
+		for (Tiquete t: this.tiquetes) {
+			if (!t.comprado) {
+				tiquetesDisponibles++;
+			}
+		}
+		return tiquetesDisponibles;
+	}
 }

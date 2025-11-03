@@ -4,22 +4,25 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
+import Exepciones.CapacidadLocalidadExcedidaException;
+import Exepciones.LocalidadNoExisteException;
+
 public class PaqueteDeluxe {
 	private int id;
 	private static int contadorPaquetes = 0;
 	private Tiquete tiquetePrincipal;
 	private ArrayList<String> beneficios;
 	private ArrayList<Tiquete> cortesias;
-	private static double porcentajeExtra;
+	private static double porcentajeExtra; 
 	
 	public PaqueteDeluxe(Evento evento, String nombreLocalidad) throws Exception {
 		Localidad localidad = evento.getLocalidadPorNombre(nombreLocalidad);
 		if (localidad == null) {
-			throw new Exception();		
+			throw new LocalidadNoExisteException(nombreLocalidad);		
 		}
 		Tiquete tiquete = localidad.obtenerTiqueteDisponible();
 		if (tiquete == null) {
-            throw new Exception("No hay tiquetes disponibles en la localidad " + nombreLocalidad);
+            throw new CapacidadLocalidadExcedidaException(1);
         }
 		this.tiquetePrincipal = tiquete;
 		this.tiquetePrincipal.actualizarPrecios(this.tiquetePrincipal.getPrecioBase() * (1 + porcentajeExtra));
