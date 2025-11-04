@@ -73,6 +73,9 @@ public class BoletasMasterTest {
         venue  = new Venue(5000, "Movistar Arena", "Bogotá");
         evento = new Evento(venue, org, "MUSICAL",
                 LocalDate.now().plusDays(5), LocalTime.of(19, 30));
+        
+
+        bm.setTransacciones(10, 10);
     }
 
 
@@ -219,7 +222,7 @@ public class BoletasMasterTest {
         assertDoesNotThrow(() -> bm.obtenerGananciasGenerales());
         assertDoesNotThrow(() -> bm.imprimirGananciasPorOrganizador(org));
         assertDoesNotThrow(() -> bm.obtenerGananciasEvento(evento));
-        assertDoesNotThrow(() -> bm.imprimirGananciasPorFecha(null)); // rama de 'fecha nula'
+        assertDoesNotThrow(() -> bm.imprimirGananciasPorFecha(null)); 
         assertDoesNotThrow(() -> bm.imprimirGananciasPorTodasLasFechas());
         assertDoesNotThrow(() -> bm.imprimirGananciasPorTodosLosOrganizadores());
     }
@@ -278,14 +281,22 @@ public class BoletasMasterTest {
 
     @Test
     void comprarTiquetes_comoCliente_noFalla() throws Exception {
-        bm.loginCliente("alice", "111");
-        Localidad loc = new Localidad("VIP", 10, 100.0, "BASICO", evento);
 
+        bm.loginOrganizador("org", "pass");
+
+
+        bm.crearLocalidadEvento("VIP", 10, 100.0, "BASICO", evento);
+        bm.loginCliente("alice", "111");
+        
         bm.comprarTiquetes(1, evento, "VIP");
     }
 
     @Test
     void comprarTiquetes_multiplesMultiEvento_ok() throws Exception {
+        bm.loginOrganizador("org", "pass");
+
+
+        bm.crearLocalidadEvento("VIP", 10, 100.0, "BASICO", evento);
         bm.loginCliente("alice", "111");
         HashMap<Evento,String> evs = new HashMap<>();
         evs.put(evento, "VIP");
@@ -294,8 +305,11 @@ public class BoletasMasterTest {
 
     @Test
     void comprarPaqueteDeluxe_ok() throws Exception {
+        bm.loginOrganizador("org", "pass");
+
+
+        bm.crearLocalidadEvento("VIP", 10, 100.0, "BASICO", evento);
         bm.loginCliente("alice", "111");
-        Localidad loc = new Localidad("VIP", 10, 100.0, "BASICO", evento);
         
         assertDoesNotThrow(() -> bm.comprarPaqueteDeluxe(evento, "VIP"));
     }

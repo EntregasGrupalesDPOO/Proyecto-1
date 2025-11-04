@@ -154,11 +154,11 @@ public void comprarTiquetes(int cantidad, Evento evento, String idLocalidad) thr
 	}
 }
 
-public void comprarTiquetesEnumerados(int cantidad, Evento evento, String idLocalidad, int idSilla)
+public void comprarTiquetesEnumerados(int cantidad, Evento evento, String idLocalidad, ArrayList<Integer> idSillas )
 		throws UsuarioNoEncontradoException, Exception {
 	if (usuarioActual != null && (esCliente || esOrganizador)) {
 		boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
-		ArrayList<Tiquete> tiquetesCompra  = (usuarioActual.comprarTiquete(cantidad, evento, idLocalidad, idSilla, conSaldo));
+		ArrayList<Tiquete> tiquetesCompra  = (usuarioActual.comprarTiquete(cantidad, evento, idLocalidad, idSillas, conSaldo));
 		for (Tiquete tiquete : tiquetesCompra) {
 			tiquetes.put(tiquete.getId(), tiquete);
 		}
@@ -444,6 +444,11 @@ public void imprimirGananciasPorTodasLasFechas() {
 		for (String tipoEvento : Evento.tiposDeEventos.keySet()) {
 			System.out.println(tipoEvento + ": " + Evento.tiposDeEventos.get(tipoEvento) + "%");
 		}
+	}
+	public void setTransacciones(int max1, int max2){
+		TiqueteMultiple.tiquetesMaximosPorTransaccionMultiples = max1;
+		TiqueteMultiple.tiquetesMaximosPorTransaccion = max2;
+
 	}
 
 	
