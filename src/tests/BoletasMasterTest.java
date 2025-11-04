@@ -71,7 +71,7 @@ public class BoletasMasterTest {
         c2  = new Cliente("bob", "222");
 
         venue  = new Venue(5000, "Movistar Arena", "Bogotá");
-        evento = new Evento(venue, org, "MUSICAL",
+        evento = new Evento("test","testDescripcion",venue, org, "MUSICAL",
                 LocalDate.now().plusDays(5), LocalTime.of(19, 30));
         
 

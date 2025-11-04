@@ -138,9 +138,9 @@ public class ClienteTest {
 		
 		Cliente miCliente = new Cliente("un parcero", "dpoo");
 		try {
-			Evento evento1 = this.organizador.crearEvento(venue1, "religioso", LocalDate.of(2026, 1, 1), LocalTime.of(20, 30));
-			Evento evento2 = this.organizador.crearEvento(venue2, "deportivo", LocalDate.of(2026, 1, 2), LocalTime.of(20, 30));
-			Evento evento3 = this.organizador.crearEvento(venue3, "cultural", LocalDate.of(2026, 1, 3), LocalTime.of(20, 30));
+			Evento evento1 = this.organizador.crearEvento("test1","testdescripcion",venue1, "religioso", LocalDate.of(2026, 1, 1), LocalTime.of(20, 30));
+			Evento evento2 = this.organizador.crearEvento("test2","testdescripcion",venue2, "deportivo", LocalDate.of(2026, 1, 2), LocalTime.of(20, 30));
+			Evento evento3 = this.organizador.crearEvento("test3","testdescripcion",venue3, "cultural", LocalDate.of(2026, 1, 3), LocalTime.of(20, 30));
 			this.organizador.anadirLocalidadAEvento("loc1", 10, 10000, "BASICO", evento1);
 			this.organizador.anadirLocalidadAEvento("loc2", 40, 15000, "BASICO", evento2);
 			this.organizador.anadirLocalidadAEvento("loc3", 30, 20000, "BASICO", evento3);
@@ -179,9 +179,9 @@ public class ClienteTest {
 		Cliente miAmigo = new Cliente("otro parcero", "aaaa");
 		
 		try {
-			Evento evento1 = this.organizador.crearEvento(venue1, "religioso", LocalDate.of(2026, 1, 1), LocalTime.of(20, 30));
-			Evento evento2 = this.organizador.crearEvento(venue2, "deportivo", LocalDate.of(2026, 1, 2), LocalTime.of(20, 30));
-			Evento evento3 = this.organizador.crearEvento(venue3, "cultural", LocalDate.of(2026, 1, 3), LocalTime.of(20, 30));
+			Evento evento1 = this.organizador.crearEvento("test4","testdescripcion",venue1, "religioso", LocalDate.of(2026, 1, 1), LocalTime.of(20, 30));
+			Evento evento2 = this.organizador.crearEvento("test5","testdescripcion",venue2, "deportivo", LocalDate.of(2026, 1, 2), LocalTime.of(20, 30));
+			Evento evento3 = this.organizador.crearEvento("test6","testdescripcion",venue3, "cultural", LocalDate.of(2026, 1, 3), LocalTime.of(20, 30));
 			this.organizador.anadirLocalidadAEvento("loc1", 10, 10000, "BASICO", evento1);
 			this.organizador.anadirLocalidadAEvento("loc2", 40, 15000, "BASICO", evento2);
 			this.organizador.anadirLocalidadAEvento("loc3", 30, 20000, "BASICO", evento3);

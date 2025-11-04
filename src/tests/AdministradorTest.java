@@ -51,13 +51,13 @@ public class AdministradorTest {
 		this.admin.fijarTarifaImpresion(5000);
 		
 		try {
-			Evento evento1 = org1.crearEvento(venue1, "religioso", LocalDate.of(2026, 1, 1), LocalTime.of(20, 30));
+			Evento evento1 = org1.crearEvento("test1","testDescripcion",venue1, "religioso", LocalDate.of(2026, 1, 1), LocalTime.of(20, 30));
 			eventos.addLast(evento1);
 			org1.anadirLocalidadAEvento("loc1", 10, 15000, "ENUMERADO", evento1);
-			Evento evento2 = org2.crearEvento(venue2, "deportivo", LocalDate.of(2026, 1, 2), LocalTime.of(20, 30));
+			Evento evento2 = org2.crearEvento("test2","testDescripcion",venue2, "deportivo", LocalDate.of(2026, 1, 2), LocalTime.of(20, 30));
 			eventos.addLast(evento2);
 			org2.anadirLocalidadAEvento("loc2", 8, 50000, "MULTIPLE", evento2, 5);
-			Evento evento3 = org3.crearEvento(venue3, "cultural", LocalDate.of(2026, 1, 3), LocalTime.of(20, 30));
+			Evento evento3 = org3.crearEvento("test3","testDescripcion",venue3, "cultural", LocalDate.of(2026, 1, 3), LocalTime.of(20, 30));
 			eventos.addLast(evento3);
 			org3.anadirLocalidadAEvento("loc3", 30, 20000, "BASICO", evento3);
 			
