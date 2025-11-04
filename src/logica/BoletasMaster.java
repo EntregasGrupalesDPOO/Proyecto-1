@@ -155,7 +155,7 @@ public void comprarTiquetes(int cantidad, Evento evento, String idLocalidad) thr
 	}
 }
 
-public void comprarTiquetesEnumerados(int cantidad, Evento evento, String idLocalidad, int idSilla)
+public void comprarTiquetesEnumerados(int cantidad, Evento evento, String idLocalidad, ArrayList<Integer> idSilla)
 		throws UsuarioNoEncontradoException, Exception {
 	if (usuarioActual != null && (esCliente || esOrganizador)) {
 		boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
@@ -229,11 +229,11 @@ public void comprarPaqueteDeluxe(Evento evento, String idLocalidad)
 		administrador.agregarSolicitud(new SolicitudCancelacionEvento(org, razon, evento));
 
 	}
-	public void agendarEvento(Venue venue, Organizador organizador, String tipoDeEvento, LocalDate fecha, LocalTime hora) throws OperacionNoAutorizadaException,Exception {
+	public void agendarEvento(String  nombre,String descripcion,  Venue venue, Organizador organizador, String tipoDeEvento, LocalDate fecha, LocalTime hora) throws OperacionNoAutorizadaException,Exception {
 
 		Organizador org  = getOrganizadorActual();
 
-		Evento nuevoEvento  = org.crearEvento(venue, tipoDeEvento, fecha, hora);
+		Evento nuevoEvento  = org.crearEvento(nombre,descripcion,  venue, tipoDeEvento, fecha, hora);
 		agregarEvento(nuevoEvento);
 		System.out.println("Evento agendado: " + nuevoEvento.getTipoDeEvento() +  " Sin localidades asignadas.");
 
@@ -357,7 +357,7 @@ public double imprimirGananciasPorOrganizador(Organizador organizador) throws Or
     return g;
 }
 
-public void imprimirGananciasPorTodosLosOrganizadores() {
+public void imprimirGananciasPorTodosLosOrganizadores() throws OrganizadorNoTieneEventosException {
     asegurarAdmin();
     if (this.organizadores == null || this.organizadores.isEmpty()) {
         System.out.println("No hay organizadores registrados.");
