@@ -38,15 +38,22 @@ import Exepciones.PasswordIncorrectoException;
 import Exepciones.UsuarioNoEncontradoException;
 import logica.*;
 
-// Suite única: SIN Marketplace.
 public class BoletasMasterTest {
 
     private BoletasMaster bm;
-    private Administrador admin;
     private Organizador org;
     private Cliente c1, c2;
-    private Venue venue;
+    private BoletasMaster sistema;
+    private Administrador admin;
+    private Cliente vendedor;
+    private Cliente comprador;
     private Evento evento;
+    private Venue venue;
+    private Organizador organizador;
+    private Localidad localidad;
+    private Tiquete tiquete;
+    @Nested 
+    class GeneralTests{
 
     @BeforeEach
     void setUp() {
@@ -290,18 +297,13 @@ public class BoletasMasterTest {
     void comprarPaqueteDeluxe_ok() throws Exception {
         bm.loginCliente("alice", "111");
         Localidad loc = new Localidad("VIP", 10, 100.0, "BASICO", evento);
+        
         assertDoesNotThrow(() -> bm.comprarPaqueteDeluxe(evento, "VIP"));
     }
-    private BoletasMaster sistema;
-    private Administrador admin;
-    private Cliente vendedor;
-    private Cliente comprador;
-    private Evento evento;
-    private Venue venue;
-    private Organizador organizador;
-    private Localidad localidad;
-    private Tiquete tiquete;
+}
 
+@Nested
+class MarketPlaceTests {
     @BeforeEach
     public void setUp() throws Exception {
         sistema = new BoletasMaster();
@@ -440,4 +442,5 @@ public class BoletasMasterTest {
             sistema.verLogMarketplace();
         });
     }
+}
 }
