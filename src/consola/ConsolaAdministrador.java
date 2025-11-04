@@ -3,6 +3,7 @@ package consola;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import Exepciones.OrganizadorNoTieneEventosException;
 import logica.Administrador;
 import logica.BoletasMaster;
 import logica.Evento;
@@ -144,8 +145,15 @@ public class ConsolaAdministrador {
         }
 
         String login = (String) organizadores.keySet().toArray()[idx];
-        double ganancias = sistema.imprimirGananciasPorOrganizador(organizadores.get(login));
-        System.out.println("Ganancias del organizador '" + login + "': $" + ganancias);
+        double ganancias;
+		try {
+			ganancias = sistema.imprimirGananciasPorOrganizador(organizadores.get(login));
+			System.out.println("Ganancias del organizador '" + login + "': $" + ganancias);
+		} catch (OrganizadorNoTieneEventosException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
         
     }
 

@@ -100,15 +100,20 @@ public class ConsolaCliente {
             return;
         }
 
-        System.out.print("Ingrese ID de localidad: ");
-        String idLocalidad = scanner.nextLine();
-        System.out.print("Ingrese número de silla inicial: ");
-        int idSilla = leerEntero();
+        System.out.print("Ingrese el nombre de la localidad: ");
+        String localidad = scanner.nextLine();
+
         System.out.print("Cantidad de tiquetes: ");
         int cantidad = leerEntero();
-
+        
+        ArrayList<Integer> idSilla = new ArrayList<Integer>();
+        for (int i = 0; i < cantidad; i++) {
+	        System.out.print("Ingrese los números de silla: ");
+	        idSilla.add(leerEntero());
+        }
+        
         try {
-            sistema.comprarTiquetesEnumerados(cantidad, evento, idLocalidad, idSilla);
+            sistema.comprarTiquetesEnumerados(cantidad, evento, localidad, idSilla);
             System.out.println("Compra enumerada realizada con éxito.");
         } catch (Exception e) {
             System.out.println("Error al comprar enumerado: " + e.getMessage());
@@ -126,11 +131,11 @@ public class ConsolaCliente {
             return;
         }
 
-        System.out.print("Ingrese ID de localidad: ");
-        String idLocalidad = scanner.nextLine();
+        System.out.print("Ingrese nombre de localidad: ");
+        String localidad = scanner.nextLine();
 
         try {
-            sistema.comprarPaqueteDeluxe(evento, idLocalidad);
+            sistema.comprarPaqueteDeluxe(evento, localidad);
             System.out.println("Paquete Deluxe comprado exitosamente.");
         } catch (Exception e) {
             System.out.println("Error al comprar paquete deluxe: " + e.getMessage());

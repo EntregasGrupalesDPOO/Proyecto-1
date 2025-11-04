@@ -194,7 +194,7 @@ public class BoletasMasterTest {
     void agendarEvento_comoOrganizador_agrega() throws Exception {
         bm.loginOrganizador("org", "pass");
         int antes = bm.getEventos().size();
-        bm.agendarEvento(venue, org, "MUSICAL",
+        bm.agendarEvento("test","descripcion",venue, org, "MUSICAL",
                 LocalDate.now().plusDays(10), LocalTime.of(20, 0));
         assertTrue(bm.getEventos().size() >= antes + 1);
     }
@@ -202,7 +202,7 @@ public class BoletasMasterTest {
     @Test
     void agendarEvento_sinOrganizador_falla() {
         assertThrows(OperacionNoAutorizadaException.class, () ->
-                bm.agendarEvento(venue, org, "MUSICAL",
+                bm.agendarEvento("test2","descripcion",venue, org, "MUSICAL",
                         LocalDate.now().plusDays(10), LocalTime.of(20, 0)));
     }
 
@@ -345,7 +345,7 @@ class MarketPlaceTests {
         venue = new Venue(100, "Teatro Central", "Bogotá");
         sistema.agregarVenue(venue);
 
-        sistema.agendarEvento(venue, organizador, Evento.MUSICAL, LocalDate.now().plusDays(5), LocalTime.of(20, 0));
+        sistema.agendarEvento("test3","descripcion",venue, organizador, Evento.MUSICAL, LocalDate.now().plusDays(5), LocalTime.of(20, 0));
         evento = sistema.getEventos().get(0);
 
         localidad = sistema.crearLocalidadEvento("VIP", 5, 100.0, "BASICO", evento);
