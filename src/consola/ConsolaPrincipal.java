@@ -15,7 +15,6 @@ public class ConsolaPrincipal {
     public ConsolaPrincipal() {
         this.sistema = new BoletasMaster();
         this.scanner = new Scanner(System.in);
-        sistema.agregarAdministrador("admin", "admin");
         sistema.leerAdministrador();
         sistema.leerClientes();
         sistema.leerOrganizadores();
