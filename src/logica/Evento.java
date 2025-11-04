@@ -15,10 +15,10 @@ public class Evento {
 	private LocalTime hora;
 	private String estado;
 
-	public static final String CULTURAL   = "Cultural";
-	public static final String DEPORTIVO  = "Deportivo";
-	public static final String MUSICAL    = "Musical";
-	public static final String RELIGIOSO  = "Religioso";
+	public static final String CULTURAL   = "CULTURAL";
+	public static final String DEPORTIVO  = "DEPORTIVO";
+	public static final String MUSICAL    = "MUSICAL";
+	public static final String RELIGIOSO  = "RELIGIOSO";
 	
 	public Evento(Venue venue, Organizador organizador, String tipoDeEvento, LocalDate fecha, LocalTime hora) {
 		this.venue = venue;
