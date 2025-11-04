@@ -17,7 +17,7 @@ public abstract class Tiquete implements Serializable {
 	protected boolean comprado;
 	protected boolean transferible;
 	protected Cliente cliente;
-	protected static int tiquetesMaximosPorTransaccion;
+	protected static int tiquetesMaximosPorTransaccion=10;
 	
 	public Tiquete(double precioBase, double cargoPorServicio, LocalDate fecha,
 			LocalTime hora) {
