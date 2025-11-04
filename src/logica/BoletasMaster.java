@@ -144,10 +144,10 @@ public class BoletasMaster implements Serializable{
 
 
 
-public void comprarTiquetes(int cantidad, Evento evento, String idLocalidad) throws Exception {
+public void comprarTiquetes(int cantidad, Evento evento, String Localidad) throws Exception {
     if (usuarioActual != null && esCliente) {
         boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
-        ArrayList<Tiquete> tiquetesCompra  = (usuarioActual.comprarTiquete(cantidad, evento, idLocalidad, conSaldo));
+        ArrayList<Tiquete> tiquetesCompra  = (usuarioActual.comprarTiquete(cantidad, evento, Localidad, conSaldo));
 		for (Tiquete tiquete : tiquetesCompra) {
 			tiquetes.put(tiquete.getId(), tiquete);
 		}

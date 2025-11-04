@@ -82,8 +82,8 @@ public class ConsolaOrganizador {
         }
         Venue venue = sistema.getVenues().get(idx);
 
-        System.out.print("Tipo de evento (CULTURAL / MUSICAL / DEPORTIVO / RELIGIOSO): ");
-        String tipo = scanner.nextLine().toUpperCase();
+        System.out.print("Tipo de evento (Cultural / Musical / Deportivo / Religioso): ");
+        String tipo = scanner.nextLine();
 
         Organizador orga= (Organizador) sistema.getUsuarioActual();
         try {
