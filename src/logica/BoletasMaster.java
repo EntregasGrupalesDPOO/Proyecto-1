@@ -9,6 +9,7 @@ import Persistencia.ArchivoSerializable;
 import java.io.Serializable;
 import Marketplace.*;
 import Exepciones.OperacionNoAutorizadaException;
+import Exepciones.OrganizadorNoTieneEventosException;
 import Exepciones.PasswordIncorrectoException;
 import Exepciones.TiqueteNoTransferibleException;
 import Exepciones.UsuarioNoEncontradoException;
@@ -144,21 +145,21 @@ public class BoletasMaster implements Serializable{
 
 
 
-public void comprarTiquetes(int cantidad, Evento evento, String Localidad) throws Exception {
+public void comprarTiquetes(int cantidad, Evento evento, String idLocalidad) throws Exception {
     if (usuarioActual != null && esCliente) {
         boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
-        ArrayList<Tiquete> tiquetesCompra  = (usuarioActual.comprarTiquete(cantidad, evento, Localidad, conSaldo));
+        ArrayList<Tiquete> tiquetesCompra  = (usuarioActual.comprarTiquete(cantidad, evento, idLocalidad, conSaldo));
 		for (Tiquete tiquete : tiquetesCompra) {
 			tiquetes.put(tiquete.getId(), tiquete);
 		}
 	}
 }
 
-public void comprarTiquetesEnumerados(int cantidad, Evento evento, String idLocalidad, ArrayList<Integer> idSillas )
+public void comprarTiquetesEnumerados(int cantidad, Evento evento, String idLocalidad, int idSilla)
 		throws UsuarioNoEncontradoException, Exception {
 	if (usuarioActual != null && (esCliente || esOrganizador)) {
 		boolean conSaldo = usuarioActual.getSaldoVirtual() > 0;
-		ArrayList<Tiquete> tiquetesCompra  = (usuarioActual.comprarTiquete(cantidad, evento, idLocalidad, idSillas, conSaldo));
+		ArrayList<Tiquete> tiquetesCompra  = (usuarioActual.comprarTiquete(cantidad, evento, idLocalidad, idSilla, conSaldo));
 		for (Tiquete tiquete : tiquetesCompra) {
 			tiquetes.put(tiquete.getId(), tiquete);
 		}
@@ -228,11 +229,11 @@ public void comprarPaqueteDeluxe(Evento evento, String idLocalidad)
 		administrador.agregarSolicitud(new SolicitudCancelacionEvento(org, razon, evento));
 
 	}
-	public void agendarEvento(String nombre,String descripcion,Venue venue, Organizador organizador, String tipoDeEvento, LocalDate fecha, LocalTime hora) throws OperacionNoAutorizadaException,Exception {
+	public void agendarEvento(Venue venue, Organizador organizador, String tipoDeEvento, LocalDate fecha, LocalTime hora) throws OperacionNoAutorizadaException,Exception {
 
 		Organizador org  = getOrganizadorActual();
 
-		Evento nuevoEvento  = org.crearEvento(nombre,descripcion,venue, tipoDeEvento, fecha, hora);
+		Evento nuevoEvento  = org.crearEvento(venue, tipoDeEvento, fecha, hora);
 		agregarEvento(nuevoEvento);
 		System.out.println("Evento agendado: " + nuevoEvento.getTipoDeEvento() +  " Sin localidades asignadas.");
 
@@ -325,7 +326,6 @@ public Localidad crearLocalidadEvento(String nombre,
 		else {
 			solicitud.rechazarSolicitud();
 		} 
-		this.administrador.getSolicitudes().remove(solicitud);
 		
 	} 
 
@@ -347,7 +347,7 @@ private void asegurarAdmin() throws IllegalStateException {
 // GANANCIAS POR ORGANIZADOR
 // ------------------------ 
 
-public double imprimirGananciasPorOrganizador(Organizador organizador) {
+public double imprimirGananciasPorOrganizador(Organizador organizador) throws OrganizadorNoTieneEventosException {
     asegurarAdmin();
     if (organizador == null) {
         System.out.println("Organizador nulo. No se puede calcular ganancias.");
@@ -445,11 +445,6 @@ public void imprimirGananciasPorTodasLasFechas() {
 		for (String tipoEvento : Evento.tiposDeEventos.keySet()) {
 			System.out.println(tipoEvento + ": " + Evento.tiposDeEventos.get(tipoEvento) + "%");
 		}
-	}
-	public void setTransacciones(int max1, int max2){
-		TiqueteMultiple.tiquetesMaximosPorTransaccionMultiples = max1;
-		TiqueteMultiple.tiquetesMaximosPorTransaccion = max2;
-
 	}
 
 	
@@ -641,37 +636,18 @@ public void imprimirGananciasPorTodasLasFechas() {
 	
 	// Persistencia
 	
-
-
-	
-	// === CLIENTES ===
-	public void escribirClientes() {
-	    archivoSerializable.escribir(this.clientes, "./datos/clientes.ser");
+	public void escribirCliente() {
+	    archivoSerializable.escribir(this.clientes, "./datos/usuarios.ser");
 	}
 
-	public void leerClientes() {
-	    Object obj = archivoSerializable.leer("./datos/clientes.ser");
+	public void leerCliente() {
+	    Object obj = archivoSerializable.leer("./datos/usuarios.ser");
 	    if (obj != null) {
 	        this.clientes = (HashMap<String, Cliente>) obj;
 	    } else {
 	        this.clientes = new HashMap<>();
 	    }
 	}
-
-	// === ORGANIZADORES ===
-	public void escribirOrganizadores() {
-	    archivoSerializable.escribir(this.organizadores, "./datos/organizadores.ser");
-	}
-
-	public void leerOrganizadores() {
-	    Object obj = archivoSerializable.leer("./datos/organizadores.ser");
-	    if (obj != null) {
-	        this.organizadores = (HashMap<String, Organizador>) obj;
-	    } else {
-	        this.organizadores = new HashMap<>();
-	    }
-	}
-
 
 	public void escribirEventos() {
 	    archivoSerializable.escribir(this.eventos, "./datos/eventos.ser");

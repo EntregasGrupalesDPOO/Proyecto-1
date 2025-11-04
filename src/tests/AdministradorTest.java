@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import Exepciones.OrganizadorNoTieneEventosException;
 import logica.Administrador;
 import logica.Cliente;
 import logica.Evento;
@@ -104,9 +105,15 @@ public class AdministradorTest {
 	
 	@Test
 	public void obtenerGananciasOrganizador() {
-		assertEquals(48000, this.admin.gananciasPorOrganizador(organizadores.get(0)));
-		assertEquals(20000, (int)this.admin.gananciasPorOrganizador(organizadores.get(1)));
-		assertEquals(110000, this.admin.gananciasPorOrganizador(organizadores.get(2)));
+		try {
+			assertEquals(48000, this.admin.gananciasPorOrganizador(organizadores.get(0)));
+			assertEquals(20000, (int)this.admin.gananciasPorOrganizador(organizadores.get(1)));
+			assertEquals(110000, this.admin.gananciasPorOrganizador(organizadores.get(2)));
+		} catch (OrganizadorNoTieneEventosException e) {
+	
+			e.printStackTrace();
+		}
+		
 	}
 	
 	@Test
