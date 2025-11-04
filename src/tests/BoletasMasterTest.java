@@ -181,7 +181,6 @@ public class BoletasMasterTest {
 
     @Test
     void crearLocalidad_comoOrganizador_ok() throws Exception {
-        // Loguearse como organizador (dispara la validación interna de getOrganizadorActual)
         bm.loginOrganizador("org", "pass");
         Localidad loc = bm.crearLocalidadEvento("VIP", 10, 100.0, "BASICO", evento);
         assertNotNull(loc);
