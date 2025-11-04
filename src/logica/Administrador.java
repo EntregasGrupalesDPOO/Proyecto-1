@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import Exepciones.OrganizadorNoTieneEventosException;
+
 public class Administrador {
 	private HashMap<LocalDate, ArrayList<Evento>> eventosPorFecha;
 	private HashMap<Organizador, ArrayList<Evento>> eventosPorOrganizador;
@@ -58,8 +60,11 @@ public class Administrador {
 		return ganancias;
 	}
 	
-	public double gananciasPorOrganizador(Organizador organizador) {
+	public double gananciasPorOrganizador(Organizador organizador) throws OrganizadorNoTieneEventosException {
 		double ganancias = 0;
+		if (this.eventosPorOrganizador.get(organizador) == null) {
+			throw new OrganizadorNoTieneEventosException(organizador);
+		}
 		for(Evento e: this.eventosPorOrganizador.get(organizador)) {
 			ganancias += gananciasPorEvento(e);
 		}
