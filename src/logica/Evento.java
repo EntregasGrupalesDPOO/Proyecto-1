@@ -1,15 +1,18 @@
 package logica;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Evento {
+public class Evento implements Serializable{
 	private Venue venue;
 	private Organizador organizador;
 	private ArrayList<Localidad> localidades;
 	public static HashMap<String, Double> tiposDeEventos = new HashMap<String,Double>();
+	private String nombre;
+	private String descripcion;
 	private String tipoDeEvento;
 	private LocalDate fecha;
 	private LocalTime hora;
@@ -20,7 +23,7 @@ public class Evento {
 	public static final String MUSICAL    = "MUSICAL";
 	public static final String RELIGIOSO  = "RELIGIOSO";
 	
-	public Evento(Venue venue, Organizador organizador, String tipoDeEvento, LocalDate fecha, LocalTime hora) {
+	public Evento(String nombre,String descripcion,Venue venue, Organizador organizador, String tipoDeEvento, LocalDate fecha, LocalTime hora) {
 		this.venue = venue;
 		this.organizador = organizador;
 		this.tipoDeEvento = tipoDeEvento;
@@ -28,6 +31,8 @@ public class Evento {
 		this.hora = hora;
 		this.localidades = new ArrayList<Localidad>();
 		this.estado = "AGENDADO";
+		this.nombre=nombre;
+		this.descripcion=descripcion;
 		
 		if (Evento.tiposDeEventos.isEmpty()) {
 			Evento.tiposDeEventos = new HashMap<>();
@@ -97,7 +102,7 @@ public class Evento {
 		return capacidad;
 	}
 	public String getNombre (){
-		return this.venue.getNombre() + " - " + this.fecha.toString() + " - " + this.hora.toString();
+		return this.nombre;
 	}
 	public String getTipoDeEvento() {
 		return this.tipoDeEvento;

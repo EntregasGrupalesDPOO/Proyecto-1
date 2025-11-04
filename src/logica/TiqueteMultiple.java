@@ -1,10 +1,11 @@
 package logica;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
-public abstract class TiqueteMultiple extends Tiquete{
+public abstract class TiqueteMultiple extends Tiquete implements Serializable{
 	protected static int tiquetesMaximosPorTransaccionMultiples;
 	protected ArrayList<Tiquete> tiquetes;
 	

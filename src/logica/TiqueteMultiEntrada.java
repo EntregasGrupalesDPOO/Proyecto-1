@@ -1,9 +1,10 @@
 package logica;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class TiqueteMultiEntrada extends TiqueteMultiple{
+public class TiqueteMultiEntrada extends TiqueteMultiple implements Serializable{
 
 	public TiqueteMultiEntrada(double precioBase, double cargoPorServicio, LocalDate fecha, LocalTime hora,
 			int cantidad) {

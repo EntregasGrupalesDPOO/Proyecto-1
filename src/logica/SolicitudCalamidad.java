@@ -1,8 +1,10 @@
 package logica;
 
+import java.io.Serializable;
+
 import Exepciones.ReembolsoNoPermitidoException;
 
-public class SolicitudCalamidad extends Solicitud implements IAprobable {
+public class SolicitudCalamidad extends Solicitud implements IAprobable,Serializable{
 
     
     private Tiquete tiqueteAsociado;

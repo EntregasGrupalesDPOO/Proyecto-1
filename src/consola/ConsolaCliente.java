@@ -76,13 +76,13 @@ public class ConsolaCliente {
             return;
         }
 
-        System.out.print("Ingrese ID de localidad: ");
-        String idLocalidad = scanner.nextLine();
+        System.out.print("Ingrese localidad: ");
+        String Localidad = scanner.nextLine();
         System.out.print("Cantidad de tiquetes: ");
         int cantidad = leerEntero();
 
         try {
-            sistema.comprarTiquetes(cantidad, evento, idLocalidad);
+            sistema.comprarTiquetes(cantidad, evento, Localidad);
             System.out.println("Compra realizada con éxito.");
         } catch (Exception e) {
             System.out.println("Error al comprar: " + e.getMessage());

@@ -1,5 +1,6 @@
 package logica;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.HashMap;
 import Exepciones.CapacidadVenueExcedidaException;
 import Exepciones.VenueNoDisponibleException;
 
-public class  Organizador extends Cliente{
+public class  Organizador extends Cliente implements Serializable{
 	private ArrayList<Evento> eventos;
 	private Administrador administrador;
 	private final static String ORGANIZADOR = "ORGANIZADOR";
@@ -20,12 +21,12 @@ public class  Organizador extends Cliente{
 		this.administrador = administrador;
 	}
 	
-	public Evento crearEvento(Venue venue, String tipoDeEvento, LocalDate fecha, LocalTime hora) throws Exception {
+	public Evento crearEvento(String nombre,String descripcion,Venue venue, String tipoDeEvento, LocalDate fecha, LocalTime hora) throws Exception {
 
 		if (!(venue.getEventos().get(fecha) == null)) {
 			throw new VenueNoDisponibleException(venue);
 		}
-		Evento evento = new Evento(venue, this, tipoDeEvento, fecha, hora);
+		Evento evento = new Evento(nombre,descripcion,venue, this, tipoDeEvento, fecha, hora);
 		this.eventos.add(evento);
 		venue.asociarFecha(fecha, evento);
 		administrador.añadirEvento(evento);

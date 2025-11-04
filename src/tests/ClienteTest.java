@@ -34,7 +34,7 @@ public class ClienteTest {
         vendedor = new Cliente("pierre", "5678"); 
 
         venue = new Venue(5000,"Movistar Arena", "Bogotá" );
-        evento = new Evento(venue, organizador, Evento.MUSICAL, LocalDate.now().plusDays(5), LocalTime.of(19, 30));
+        evento = new Evento("concierto","concierto de maluma",venue, organizador, Evento.MUSICAL, LocalDate.now().plusDays(5), LocalTime.of(19, 30));
 
         localidad = new Localidad("VIP", 10, 100.0, "BASICO", evento);
         tiquete = localidad.getTiquetes().get(0);

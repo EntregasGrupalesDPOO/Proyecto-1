@@ -345,7 +345,7 @@ class MarketPlaceTests {
         venue = new Venue(100, "Teatro Central", "Bogotá");
         sistema.agregarVenue(venue);
 
-        sistema.agendarEvento(venue, organizador, Evento.MUSICAL, LocalDate.now().plusDays(5), LocalTime.of(20, 0));
+        sistema.agendarEvento("concierto maluma","maluma viene cantar su nuevo album",venue, organizador, Evento.MUSICAL, LocalDate.now().plusDays(5), LocalTime.of(20, 0));
         evento = sistema.getEventos().get(0);
 
         localidad = sistema.crearLocalidadEvento("VIP", 5, 100.0, "BASICO", evento);

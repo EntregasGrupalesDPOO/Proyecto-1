@@ -1,9 +1,11 @@
 package logica;
 
 
+import java.io.Serializable;
+
 import Exepciones.ReembolsoNoPermitidoException;
 
-public class SolicitudCancelacionEvento extends Solicitud implements IAprobable    {
+public class SolicitudCancelacionEvento extends Solicitud implements IAprobable,Serializable    {
 
     private Evento evento;
     private Organizador solicitante;

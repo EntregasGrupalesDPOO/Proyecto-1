@@ -1,5 +1,6 @@
 package logica;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -7,7 +8,7 @@ import java.util.HashMap;
 
 import Exepciones.OrganizadorNoTieneEventosException;
 
-public class Administrador {
+public class Administrador implements Serializable {
 	private HashMap<LocalDate, ArrayList<Evento>> eventosPorFecha;
 	private HashMap<Organizador, ArrayList<Evento>> eventosPorOrganizador;
 	private ArrayList<Solicitud> solicitudes;

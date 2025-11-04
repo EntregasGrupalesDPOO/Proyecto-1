@@ -1,10 +1,11 @@
 package logica;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Venue {
+public class Venue implements Serializable{
 	public HashMap<LocalDate,Evento> eventos;
 	public ArrayList<String> restricciones;
 	public int capacidad;

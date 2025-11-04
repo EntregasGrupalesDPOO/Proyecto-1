@@ -1,8 +1,9 @@
 package logica;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Localidad {
+public class Localidad implements Serializable{
 	private String nombre;
 	private double precioTiquete ;
 	private String tipoTiquete;

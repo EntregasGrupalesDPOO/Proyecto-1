@@ -15,6 +15,14 @@ public class ConsolaPrincipal {
     public ConsolaPrincipal() {
         this.sistema = new BoletasMaster();
         this.scanner = new Scanner(System.in);
+        sistema.agregarAdministrador("admin", "admin");
+        sistema.leerAdministrador();
+        sistema.leerClientes();
+        sistema.leerOrganizadores();
+        sistema.leerEventos();
+        sistema.leerTiquetes();
+        sistema.leerVenues();
+        sistema.leerMarketplace();
     }
 
     public void iniciar() {
@@ -40,6 +48,15 @@ public class ConsolaPrincipal {
                 case "3":
                     salir = true;
                     System.out.println("¡Hasta pronto!");
+                    // Persistir automáticamente
+                    sistema.escribirAdministrador();
+                    sistema.escribirClientes();
+                    sistema.escribirOrganizadores();
+                    sistema.escribirEventos();
+                    sistema.escribirTiquetes();
+                    sistema.escribirVenues();
+                    sistema.escribirMarketplace();
+
                     break;
                 default:
                     System.out.println("❌ Opción inválida. Intente de nuevo.");
@@ -72,12 +89,14 @@ public class ConsolaPrincipal {
                 case "2":
                     sistema.loginOrganizador(login, contrasena);
                     System.out.println("Sesión iniciada como Organizador.");
+                    new ConsolaOrganizador(sistema).mostrarMenu();
                     //new ConsolaOrganizador(sistema, scanner).mostrarMenuOrganizador();
                     break;
                 case "3":
                     sistema.loginAdministrador(login, contrasena);
                     System.out.println("Sesión iniciada como Administrador.");
-                    //new ConsolaAdministrador(sistema, scanner).mostrarMenuAdministrador();
+                    new ConsolaAdministrador(sistema).ejecutar();
+                    
                     break;
                 default:
                     System.out.println("Tipo de usuario inválido.");
@@ -114,8 +133,7 @@ public class ConsolaPrincipal {
                 System.out.println("❌ Tipo inválido. Solo puede registrar Cliente u Organizador.");
         }
 
-        // Persistir automáticamente
-        sistema.escribirCliente();
+
     }
 
     public static void main(String[] args) {

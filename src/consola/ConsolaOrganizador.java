@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import Exepciones.OperacionNoAutorizadaException;
 import Exepciones.VenueNoDisponibleException;
 import logica.*;
 
@@ -81,12 +82,12 @@ public class ConsolaOrganizador {
         }
         Venue venue = sistema.getVenues().get(idx);
 
-        System.out.print("Tipo de evento (CULTURAL / MUSICAL / DEPORTIVO / RELIGIOSO): ");
-        String tipo = scanner.nextLine().toUpperCase();
+        System.out.print("Tipo de evento (Cultural / Musical / Deportivo / Religioso): ");
+        String tipo = scanner.nextLine();
 
         Organizador orga= (Organizador) sistema.getUsuarioActual();
         try {
-            sistema.agendarEvento(venue, orga,tipo, fecha, hora);
+            sistema.agendarEvento(nombre,descripcion,venue, orga,tipo, fecha, hora);
             System.out.println("Evento creado exitosamente.");
         } catch (Exception e) {
             System.out.println("Error al crear evento: " + e.getMessage());
@@ -178,7 +179,12 @@ public class ConsolaOrganizador {
         System.out.print("Motivo de cancelación: ");
         String razon = scanner.nextLine();
 
-        sistema.solicitarCancelacionEvento(evento, razon);
+        try {
+			sistema.solicitarCancelacionEvento(evento, razon);
+		} catch (OperacionNoAutorizadaException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         System.out.println("Solicitud enviada correctamente al administrador.");
     }
 
